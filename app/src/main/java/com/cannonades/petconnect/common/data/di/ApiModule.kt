@@ -1,0 +1,56 @@
+package com.cannonades.petconnect.common.data.di
+
+import com.cannonades.petconnect.common.data.api.interceptors.NetworkStatusInterceptor
+import com.cannonades.petconnect.common.data.api.ApiConstants
+import com.cannonades.petconnect.common.data.api.PetFaceApi
+import com.cannonades.petconnect.common.data.api.interceptors.LoggingInterceptor
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ApiModule {
+
+    @Provides
+    @Singleton
+    fun provideApi(builder: Retrofit.Builder): PetFaceApi {
+        return builder
+            .build()
+            .create(PetFaceApi::class.java)
+    }
+
+    @Provides
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
+        return Retrofit.Builder()
+            .baseUrl(ApiConstants.BASE_ENDPOINT)
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+    }
+
+    @Provides
+    fun provideOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        networkStatusInterceptor: NetworkStatusInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(networkStatusInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .build()
+    }
+
+    @Provides
+    fun provideHttpLoggingInterceptor(loggingInterceptor: LoggingInterceptor): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor(loggingInterceptor)
+
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+
+        return interceptor
+    }
+}
