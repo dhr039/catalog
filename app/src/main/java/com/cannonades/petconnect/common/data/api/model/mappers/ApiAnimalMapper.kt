@@ -19,7 +19,7 @@ class ApiAnimalMapper @Inject constructor(private val apiPhotoMapper: ApiPhotoMa
                 listOf<Breed>(
                     Breed(
                         id = apiEntity.breeds[0].id ?: throw MappingException("Breed ID cannot be null"),
-                        name = apiEntity.breeds[0].name ?: throw MappingException("breed name cannot be ampty"),
+                        name = apiEntity.breeds[0].name ?: throw MappingException("breed name cannot be empty"),
                         weight = if (apiEntity.breeds[0].weight == null) {
                             null
                         } else {
