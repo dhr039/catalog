@@ -1,4 +1,4 @@
-package com.cannonades.petconnect.ui.theme
+package com.cannonades.petconnect.common.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
