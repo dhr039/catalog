@@ -6,4 +6,6 @@
     <string name="change_theme">Change theme</string>
     <string name="home_icon">Home icon</string>
     <string name="subscriptions_icon">Subscriptions icon</string>
+    <string name="for_you">For you</string>
+    <string name="favorites">Favorites</string>
 </resources>
