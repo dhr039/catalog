@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +35,7 @@ import com.cannonades.petconnect.animalsnearyou.presentation.AnimalsNearYouEvent
 import com.cannonades.petconnect.animalsnearyou.presentation.AnimalsNearYouFragmentViewModel
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeScreen
 import com.cannonades.petconnect.breeds.presentation.BreedsScreen
+import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -67,15 +70,12 @@ fun AppContent(viewModel: AnimalsNearYouFragmentViewModel) {
 
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { Text(text = stringResource(id = R.string.app_name)) },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = { /* "Open nav drawer" */ }
-                        ) {
-                            Icon(Icons.Filled.Menu, contentDescription = "Localized description")
-                        }
-                    }
+                PetConnectTopAppBar(
+                    titleRes = currentScreen.titleRes,
+                    navigationIcon = Icons.Filled.Search,
+                    navigationIconContentDescription = null,
+                    actionIcon = Icons.Filled.Settings,
+                    actionIconContentDescription = null
                 )
             },
             bottomBar = {
