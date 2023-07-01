@@ -5,7 +5,9 @@
     <string name="breeds">Breeds</string>
     <string name="favorites">Favorites</string>
     <string name="settings">Settings</string>
+    <string name="dark_light_theme">Dark/Light:</string>
 
+    <string name="dismiss_dialog">Dismiss</string>
     <string name="change_theme">Change theme</string>
     <string name="home_icon">Home icon</string>
     <string name="subscriptions_icon">Subscriptions icon</string>
