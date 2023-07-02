@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class AnimalsNearYouFragmentViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val requestNextPageOfAnimals: RequestNextPageOfAnimals,
     private val getAnimals: GetAnimals,
     private val uiAnimalMapper: UiAnimalMapper,
@@ -37,10 +37,10 @@ class AnimalsNearYouFragmentViewModel @Inject constructor(
         subscribeToAnimalUpdates()
     }
 
-    private val _state = MutableStateFlow(AnimalsNearYouViewState())
+    private val _state = MutableStateFlow(HomeViewState())
     private var currentPage = 0
 
-    val state: StateFlow<AnimalsNearYouViewState> = _state.asStateFlow()
+    val state: StateFlow<HomeViewState> = _state.asStateFlow()
 
     val isLastPage: Boolean
         get() = state.value.noMoreAnimalsNearby
@@ -48,10 +48,10 @@ class AnimalsNearYouFragmentViewModel @Inject constructor(
     var isLoadingMoreAnimals: Boolean = false
         private set
 
-    fun onEvent(event: AnimalsNearYouEvent) {
+    fun onEvent(event: HomeEvent) {
         when (event) {
-            is AnimalsNearYouEvent.RequestInitialAnimalsList -> loadAnimals()
-            is AnimalsNearYouEvent.RequestMoreAnimals -> loadNextAnimalPage()
+            is HomeEvent.RequestInitialAnimalsList -> loadAnimals()
+            is HomeEvent.RequestMoreAnimals -> loadNextAnimalPage()
         }
     }
 

@@ -5,12 +5,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -31,9 +29,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.cannonades.petconnect.animalsnearyou.presentation.AnimalsNearYouEvent
-import com.cannonades.petconnect.animalsnearyou.presentation.AnimalsNearYouFragmentViewModel
-import com.cannonades.petconnect.animalsnearyou.presentation.HomeScreen
+import com.cannonades.petconnect.animalsnearyou.presentation.HomeEvent
+import com.cannonades.petconnect.animalsnearyou.presentation.HomeViewModel
+import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
 import com.cannonades.petconnect.breeds.presentation.BreedsScreen
 import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
@@ -46,13 +44,13 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: AnimalsNearYouFragmentViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.onEvent(AnimalsNearYouEvent.RequestInitialAnimalsList)
+        viewModel.onEvent(HomeEvent.RequestInitialAnimalsList)
 
         setContent {
             AppContent(viewModel, settingsViewModel)
@@ -60,10 +58,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun AppContent(viewModel: AnimalsNearYouFragmentViewModel, settingsViewModel: SettingsViewModel) {
+fun AppContent(viewModel: HomeViewModel, settingsViewModel: SettingsViewModel) {
     PetConnectTheme {
         val navController = rememberNavController()
         val currentBackStack by navController.currentBackStackEntryAsState()
@@ -140,7 +137,7 @@ fun PetConnectNavHost(
         modifier = modifier
     ) {
         composable(route = Home.route) {
-            HomeScreen()
+            HomeRoute()
         }
         composable(route = Breeds.route) {
             BreedsScreen()
