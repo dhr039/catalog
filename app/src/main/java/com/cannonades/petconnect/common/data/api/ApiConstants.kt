@@ -1,10 +1,12 @@
 package com.cannonades.petconnect.common.data.api
 
+import com.cannonades.petconnect.BuildConfig
+
 object ApiConstants {
     const val BASE_ENDPOINT = "https://api.thecatapi.com/v1/"
     const val ANIMALS_ENDPOINT = "images/search"
 
-    const val KEY = "live_27dC4DVlsKkayMhohzDrX8kS2piJ8hY9wByRl2ujoaSkLUvyGH0dasEinpGrt1bE"
+    const val API_KEY = BuildConfig.API_KEY
 }
 
 object ApiParameters {

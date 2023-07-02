@@ -8,7 +8,7 @@ import retrofit2.http.Query
 
 interface PetFaceApi {
 
-    @Headers("x-api-key: ${ApiConstants.KEY}") //TODO: see how to re-use x-api-key for all calls - DRY
+    @Headers("x-api-key: ${ApiConstants.API_KEY}")
     @GET(ApiConstants.ANIMALS_ENDPOINT)
     suspend fun getAnimals(
         @Query(ApiParameters.PAGE) pageToLoad: Int,

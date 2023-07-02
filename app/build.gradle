@@ -47,6 +47,23 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    // Load local.properties file
+    Properties props = new Properties()
+    def propFile = rootProject.file('local.properties')
+    if (propFile.exists()) {
+        props.load(new FileInputStream(propFile))
+
+        if (props.containsKey('API_KEY')) {
+            defaultConfig {
+                buildConfigField 'String', 'API_KEY', "\"${props['API_KEY']}\""
+            }
+        }
+    }
 }
 
 dependencies {
