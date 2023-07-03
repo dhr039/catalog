@@ -17,7 +17,7 @@ class RequestNextPageOfAnimals @Inject constructor(
         pageSize: Int = Pagination.DEFAULT_PAGE_SIZE
     ): Pagination {
         return withContext(dispatchersProvider.io()) {
-            val (animals, pagination) = animalRepository.requestMoreAnimals(pageToLoad, pageSize)
+            val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(pageToLoad, pageSize)
 
             Log.i("DOMAIN layer (usecase)", animals.toString())
             Log.i("DOMAIN layer (usecase)", pagination.toString())
@@ -26,7 +26,7 @@ class RequestNextPageOfAnimals @Inject constructor(
                 throw NoMoreAnimalsException("No more animals :(")
             }
 
-            animalRepository.storeAnimals(animals)
+            animalRepository.storeAnimalsInDb(animals)
 
             return@withContext pagination
         }

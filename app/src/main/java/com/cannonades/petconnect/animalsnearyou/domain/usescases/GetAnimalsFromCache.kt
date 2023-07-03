@@ -4,6 +4,6 @@ import com.cannonades.petconnect.common.domain.repositories.AnimalRepository
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetAnimals @Inject constructor(private val animalRepository: AnimalRepository) {
-    operator fun invoke() = animalRepository.getAnimals().map { all -> all.map { it } }
+class GetAnimalsFromCache @Inject constructor(private val animalRepository: AnimalRepository) {
+    operator fun invoke() = animalRepository.getAnimalsFromDb().map { all -> all.map { it } }
 }

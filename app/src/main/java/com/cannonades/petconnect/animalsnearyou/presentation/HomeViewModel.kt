@@ -3,7 +3,7 @@ package com.cannonades.petconnect.animalsnearyou.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonades.petconnect.animalsnearyou.domain.usescases.GetAnimals
+import com.cannonades.petconnect.animalsnearyou.domain.usescases.GetAnimalsFromCache
 import com.cannonades.petconnect.animalsnearyou.domain.usescases.RequestNextPageOfAnimals
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NetworkUnavailableException
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val requestNextPageOfAnimals: RequestNextPageOfAnimals,
-    private val getAnimals: GetAnimals,
+    private val getAnimals: GetAnimalsFromCache,
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
@@ -35,6 +35,14 @@ class HomeViewModel @Inject constructor(
 
     init {
         subscribeToAnimalUpdates()
+    }
+
+    private fun subscribeToAnimalUpdates() {
+        viewModelScope.launch {
+            getAnimals().collect { animals ->
+                onNewAnimalList(animals.map { animal -> uiAnimalMapper.mapToView(animal) })
+            }
+        }
     }
 
     private val _state = MutableStateFlow(HomeViewState())
@@ -50,16 +58,14 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.RequestInitialAnimalsList -> loadAnimals()
+            is HomeEvent.LoadAnimalsIfEmpty -> loadAnimalsIfEmpty()
             is HomeEvent.RequestMoreAnimals -> loadNextAnimalPage()
         }
     }
 
-    private fun subscribeToAnimalUpdates() {
-        viewModelScope.launch {
-            getAnimals().collect { animals ->
-                onNewAnimalList(animals.map { animal -> uiAnimalMapper.mapToView(animal) })
-            }
+    private fun loadAnimalsIfEmpty() {
+        if (state.value.animals.isEmpty()) {
+            loadNextAnimalPage()
         }
     }
 
@@ -75,12 +81,6 @@ class HomeViewModel @Inject constructor(
 
         _state.update { oldState ->
             oldState.copy(loading = false, animals = updatedAnimalSet.toList())
-        }
-    }
-
-    private fun loadAnimals() {
-        if (state.value.animals.isEmpty()) {
-            loadNextAnimalPage()
         }
     }
 

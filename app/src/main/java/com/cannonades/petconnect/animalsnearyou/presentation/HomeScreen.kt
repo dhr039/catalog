@@ -52,13 +52,16 @@ fun HomeScreen(
 
         viewState.failure != null -> {
             // Display an error message if data loading fails
-            Text(text = "Error: ${viewState.failure.getContentIfNotHandled()?.localizedMessage}")
+            Column {
+                Text(text = "Error: ${viewState.failure.getContentIfNotHandled()?.localizedMessage}")
+                AnimalGrid(animals = viewState.animals)
+            }
         }
 
         else -> {
-            // Display the LazyVerticalGrid when data is loaded
+            onEvent(HomeEvent.LoadAnimalsIfEmpty)
             AnimalGrid(animals = viewState.animals)
-            onEvent(HomeEvent.RequestMoreAnimals)
+            //onEvent(HomeEvent.RequestMoreAnimals)
         }
     }
 }

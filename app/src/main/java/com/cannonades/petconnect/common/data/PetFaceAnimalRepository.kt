@@ -22,11 +22,11 @@ class PetFaceAnimalRepository @Inject constructor(
     private val apiAnimalMapper: ApiAnimalMapper
 ) : AnimalRepository {
 
-    override fun getAnimals(): Flow<List<Animal>> {
+    override fun getAnimalsFromDb(): Flow<List<Animal>> {
         return cache.getAnimals().map { animalList -> animalList.map { it.toAnimalDomain() } }
     }
 
-    override suspend fun requestMoreAnimals(pageToLoad: Int, numberOfItems: Int): PaginatedAnimals {
+    override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int): PaginatedAnimals {
         try {
             val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems)
 
@@ -49,7 +49,7 @@ class PetFaceAnimalRepository @Inject constructor(
         }
     }
 
-    override suspend fun storeAnimals(animals: List<Animal>) {
+    override suspend fun storeAnimalsInDb(animals: List<Animal>) {
         cache.storeNearbyAnimals(animals.map { CachedAnimalAggregate.fromDomain(it) })
     }
 

@@ -50,8 +50,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.onEvent(HomeEvent.RequestInitialAnimalsList)
-
         setContent {
             AppContent(viewModel, settingsViewModel)
         }
