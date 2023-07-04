@@ -3,10 +3,14 @@ buildscript {
     ext.hilt_version = '2.46.1'
     ext.retrofit_version = '2.9.0'
     ext.moshi_version = '1.15.0'
-    ext.okHttp_version = '5.0.0-alpha.11'
+
     ext.moshi_converter_version = '2.9.0'
     ext.room_version = '2.5.2'
     ext.nav_version = '2.6.0'
+    ext.okHttp_version = '4.9.3' //must be the same as mockwebserver_version for the tests to work
+    ext.mockwebserver_version = '4.9.3'
+    ext.androidx_core_testing_version = '2.2.0'
+    ext.google_truth_version = '1.1.2'
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
     }

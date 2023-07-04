@@ -17,7 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.cannonades.petconnect.common.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -52,6 +52,12 @@ android {
         buildConfig = true
     }
 
+    sourceSets {
+        androidTest {
+            assets.srcDirs = ["src/debug/assets"]
+        }
+    }
+
     // Load local.properties file
     Properties props = new Properties()
     def propFile = rootProject.file('local.properties')
@@ -74,6 +80,13 @@ dependencies {
 
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+    androidTestImplementation "androidx.arch.core:core-testing:$androidx_core_testing_version"
+    testImplementation "com.google.truth:truth:$google_truth_version"
+    androidTestImplementation "com.google.truth:truth:$google_truth_version"
+    testImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
 
     // Network
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
