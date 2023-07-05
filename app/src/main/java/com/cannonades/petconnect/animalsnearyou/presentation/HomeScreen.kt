@@ -4,19 +4,19 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,36 +46,36 @@ fun HomeScreen(
     modifier: Modifier
 ) {
     when {
-        viewState.loading -> {
-            CircularProgressIndicator(modifier = Modifier.fillMaxSize())
-        }
-
         viewState.failure != null -> {
-            // Display an error message if data loading fails
             Column {
                 Text(text = "Error: ${viewState.failure.getContentIfNotHandled()?.localizedMessage}")
-                AnimalGrid(animals = viewState.animals)
+                AnimalGrid(animals = viewState.animals) {}
             }
         }
 
         else -> {
             onEvent(HomeEvent.LoadAnimalsIfEmpty)
-            AnimalGrid(animals = viewState.animals)
-            //onEvent(HomeEvent.RequestMoreAnimals)
+            AnimalGrid(animals = viewState.animals) { onEvent(HomeEvent.RequestMoreAnimals) }
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AnimalGrid(animals: List<UIAnimal>) {
+fun AnimalGrid(animals: List<UIAnimal>, onEvent: (HomeEvent) -> Unit) {
+    val coroutineScope = rememberCoroutineScope()
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         contentPadding = PaddingValues(8.dp),
         content = {
-            items(animals.size) { index ->
-                // Replace with your own UIAnimal composable
-                UIAnimalComposable(animal = animals[index])
+            itemsIndexed(animals) { index, animal ->
+                UIAnimalComposable(animal = animal)
+
+                // Detect when we've reached the last item and trigger loading more data
+                if (index == animals.lastIndex) {
+                    onEvent(HomeEvent.RequestMoreAnimals)
+                }
             }
         }
     )
@@ -89,7 +89,6 @@ fun UIAnimalComposable(animal: UIAnimal) {
         Card(
             elevation = CardDefaults.elevatedCardElevation(),
             shape = RoundedCornerShape(15.dp),
-//            modifier = Modifier.clip(RoundedCornerShape(15.dp))
         ) {
             Image(
                 painter = painter,
