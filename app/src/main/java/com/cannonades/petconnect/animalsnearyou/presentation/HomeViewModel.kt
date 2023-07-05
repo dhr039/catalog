@@ -50,12 +50,6 @@ class HomeViewModel @Inject constructor(
 
     val state: StateFlow<HomeViewState> = _state.asStateFlow()
 
-    val isLastPage: Boolean
-        get() = state.value.noMoreAnimalsNearby
-
-    var isLoadingMoreAnimals: Boolean = false
-        private set
-
     fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.LoadAnimalsIfEmpty -> loadAnimalsIfEmpty()
@@ -70,37 +64,30 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onNewAnimalList(animals: List<UIAnimal>) {
-        try {
-            Log.d("AnimalsNearYouFragmentViewModel", "Got more animals! ${animals.size} + ${animals[animals.size-1].id} -- ${animals[0].id}")
-        } catch (e:Throwable) {
-            Log.e("AnimalsNearYouFragmentViewModel", e.toString())
+        if (animals.isNotEmpty()) {
+            Log.d(
+                "HomeViewModel",
+                "Got more animals! ${animals.size} + ${animals[animals.size - 1].id} -- ${animals[0].id}"
+            )
         }
-
 
         val updatedAnimalSet = (state.value.animals + animals).toSet()
 
         _state.update { oldState ->
-            oldState.copy(loading = false, animals = updatedAnimalSet.toList())
+            oldState.copy(loading = false, animals = updatedAnimalSet.toList(), failure = null)
         }
     }
 
     private fun loadNextAnimalPage() {
-        isLoadingMoreAnimals = true
+        _state.update { it.copy(loading = true) }
         val errorMessage = "Failed to fetch animals"
         val exceptionHandler = viewModelScope.createExceptionHandler(errorMessage) { onFailure(it) }
 
         viewModelScope.launch(exceptionHandler) {
             val pagination = requestNextPageOfAnimals(++currentPage)
-
-            onPaginationInfoObtained(pagination)
-            isLoadingMoreAnimals = false
+            currentPage = pagination.currentPage
         }
     }
-
-    private fun onPaginationInfoObtained(pagination: Pagination) {
-        currentPage = pagination.currentPage
-    }
-
 
     private fun onFailure(failure: Throwable) {
         Log.d("AnimalsNearYouFragmentViewModel", "onFailure: $failure")
@@ -111,9 +98,10 @@ class HomeViewModel @Inject constructor(
                     oldState.copy(loading = false, failure = Event(failure))
                 }
             }
+
             is NoMoreAnimalsException -> {
-                _state.update { oldState ->
-                    oldState.copy(noMoreAnimalsNearby = true, failure = Event(failure))
+                _state.update {
+                    it.copy(loading = false, noMoreAnimalsNearby = true, failure = Event(failure))
                 }
             }
         }

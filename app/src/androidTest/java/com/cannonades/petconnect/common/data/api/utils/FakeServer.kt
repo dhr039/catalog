@@ -56,7 +56,6 @@ class FakeServer {
             val jsonStream: InputStream = context.assets.open(path)
             String(jsonStream.readBytes())
         } catch (exception: IOException) {
-//      Logger.e(exception, "Error reading network response json asset")
             Log.e("FakeServer", "Error reading network response json asset: $exception")
             throw exception
         }
