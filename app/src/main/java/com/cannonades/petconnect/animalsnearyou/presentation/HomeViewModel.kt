@@ -8,6 +8,7 @@ import com.cannonades.petconnect.animalsnearyou.domain.usescases.RequestNextPage
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NetworkUnavailableException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
+import com.cannonades.petconnect.common.domain.model.pagination.Pagination
 import com.cannonades.petconnect.common.presentation.Event
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
 import com.cannonades.petconnect.common.presentation.model.mappers.UiAnimalMapper
@@ -76,6 +77,12 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch(exceptionHandler) {
             try {
+
+                /*if after you open the app there already is a saved list of items, call the API with the proper page number:*/
+                if (currentPage < 2 && state.value.animals.size > Pagination.DEFAULT_PAGE_SIZE) {
+                    currentPage = state.value.animals.size / Pagination.DEFAULT_PAGE_SIZE
+                }
+
                 val pagination = requestNextPageOfAnimals(++currentPage)
                 currentPage = pagination.currentPage
             } finally {

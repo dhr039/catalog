@@ -13,11 +13,10 @@ class RequestNextPageOfAnimals @Inject constructor(
     private val dispatchersProvider: DispatchersProvider
 ) {
     suspend operator fun invoke(
-        pageToLoad: Int,
-        pageSize: Int = Pagination.DEFAULT_PAGE_SIZE
+        pageToLoad: Int
     ): Pagination {
         return withContext(dispatchersProvider.io()) {
-            val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(pageToLoad, pageSize)
+            val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(pageToLoad, Pagination.DEFAULT_PAGE_SIZE)
 
             Log.i("DHR", "DOMAIN layer (usecase) $animals")
             Log.i("DHR", "DOMAIN layer (usecase) $pagination")
