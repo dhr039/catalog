@@ -1,11 +1,6 @@
 package com.cannonades.petconnect.common
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,7 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,7 +39,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
-import com.cannonades.petconnect.animalsnearyou.presentation.HomeViewModel
 import com.cannonades.petconnect.breeds.presentation.BreedsScreen
 import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
@@ -57,64 +51,27 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: HomeViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
-
-    private val connectivityManager by lazy {
-        getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    }
-
-    // Mutable state to store network status
-    var networkStatus = mutableStateOf(true)
-
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            super.onAvailable(network)
-            networkStatus.value = true
-        }
-
-        override fun onLost(network: Network) {
-            super.onLost(network)
-            networkStatus.value = false
-        }
-    }
+    private val networkViewModel: NetworkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        networkStatus.value = checkNetworkAvailability()
-
-        val networkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-
         setContent {
-            AppContent(viewModel, settingsViewModel, networkStatus)
+            AppContent(
+                settingsViewModel,
+                networkViewModel.networkStatus.collectAsState()
+            )
         }
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        connectivityManager.unregisterNetworkCallback(networkCallback)
-    }
-
-    // check initial network availability
-    private fun checkNetworkAvailability(): Boolean {
-        val network = connectivityManager.activeNetwork ?: return false
-        val networkCapabilities =
-            connectivityManager.getNetworkCapabilities(network) ?: return false
-        return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AppContent(
-    viewModel: HomeViewModel,
     settingsViewModel: SettingsViewModel,
-    networkStatus: MutableState<Boolean>
+    networkStatus: State<Boolean>
 ) {
     PetConnectTheme {
         val navController = rememberNavController()
@@ -157,7 +114,7 @@ fun AppContent(
                     )
                 },
                 bottomBar = {
-                    NavigationBar() {
+                    NavigationBar {
                         NavigationBarItem(
                             icon = { Icon(Home.icon, contentDescription = Home.route) },
                             label = { Text("Home") },
@@ -180,12 +137,10 @@ fun AppContent(
                 }
             )
 
-            // Network status warning
             if (!networkStatus.value) {
                 NoInternetWarning()
             }
         }
-
 
     }
 }
