@@ -1,5 +1,6 @@
 package com.cannonades.petconnect.animalsnearyou.presentation
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -58,8 +59,9 @@ fun HomeScreen(
             }
             AnimalGrid(
                 animals = viewState.animals,
-                viewState.loading
-            ) {  }
+                viewState.loading,
+                onEvent = onEvent
+            )
         }
     }
 }

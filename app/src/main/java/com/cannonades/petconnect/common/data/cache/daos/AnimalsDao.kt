@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class AnimalsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertAnimal(animal: CachedAnimal)
+    abstract suspend fun insertAnimal(animals: List<CachedAnimal>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertBreeds(breeds: List<CachedBreed>)
@@ -19,23 +19,27 @@ abstract class AnimalsDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertAnimalBreedCrossRef(joins: List<CachedAnimalBreedCrossRef>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    open suspend fun insertAnimalAggregate(animal: CachedAnimal, breeds: List<CachedBreed>) {
-        insertAnimal(animal)
-        insertBreeds(breeds)
+    @Transaction
+    open suspend fun insertAnimals(animalAggregates: List<CachedAnimalAggregate>) {
+        val animals = mutableListOf<CachedAnimal>()
+        val breeds = mutableListOf<CachedBreed>()
+        val joins = mutableListOf<CachedAnimalBreedCrossRef>()
 
-        insertAnimalBreedCrossRef(breeds.map {
-            CachedAnimalBreedCrossRef(
-                animal.animalId,
-                it.breedId
-            )
-        })
-    }
-
-    suspend fun insertAnimals(animalAggregates: List<CachedAnimalAggregate>) {
         for (animalAggregate in animalAggregates) {
-            insertAnimalAggregate(animalAggregate.animal, animalAggregate.breeds)
+            animals.add(animalAggregate.animal)
+            breeds.addAll(animalAggregate.breeds)
+
+            joins.addAll(animalAggregate.breeds.map {
+                CachedAnimalBreedCrossRef(
+                    animalAggregate.animal.animalId,
+                    it.breedId
+                )
+            })
         }
+
+        insertAnimal(animals)
+        insertBreeds(breeds)
+        insertAnimalBreedCrossRef(joins)
     }
 
     @Transaction
