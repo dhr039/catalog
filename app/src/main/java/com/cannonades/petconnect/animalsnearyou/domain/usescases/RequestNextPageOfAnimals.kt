@@ -19,8 +19,8 @@ class RequestNextPageOfAnimals @Inject constructor(
         return withContext(dispatchersProvider.io()) {
             val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(pageToLoad, pageSize)
 
-            Log.i("DOMAIN layer (usecase)", animals.toString())
-            Log.i("DOMAIN layer (usecase)", pagination.toString())
+            Log.i("DHR", "DOMAIN layer (usecase) $animals")
+            Log.i("DHR", "DOMAIN layer (usecase) $pagination")
 
             if (animals.isEmpty()) {
                 throw NoMoreAnimalsException("No more animals :(")

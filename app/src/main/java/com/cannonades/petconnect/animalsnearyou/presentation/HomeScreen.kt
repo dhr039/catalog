@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.animalsnearyou.presentation
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,9 +13,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,22 +48,24 @@ fun HomeScreen(
         viewState.failure != null -> {
             Column {
                 Text(text = "Error: ${viewState.failure.getContentIfNotHandled()?.localizedMessage}")
-                AnimalGrid(animals = viewState.animals) {}
+                AnimalGrid(animals = viewState.animals, viewState.loading) {}
             }
         }
 
         else -> {
-            onEvent(HomeEvent.LoadAnimalsIfEmpty)
-            AnimalGrid(animals = viewState.animals) { onEvent(HomeEvent.RequestMoreAnimals) }
+            LaunchedEffect(Unit) {
+                onEvent(HomeEvent.LoadAnimalsIfEmpty)
+            }
+            AnimalGrid(
+                animals = viewState.animals,
+                viewState.loading
+            ) {  }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AnimalGrid(animals: List<UIAnimal>, onEvent: (HomeEvent) -> Unit) {
-    val coroutineScope = rememberCoroutineScope()
-
+fun AnimalGrid(animals: List<UIAnimal>, isLoading: Boolean, onEvent: (HomeEvent) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         contentPadding = PaddingValues(8.dp),
@@ -72,9 +73,13 @@ fun AnimalGrid(animals: List<UIAnimal>, onEvent: (HomeEvent) -> Unit) {
             itemsIndexed(animals) { index, animal ->
                 UIAnimalComposable(animal = animal)
 
-                // Detect when we've reached the last item and trigger loading more data
-                if (index == animals.lastIndex) {
-                    onEvent(HomeEvent.RequestMoreAnimals)
+//                Log.d("DHR", "$isLoading $index ${animals.lastIndex}")
+
+                /* detect when we've reached the last item and trigger loading more data */
+                if (index == animals.lastIndex && !isLoading) {
+                    LaunchedEffect(index) {
+                        onEvent(HomeEvent.RequestMoreAnimals)
+                    }
                 }
             }
         }

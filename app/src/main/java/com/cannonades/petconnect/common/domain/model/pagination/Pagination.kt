@@ -6,6 +6,6 @@ data class Pagination(
 ) {
 
   companion object {
-    const val DEFAULT_PAGE_SIZE = 20
+    const val DEFAULT_PAGE_SIZE = 30
   }
 }

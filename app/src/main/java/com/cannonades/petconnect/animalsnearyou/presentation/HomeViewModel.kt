@@ -8,7 +8,6 @@ import com.cannonades.petconnect.animalsnearyou.domain.usescases.RequestNextPage
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NetworkUnavailableException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
-import com.cannonades.petconnect.common.domain.model.pagination.Pagination
 import com.cannonades.petconnect.common.presentation.Event
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
 import com.cannonades.petconnect.common.presentation.model.mappers.UiAnimalMapper
@@ -29,15 +28,7 @@ class HomeViewModel @Inject constructor(
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
-    companion object {
-        const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
-    }
-
     init {
-        subscribeToAnimalUpdates()
-    }
-
-    private fun subscribeToAnimalUpdates() {
         viewModelScope.launch {
             getAnimals().collect { animals ->
                 onNewAnimalList(animals.map { animal -> uiAnimalMapper.mapToView(animal) })
@@ -66,7 +57,7 @@ class HomeViewModel @Inject constructor(
     private fun onNewAnimalList(animals: List<UIAnimal>) {
         if (animals.isNotEmpty()) {
             Log.d(
-                "HomeViewModel",
+                "DHR",
                 "Got more animals! ${animals.size} + ${animals[animals.size - 1].id} -- ${animals[0].id}"
             )
         }
@@ -74,7 +65,7 @@ class HomeViewModel @Inject constructor(
         val updatedAnimalSet = (state.value.animals + animals).toSet()
 
         _state.update { oldState ->
-            oldState.copy(loading = false, animals = updatedAnimalSet.toList(), failure = null)
+            oldState.copy(animals = updatedAnimalSet.toList())
         }
     }
 
@@ -84,13 +75,22 @@ class HomeViewModel @Inject constructor(
         val exceptionHandler = viewModelScope.createExceptionHandler(errorMessage) { onFailure(it) }
 
         viewModelScope.launch(exceptionHandler) {
-            val pagination = requestNextPageOfAnimals(++currentPage)
-            currentPage = pagination.currentPage
+            try {
+                val pagination = requestNextPageOfAnimals(++currentPage)
+                currentPage = pagination.currentPage
+            } finally {
+                /**
+                 * Have to set loading back to false in the same scope were it was set to true.
+                 * This will ensure that loading remains true for the entire duration of the
+                 * network request, until it completes or fails.
+                 * */
+                _state.update { it.copy(loading = false) }
+            }
         }
     }
 
     private fun onFailure(failure: Throwable) {
-        Log.d("AnimalsNearYouFragmentViewModel", "onFailure: $failure")
+        Log.e("AnimalsNearYouFragmentViewModel", "onFailure: $failure")
         when (failure) {
             is NetworkException,
             is NetworkUnavailableException -> {
