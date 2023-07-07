@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.animalsnearyou.presentation
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -17,7 +16,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
 
@@ -70,9 +68,6 @@ fun AnimalGrid(animals: List<UIAnimal>, isLoading: Boolean, onEvent: (HomeEvent)
         content = {
             itemsIndexed(animals) { index, animal ->
                 UIAnimalComposable(animal = animal)
-
-//                Log.d("DHR", "$isLoading $index ${animals.lastIndex}")
-
                 /* detect when we've reached the last item and trigger loading more data */
                 if (index == animals.lastIndex && !isLoading) {
                     LaunchedEffect(index) {
