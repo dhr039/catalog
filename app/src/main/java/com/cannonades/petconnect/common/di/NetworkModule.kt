@@ -9,6 +9,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 /**
+ * Also see: 'Stop passing Context into ViewModels'
+ * https://iamgideon.medium.com/stop-passing-context-into-viewmodels-bb11b3f432fb
+ *
  * Using the ApplicationContext in a ViewModel is not generally recommended because the ViewModel
  * outlives specific activity or fragment instances. However, using the ApplicationContext
  * (instead of a Context tied to a specific Activity or View) is usually safe because it is tied to
