@@ -42,6 +42,10 @@ class HomeViewModel @Inject constructor(
 
     val state: StateFlow<HomeViewState> = _state.asStateFlow()
 
+    fun handleFailure() {
+        _state.update { it.copy(failureHasBeenHandled = true) }
+    }
+
     fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.LoadAnimalsIfEmpty -> loadAnimalsIfEmpty()

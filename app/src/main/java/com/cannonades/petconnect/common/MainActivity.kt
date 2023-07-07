@@ -15,17 +15,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -79,6 +83,14 @@ fun AppContent(
             mutableStateOf(false)
         }
 
+        var showSnackbar by remember { mutableStateOf(false) }
+        var snackbarMessage by remember { mutableStateOf("") }
+
+        fun showSnackbar(message: String) {
+            snackbarMessage = message
+            showSnackbar = true
+        }
+
         val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState(false)
         LaunchedEffect(isDarkTheme) {
             JetRedditThemeSettings.isInDarkTheme.value = isDarkTheme
@@ -98,6 +110,20 @@ fun AppContent(
 
         Box(Modifier.fillMaxSize()) {
             Scaffold(
+                snackbarHost = {
+                    if (showSnackbar) {
+                        Snackbar(
+                            action = {
+                                TextButton(onClick = { showSnackbar = false }) {
+                                    Text("Dismiss")
+                                }
+                            },
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Text(snackbarMessage)
+                        }
+                    }
+                },
                 topBar = {
                     PetConnectTopAppBar(
                         titleRes = currentScreen.titleRes,
@@ -127,6 +153,7 @@ fun AppContent(
                 content = { innerPadding ->
                     PetConnectNavHost(
                         navController = navController,
+                        showSnackbar = ::showSnackbar,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -143,6 +170,7 @@ fun AppContent(
 @Composable
 fun PetConnectNavHost(
     navController: NavHostController,
+    showSnackbar: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -151,7 +179,7 @@ fun PetConnectNavHost(
         modifier = modifier
     ) {
         composable(route = Home.route) {
-            HomeRoute()
+            HomeRoute(showSnackbar = showSnackbar)
         }
         composable(route = Breeds.route) {
             BreedsScreen()

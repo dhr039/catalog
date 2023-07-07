@@ -17,15 +17,24 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.cannonades.petconnect.R
+import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
 
 
 @Composable
 fun HomeRoute(
     modifier: Modifier = Modifier,
+    showSnackbar: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.state.collectAsState()
+
+    viewState.failure?.getContentIfNotHandled()?.let { failure ->
+        if (failure is NoMoreAnimalsException) {
+            showSnackbar("${failure.message}")
+            viewModel.handleFailure()
+        }
+    }
 
     HomeScreen(
         viewState = viewState,
@@ -41,35 +50,25 @@ fun HomeScreen(
     onEvent: (HomeEvent) -> Unit,
     modifier: Modifier
 ) {
-    when {
-        viewState.failure != null -> {
-            /*TODO: process no more animals here or show a Toast (then remove this conditional branch)*/
-            AnimalGrid(animals = viewState.animals, viewState.loading, onEvent = onEvent)
-        }
-
-        else -> {
-            LaunchedEffect(Unit) {
-                onEvent(HomeEvent.LoadAnimalsIfEmpty)
-            }
-            AnimalGrid(
-                animals = viewState.animals,
-                viewState.loading,
-                onEvent = onEvent
-            )
-        }
+    LaunchedEffect(Unit) {
+        onEvent(HomeEvent.LoadAnimalsIfEmpty)
     }
+    AnimalGrid(
+        viewState,
+        onEvent = onEvent
+    )
 }
 
 @Composable
-fun AnimalGrid(animals: List<UIAnimal>, isLoading: Boolean, onEvent: (HomeEvent) -> Unit) {
+fun AnimalGrid(viewState: HomeViewState, onEvent: (HomeEvent) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         contentPadding = PaddingValues(8.dp),
         content = {
-            itemsIndexed(animals) { index, animal ->
+            itemsIndexed(viewState.animals) { index, animal ->
                 UIAnimalComposable(animal = animal)
                 /* detect when we've reached the last item and trigger loading more data */
-                if (index == animals.lastIndex && !isLoading) {
+                if (index == viewState.animals.lastIndex && !viewState.loading && !viewState.failureHasBeenHandled) {
                     LaunchedEffect(index) {
                         onEvent(HomeEvent.RequestMoreAnimals)
                     }

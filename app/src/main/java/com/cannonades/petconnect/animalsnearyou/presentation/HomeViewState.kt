@@ -8,5 +8,6 @@ data class HomeViewState(
     val loading: Boolean = false,
     val animals: List<UIAnimal> = emptyList(),
     val noMoreAnimalsNearby: Boolean = false,
-    val failure: Event<Throwable>? = null
+    val failure: Event<Throwable>? = null,
+    val failureHasBeenHandled: Boolean = false
 )
