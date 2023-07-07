@@ -3,6 +3,7 @@
 
     <string name="home">Home</string>
     <string name="breeds">Breeds</string>
+    <string name="categories">Categories</string>
     <string name="favorites">Favorites</string>
     <string name="settings">Settings</string>
     <string name="dark_light_theme">Dark/Light:</string>

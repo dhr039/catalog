@@ -1,4 +1,4 @@
-package com.cannonades.petconnect.breeds.presentation
+package com.cannonades.petconnect.categories.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -12,24 +12,24 @@ import com.cannonades.petconnect.common.presentation.model.UICategory
 
 
 @Composable
-fun BreedsRoute(
+fun CategoriesRoute(
     modifier: Modifier = Modifier,
-    viewModel: BreedsViewModel = hiltViewModel()
+    viewModel: CategoriesViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.state.collectAsState()
 
-    BreedsScreen(viewState = viewState, onEvent = { viewModel.onEvent(it) }, modifier = modifier)
+    CategoriesScreen(viewState = viewState, onEvent = { viewModel.onEvent(it) }, modifier = modifier)
 
 }
 
 @Composable
-fun BreedsScreen(
-    viewState: BreedsViewState,
-    onEvent: (BreedsEvent) -> Unit,
+fun CategoriesScreen(
+    viewState: CategoriesViewState,
+    onEvent: (CategoriesEvent) -> Unit,
     modifier: Modifier
 ) {
     LaunchedEffect(Unit) {
-        onEvent(BreedsEvent.RequestMoreCategories)
+        onEvent(CategoriesEvent.RequestMoreCategories)
     }
 
     CategoriesList(categories = viewState.categories)

@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -36,9 +37,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
-import com.cannonades.petconnect.breeds.presentation.BreedsRoute
-import com.cannonades.petconnect.breeds.presentation.BreedsScreen
+import com.cannonades.petconnect.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.common.presentation.ui.components.NoInternetWarning
 import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
@@ -144,10 +145,10 @@ fun AppContent(
                             onClick = { navController.navigateSingleTopTo(Home.route) }
                         )
                         NavigationBarItem(
-                            icon = { Icon(Breeds.icon, contentDescription = Breeds.route) },
-                            label = { Text("Breeds") },
-                            selected = currentScreen == Breeds,
-                            onClick = { navController.navigateSingleTopTo(Breeds.route) }
+                            icon = { Icon(Categories.icon, contentDescription = Categories.route) },
+                            label = { Text(stringResource(id = R.string.categories)) },
+                            selected = currentScreen == Categories,
+                            onClick = { navController.navigateSingleTopTo(Categories.route) }
                         )
                     }
                 },
@@ -182,8 +183,8 @@ fun PetConnectNavHost(
         composable(route = Home.route) {
             HomeRoute(showSnackbar = showSnackbar)
         }
-        composable(route = Breeds.route) {
-            BreedsRoute()
+        composable(route = Categories.route) {
+            CategoriesRoute()
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.cannonades.petconnect.breeds.presentation
+package com.cannonades.petconnect.categories.presentation
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BreedsViewModel @Inject constructor(
+class CategoriesViewModel @Inject constructor(
     private val requestCategories: RequestCategories,
     private val getCategoriesFromCache: GetCategoriesFromCache,
     private val uiCategoryMapper: UICategoryMapper
@@ -30,8 +30,8 @@ class BreedsViewModel @Inject constructor(
         }
     }
 
-    private val _state = MutableStateFlow(BreedsViewState())
-    val state: StateFlow<BreedsViewState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(CategoriesViewState())
+    val state: StateFlow<CategoriesViewState> = _state.asStateFlow()
 
     private fun onNewCategoriesList(categories: List<UICategory>) {
         if (categories.isNotEmpty()) {
@@ -43,9 +43,9 @@ class BreedsViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: BreedsEvent) {
+    fun onEvent(event: CategoriesEvent) {
         when (event) {
-            is BreedsEvent.RequestMoreCategories -> loadNextCategoriesPage()
+            is CategoriesEvent.RequestMoreCategories -> loadNextCategoriesPage()
         }
     }
 

@@ -19,10 +19,10 @@ object Home : PetConnectDestination {
     override val titleRes = R.string.home
 }
 
-object Breeds : PetConnectDestination {
+object Categories : PetConnectDestination {
     override val icon = Icons.Filled.List
-    override val route = "breeds"
-    override val titleRes = R.string.breeds
+    override val route = "categories"
+    override val titleRes = R.string.categories
 }
 
 object Favorites : PetConnectDestination {
@@ -31,4 +31,4 @@ object Favorites : PetConnectDestination {
     override val titleRes = R.string.favorites
 }
 
-val tabRowScreens = listOf(Home, Breeds)
+val tabRowScreens = listOf(Home, Categories)
