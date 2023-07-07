@@ -37,13 +37,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
+import com.cannonades.petconnect.breeds.presentation.BreedsRoute
 import com.cannonades.petconnect.breeds.presentation.BreedsScreen
 import com.cannonades.petconnect.common.presentation.ui.components.NoInternetWarning
 import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
-import com.cannonades.petconnect.settings.SettingsDialog
-import com.cannonades.petconnect.settings.SettingsViewModel
+import com.cannonades.petconnect.settings.presentation.SettingsDialog
+import com.cannonades.petconnect.settings.presentation.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -182,7 +183,7 @@ fun PetConnectNavHost(
             HomeRoute(showSnackbar = showSnackbar)
         }
         composable(route = Breeds.route) {
-            BreedsScreen()
+            BreedsRoute()
         }
     }
 }

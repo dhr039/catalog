@@ -42,6 +42,16 @@ class HomeViewModel @Inject constructor(
 
     val state: StateFlow<HomeViewState> = _state.asStateFlow()
 
+    /**
+     * Mark the failure as handled in order to show the Snackbar exactly once.
+     *
+     * Explanation:
+     * When you reach the end of the list a new page of data is requested.
+     * If there is no more remote data an Exception is thrown and we show a Snackbar.
+     * Since this function marks the failure as handled so we don't show the Snackbar again
+     * and again, after the user clicks on Dismiss. It shows again since we are at the end
+     * of the list and any user movement triggers a recomposition and a new call for data.
+     * */
     fun handleFailure() {
         _state.update { it.copy(failureHasBeenHandled = true) }
     }

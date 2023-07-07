@@ -5,6 +5,7 @@ import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedAnim
 import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedAnimalAggregate
 import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedAnimalBreedCrossRef
 import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedBreed
+import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -45,5 +46,12 @@ abstract class AnimalsDao {
     @Transaction
     @Query("SELECT * FROM animals")
     abstract fun getAllAnimals(): Flow<List<CachedAnimalAggregate>>
+
+    @Transaction
+    @Query("SELECT * FROM categories")
+    abstract fun getAllCategories(): Flow<List<CachedCategory>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertCategories(categories: List<CachedCategory>)
 
 }

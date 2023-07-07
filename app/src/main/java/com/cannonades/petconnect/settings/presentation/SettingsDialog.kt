@@ -1,4 +1,4 @@
-package com.cannonades.petconnect.settings
+package com.cannonades.petconnect.settings.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

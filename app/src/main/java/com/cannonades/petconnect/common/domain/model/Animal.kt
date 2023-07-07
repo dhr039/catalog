@@ -55,3 +55,8 @@ data class Weight(
     val imperial: String?,
     val metric: String?
 )
+
+data class Category(
+    val id: Int,
+    val name: String
+)

@@ -1,10 +1,11 @@
-package com.cannonades.petconnect.settings
+package com.cannonades.petconnect.settings.presentation
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.lifecycle.ViewModel
+import com.cannonades.petconnect.settings.DARK_THEME_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
