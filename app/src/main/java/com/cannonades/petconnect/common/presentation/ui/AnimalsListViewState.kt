@@ -1,10 +1,10 @@
-package com.cannonades.petconnect.animalsnearyou.presentation
+package com.cannonades.petconnect.common.presentation.ui
 
 import com.cannonades.petconnect.common.presentation.Event
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
 
 
-data class HomeViewState(
+data class AnimalsListViewState(
     val loading: Boolean = false,
     val animals: List<UIAnimal> = emptyList(),
     val noMoreAnimalsNearby: Boolean = false,

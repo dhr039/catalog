@@ -4,7 +4,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.cannonades.petconnect.R
 
 interface PetConnectDestination {
@@ -29,6 +32,18 @@ object Favorites : PetConnectDestination {
     override val icon = Icons.Filled.Favorite
     override val route = "favorites"
     override val titleRes = R.string.favorites
+}
+
+object AnimalsOfCategory : PetConnectDestination {
+    override val titleRes = R.string.favorites
+    override val icon = Icons.Filled.Star
+
+    override val route = "animals_category"
+    const val categTypeArg = "account_type"
+    val routeWithArgs = "$route/{$categTypeArg}"
+    val arguments = listOf(
+        navArgument(categTypeArg) { type = NavType.StringType }
+    )
 }
 
 val tabRowScreens = listOf(Home, Categories)

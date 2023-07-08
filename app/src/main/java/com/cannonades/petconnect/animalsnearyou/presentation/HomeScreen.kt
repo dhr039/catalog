@@ -23,6 +23,7 @@ import coil.compose.AsyncImage
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
+import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
 
 
 @Composable
@@ -50,7 +51,7 @@ fun HomeRoute(
 
 @Composable
 fun HomeScreen(
-    viewState: HomeViewState,
+    viewState: AnimalsListViewState,
     onEvent: (HomeEvent) -> Unit,
     modifier: Modifier
 ) {
@@ -64,7 +65,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun AnimalGrid(viewState: HomeViewState, onEvent: (HomeEvent) -> Unit) {
+fun AnimalGrid(viewState: AnimalsListViewState, onEvent: (HomeEvent) -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -114,6 +115,6 @@ fun AnimalGridPreview() {
         UIAnimal("2", "Cat", "cat_photo_url"),
         UIAnimal("3", "Rabbit", "rabbit_photo_url")
     )
-    val homeViewState = HomeViewState(animals = animals, loading = true)
+    val homeViewState = AnimalsListViewState(animals = animals, loading = true)
     AnimalGrid(viewState = homeViewState, onEvent = {})
 }

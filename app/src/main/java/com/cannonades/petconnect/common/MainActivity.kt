@@ -39,6 +39,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
+import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.common.presentation.ui.components.NoInternetWarning
 import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
@@ -184,7 +185,17 @@ fun PetConnectNavHost(
             HomeRoute(showSnackbar = showSnackbar)
         }
         composable(route = Categories.route) {
-            CategoriesRoute()
+            CategoriesRoute(openCategoryScreen = { categ ->
+                navController.navigateToAnimalsCategoriesList(categ)
+            })
+        }
+        composable(
+            route = AnimalsOfCategory.routeWithArgs,
+            arguments = AnimalsOfCategory.arguments,
+        ) { navBackStackEntry ->
+            val accountType =
+                navBackStackEntry.arguments?.getString(AnimalsOfCategory.categTypeArg)
+            AnimalsOfCategoryScreen(categId = accountType)
         }
     }
 }
@@ -199,3 +210,7 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         launchSingleTop = true
         restoreState = true
     }
+
+private fun NavHostController.navigateToAnimalsCategoriesList(category: String) {
+    this.navigate("${AnimalsOfCategory.route}/$category")
+}

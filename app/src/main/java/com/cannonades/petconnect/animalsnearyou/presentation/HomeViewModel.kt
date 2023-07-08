@@ -12,6 +12,7 @@ import com.cannonades.petconnect.common.domain.model.pagination.Pagination
 import com.cannonades.petconnect.common.presentation.Event
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
 import com.cannonades.petconnect.common.presentation.model.mappers.UiAnimalMapper
+import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
 import com.cannonades.petconnect.common.utils.createExceptionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,10 +38,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private val _state = MutableStateFlow(HomeViewState())
+    private val _state = MutableStateFlow(AnimalsListViewState())
     private var currentPage = 0
 
-    val state: StateFlow<HomeViewState> = _state.asStateFlow()
+    val state: StateFlow<AnimalsListViewState> = _state.asStateFlow()
 
     /**
      * Mark the failure as handled in order to show the Snackbar exactly once.
