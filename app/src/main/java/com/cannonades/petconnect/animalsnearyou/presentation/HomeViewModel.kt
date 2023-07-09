@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 
@@ -39,6 +41,7 @@ class HomeViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(AnimalsListViewState())
     private var currentPage = 0
+    private val pageMutex = Mutex()
 
     val state: StateFlow<AnimalsListViewState> = _state.asStateFlow()
 
@@ -72,15 +75,18 @@ class HomeViewModel @Inject constructor(
             try {
 
                 /*if there were no animals do not make repeated requests*/
-                if(hasMoreAnimalsBeenHandled) return@launch
+                if (hasMoreAnimalsBeenHandled) return@launch
 
-                /*if after you open the app there already is a saved list of items, call the API with the proper page number:*/
-                if (currentPage < 2 && state.value.animals.size > Pagination.DEFAULT_PAGE_SIZE) {
-                    currentPage = state.value.animals.size / Pagination.DEFAULT_PAGE_SIZE
+                pageMutex.withLock {
+                    /*if after you open the app there already is a saved list of items, call the API with the proper page number:*/
+                    if (currentPage < 2 && state.value.animals.size > Pagination.DEFAULT_PAGE_SIZE) {
+                        currentPage = state.value.animals.size / Pagination.DEFAULT_PAGE_SIZE
+                    }
+
+                    val pagination = requestNextPageOfAnimals(++currentPage)
+                    currentPage = pagination.currentPage
                 }
 
-                val pagination = requestNextPageOfAnimals(++currentPage)
-                currentPage = pagination.currentPage
             } finally {
                 /**
                  * Have to set loading back to false in the same scope were it was set to true.
@@ -92,7 +98,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    var hasMoreAnimalsBeenHandled: Boolean = false
+    private var hasMoreAnimalsBeenHandled: Boolean = false
 
     private fun onFailure(failure: Throwable) {
         when (failure) {
@@ -104,9 +110,9 @@ class HomeViewModel @Inject constructor(
             }
 
             is NoMoreAnimalsException -> {
-                if(!hasMoreAnimalsBeenHandled) {
+                if (!hasMoreAnimalsBeenHandled) {
                     _state.update {
-                        it.copy(loading = false,failure = Event(failure))
+                        it.copy(loading = false, failure = Event(failure))
                     }
                     hasMoreAnimalsBeenHandled = true
                 }
