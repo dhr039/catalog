@@ -53,7 +53,7 @@ class HomeViewModel @Inject constructor(
      * and again, after the user clicks on Dismiss. It shows again since we are at the end
      * of the list and any user movement triggers a recomposition and a new call for data.
      * */
-    fun handleFailure() {
+    fun onShowSnackbar() {
         _state.update { it.copy(failureHasBeenHandled = true) }
     }
 
