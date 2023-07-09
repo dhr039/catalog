@@ -103,7 +103,6 @@ class HomeViewModel @Inject constructor(
     var hasMoreAnimalsBeenHandled: Boolean = false
 
     private fun onFailure(failure: Throwable) {
-        Log.e("AnimalsNearYouFragmentViewModel", "onFailure: $failure")
         when (failure) {
             is NetworkException,
             is NetworkUnavailableException -> {

@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.cannonades.petconnect.R
-import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
 import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
 
@@ -35,9 +34,7 @@ fun HomeRoute(
     val viewState by viewModel.state.collectAsState()
 
     viewState.failure?.getContentIfNotHandled()?.let { failure ->
-        if (failure is NoMoreAnimalsException) {
-            showSnackbar("${failure.message}")
-        }
+        showSnackbar("${failure.cause} + ${failure}")
     }
 
     HomeScreen(
@@ -47,33 +44,33 @@ fun HomeRoute(
     )
 }
 
-
 @Composable
 fun HomeScreen(
+    modifier: Modifier,
     viewState: AnimalsListViewState,
     onEvent: (HomeEvent) -> Unit,
-    modifier: Modifier
 ) {
     LaunchedEffect(Unit) {
         onEvent(HomeEvent.LoadAnimalsIfEmpty)
     }
     AnimalGrid(
+        modifier = modifier,
         viewState,
         onEvent = onEvent
     )
 }
 
 @Composable
-fun AnimalGrid(viewState: AnimalsListViewState, onEvent: (HomeEvent) -> Unit) {
+fun AnimalGrid(modifier: Modifier, viewState: AnimalsListViewState, onEvent: (HomeEvent) -> Unit) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 128.dp),
             contentPadding = PaddingValues(8.dp),
             content = {
                 itemsIndexed(viewState.animals) { index, animal ->
-                    UIAnimalComposable(animal = animal)
+                    UIAnimalComposable(modifier = modifier, animal = animal)
                     /* detect when we've reached the last item and trigger loading more data */
                     if (index == viewState.animals.lastIndex && !viewState.loading) {
                         LaunchedEffect(index) {
@@ -84,7 +81,7 @@ fun AnimalGrid(viewState: AnimalsListViewState, onEvent: (HomeEvent) -> Unit) {
             }
         )
         if (viewState.loading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
@@ -92,13 +89,13 @@ fun AnimalGrid(viewState: AnimalsListViewState, onEvent: (HomeEvent) -> Unit) {
 }
 
 @Composable
-fun UIAnimalComposable(animal: UIAnimal, modifier: Modifier = Modifier) {
+fun UIAnimalComposable(modifier: Modifier, animal: UIAnimal) {
     Box(Modifier.padding(4.dp)) {
         AsyncImage(
+            modifier = modifier.size(200.dp),
             model = animal.name,
             contentDescription = "Animal image",
             placeholder = painterResource(R.drawable.ic_jetnews_logo),
-            modifier = modifier.size(200.dp)
         )
     }
 }
@@ -115,5 +112,5 @@ fun AnimalGridPreview() {
         UIAnimal("3", "Rabbit", "rabbit_photo_url")
     )
     val homeViewState = AnimalsListViewState(animals = animals, loading = true)
-    AnimalGrid(viewState = homeViewState, onEvent = {})
+    AnimalGrid(modifier = Modifier, viewState = homeViewState, onEvent = {})
 }

@@ -29,7 +29,7 @@ class PetFaceCategoriesRepository @Inject constructor(
             val response: Response<List<ApiCategory>> = api.getCategories()
             return response.body()?.map { apiCategoryMapper.mapToDomain(it) } ?: emptyList()
         } catch (exception: HttpException) {
-            throw NetworkException(exception.message ?: "Code ${exception.code()}")
+            throw NetworkException()
         }
     }
 

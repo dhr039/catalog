@@ -3,10 +3,10 @@ package com.cannonades.petconnect.common.domain.model
 import java.io.IOException
 
 
-class NoMoreAnimalsException(message: String): Exception(message)
+class NoMoreAnimalsException: Exception()
 
-class NoMoreCategoriesException(message: String): Exception(message)
+class NoMoreCategoriesException: Exception()
 
-class NetworkUnavailableException(message: String = "No network available :(") : IOException(message)
+class NetworkUnavailableException : IOException()
 
-class NetworkException(message: String): Exception(message)
+class NetworkException: Exception()
