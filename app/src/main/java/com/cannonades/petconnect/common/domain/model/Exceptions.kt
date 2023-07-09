@@ -1,12 +1,12 @@
 package com.cannonades.petconnect.common.domain.model
 
-import java.io.IOException
 
+sealed class AppException: Exception()
 
-class NoMoreAnimalsException: Exception()
+object NoMoreAnimalsException: AppException()
 
-class NoMoreCategoriesException: Exception()
+object NoMoreCategoriesException: AppException()
 
-class NetworkUnavailableException : IOException()
+object NetworkUnavailableException : AppException()
 
-class NetworkException: Exception()
+object NetworkException: AppException()

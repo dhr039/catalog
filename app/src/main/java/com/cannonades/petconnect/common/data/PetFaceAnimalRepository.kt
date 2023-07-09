@@ -45,7 +45,7 @@ class PetFaceAnimalRepository @Inject constructor(
                 )
             )
         } catch (exception: HttpException) {
-            throw NetworkException()
+            throw NetworkException
         }
     }
 

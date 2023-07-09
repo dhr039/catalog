@@ -18,7 +18,7 @@ class RequestCategories @Inject constructor(
             Log.i("DHR", "DOMAIN layer (usecase) CATEGORIES: $categories")
 
             if (categories.isEmpty()) {
-                throw NoMoreCategoriesException()
+                throw NoMoreCategoriesException
             }
 
             categoriesRepository.storeCategoriesInDb(categories)

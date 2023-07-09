@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.animalsnearyou.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.animalsnearyou.domain.usescases.GetAnimalsFromCache
@@ -57,13 +56,6 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onNewAnimalList(animals: List<UIAnimal>) {
-        if (animals.isNotEmpty()) {
-            Log.d(
-                "DHR",
-                "Got more animals! ${animals.size} + ${animals[animals.size - 1].id} -- ${animals[0].id}"
-            )
-        }
-
         val updatedAnimalSet = (state.value.animals + animals).toSet()
 
         _state.update { oldState ->

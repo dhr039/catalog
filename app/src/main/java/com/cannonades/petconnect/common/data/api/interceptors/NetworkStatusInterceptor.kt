@@ -12,7 +12,7 @@ class NetworkStatusInterceptor @Inject constructor(private val connectionManager
         return if (connectionManager.isConnected) {
             chain.proceed(chain.request())
         } else {
-            throw NetworkUnavailableException()
+            throw NetworkUnavailableException
         }
     }
 }

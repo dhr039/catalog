@@ -22,7 +22,7 @@ class RequestNextPageOfAnimals @Inject constructor(
             Log.i("DHR", "DOMAIN layer (usecase) $pagination")
 
             if (animals.isEmpty()) {
-                throw NoMoreAnimalsException()
+                throw NoMoreAnimalsException
             }
 
             animalRepository.storeAnimalsInDb(animals)

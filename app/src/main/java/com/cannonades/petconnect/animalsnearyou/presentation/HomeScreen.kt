@@ -15,12 +15,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.cannonades.petconnect.R
+import com.cannonades.petconnect.common.domain.model.NetworkException
+import com.cannonades.petconnect.common.domain.model.NetworkUnavailableException
+import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
+import com.cannonades.petconnect.common.domain.model.NoMoreCategoriesException
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
 import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
 
@@ -33,8 +38,18 @@ fun HomeRoute(
 ) {
     val viewState by viewModel.state.collectAsState()
 
+    val context = LocalContext.current
+
     viewState.failure?.getContentIfNotHandled()?.let { failure ->
-        showSnackbar("${failure.cause} + ${failure}")
+        val stringId = when (failure) {
+            is NetworkUnavailableException -> R.string.network_unavailable_error
+            is NetworkException -> R.string.network_error
+            is NoMoreAnimalsException -> R.string.no_more_animals_error
+            is NoMoreCategoriesException -> R.string.no_more_categories_error
+            else -> R.string.unknown_error
+        }
+        val message = context.getString(stringId)
+        showSnackbar(message)
     }
 
     HomeScreen(
