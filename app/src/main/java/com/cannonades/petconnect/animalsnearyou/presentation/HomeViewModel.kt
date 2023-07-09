@@ -43,20 +43,6 @@ class HomeViewModel @Inject constructor(
 
     val state: StateFlow<AnimalsListViewState> = _state.asStateFlow()
 
-    /**
-     * Mark the failure as handled in order to show the Snackbar exactly once.
-     *
-     * Explanation:
-     * When you reach the end of the list a new page of data is requested.
-     * If there is no more remote data an Exception is thrown and we show a Snackbar.
-     * Since this function marks the failure as handled so we don't show the Snackbar again
-     * and again, after the user clicks on Dismiss. It shows again since we are at the end
-     * of the list and any user movement triggers a recomposition and a new call for data.
-     * */
-    fun onShowSnackbar() {
-        _state.update { it.copy(failureHasBeenHandled = true) }
-    }
-
     fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.LoadAnimalsIfEmpty -> loadAnimalsIfEmpty()
@@ -93,6 +79,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler) {
             try {
 
+                /*if there were no animals do not make repeated requests*/
+                if(hasMoreAnimalsBeenHandled) return@launch
+
                 /*if after you open the app there already is a saved list of items, call the API with the proper page number:*/
                 if (currentPage < 2 && state.value.animals.size > Pagination.DEFAULT_PAGE_SIZE) {
                     currentPage = state.value.animals.size / Pagination.DEFAULT_PAGE_SIZE
@@ -111,6 +100,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    var hasMoreAnimalsBeenHandled: Boolean = false
+
     private fun onFailure(failure: Throwable) {
         Log.e("AnimalsNearYouFragmentViewModel", "onFailure: $failure")
         when (failure) {
@@ -122,8 +113,11 @@ class HomeViewModel @Inject constructor(
             }
 
             is NoMoreAnimalsException -> {
-                _state.update {
-                    it.copy(loading = false, noMoreAnimalsNearby = true, failure = Event(failure))
+                if(!hasMoreAnimalsBeenHandled) {
+                    _state.update {
+                        it.copy(loading = false,failure = Event(failure))
+                    }
+                    hasMoreAnimalsBeenHandled = true
                 }
             }
         }

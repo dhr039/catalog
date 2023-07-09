@@ -39,7 +39,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
-import com.cannonades.petconnect.animalsnearyou.presentation.HomeViewModel
 import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.common.presentation.ui.components.NoInternetWarning
@@ -56,8 +55,6 @@ class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val networkViewModel: NetworkViewModel by viewModels()
-    // need this here for the snackbar:
-    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,8 +62,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppContent(
                 settingsViewModel,
-                networkViewModel.networkStatus.collectAsState(),
-                homeViewModel = homeViewModel
+                networkViewModel.networkStatus.collectAsState()
             )
         }
 
@@ -77,8 +73,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppContent(
     settingsViewModel: SettingsViewModel,
-    networkStatus: State<Boolean>,
-    homeViewModel: HomeViewModel
+    networkStatus: State<Boolean>
 ) {
     PetConnectTheme {
         val navController = rememberNavController()
@@ -97,7 +92,6 @@ fun AppContent(
         fun showSnackbar(message: String) {
             snackbarMessage = message
             showSnackbar = true
-            homeViewModel.onShowSnackbar()
         }
 
         val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState(false)
@@ -163,8 +157,7 @@ fun AppContent(
                     PetConnectNavHost(
                         navController = navController,
                         showSnackbar = ::showSnackbar,
-                        modifier = Modifier.padding(innerPadding),
-                        homeViewModel = homeViewModel
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             )
@@ -181,8 +174,7 @@ fun AppContent(
 fun PetConnectNavHost(
     navController: NavHostController,
     showSnackbar: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel
+    modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
@@ -190,7 +182,7 @@ fun PetConnectNavHost(
         modifier = modifier
     ) {
         composable(route = Home.route) {
-            HomeRoute(showSnackbar = showSnackbar, viewModel = homeViewModel)
+            HomeRoute(showSnackbar = showSnackbar)
         }
         composable(route = Categories.route) {
             CategoriesRoute(openCategoryScreen = { categ ->

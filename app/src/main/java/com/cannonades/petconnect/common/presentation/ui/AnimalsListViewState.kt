@@ -7,7 +7,5 @@ import com.cannonades.petconnect.common.presentation.model.UIAnimal
 data class AnimalsListViewState(
     val loading: Boolean = false,
     val animals: List<UIAnimal> = emptyList(),
-    val noMoreAnimalsNearby: Boolean = false,
     val failure: Event<Throwable>? = null,
-    val failureHasBeenHandled: Boolean = false
 )

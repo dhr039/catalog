@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
@@ -29,7 +30,7 @@ import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
 fun HomeRoute(
     modifier: Modifier = Modifier,
     showSnackbar: (String) -> Unit,
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.state.collectAsState()
 
@@ -74,7 +75,7 @@ fun AnimalGrid(viewState: AnimalsListViewState, onEvent: (HomeEvent) -> Unit) {
                 itemsIndexed(viewState.animals) { index, animal ->
                     UIAnimalComposable(animal = animal)
                     /* detect when we've reached the last item and trigger loading more data */
-                    if (index == viewState.animals.lastIndex && !viewState.loading && !viewState.failureHasBeenHandled) {
+                    if (index == viewState.animals.lastIndex && !viewState.loading) {
                         LaunchedEffect(index) {
                             onEvent(HomeEvent.RequestMoreAnimals)
                         }
