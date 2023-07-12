@@ -45,6 +45,8 @@ import com.cannonades.petconnect.common.presentation.ui.components.NoInternetWar
 import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
+import com.cannonades.petconnect.settings.presentation.MyArrayDialog
+import com.cannonades.petconnect.settings.presentation.MyArrayViewModel
 import com.cannonades.petconnect.settings.presentation.SettingsDialog
 import com.cannonades.petconnect.settings.presentation.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,6 +57,7 @@ class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val networkViewModel: NetworkViewModel by viewModels()
+    private val myArrayViewModel: MyArrayViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +65,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppContent(
                 settingsViewModel,
+                myArrayViewModel,
                 networkViewModel.networkStatus.collectAsState()
             )
         }
@@ -73,6 +77,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppContent(
     settingsViewModel: SettingsViewModel,
+    myArrayViewModel: MyArrayViewModel,
     networkStatus: State<Boolean>
 ) {
     PetConnectTheme {
@@ -83,6 +88,10 @@ fun AppContent(
             tabRowScreens.find { it.route == currentDestination?.route } ?: Home
 
         var showSettingsDialog by rememberSaveable {
+            mutableStateOf(false)
+        }
+
+        var showMyArrayDialog by rememberSaveable {
             mutableStateOf(false)
         }
 
@@ -111,6 +120,19 @@ fun AppContent(
             )
         }
 
+        val array by myArrayViewModel.array.collectAsState(initial = arrayOf())
+        if (showMyArrayDialog) {
+            MyArrayDialog(
+                array = array,
+                onArrayChange = {
+                    coroutineScope.launch {
+                        myArrayViewModel.updateArray(it)
+                    }
+                },
+                onDismiss = { showMyArrayDialog = false },
+            )
+        }
+
         Box(Modifier.fillMaxSize()) {
             Scaffold(
                 snackbarHost = {
@@ -134,6 +156,7 @@ fun AppContent(
                         navigationIconContentDescription = null,
                         actionIcon = Icons.Filled.Settings,
                         actionIconContentDescription = null,
+                        onNavigationClick = {showMyArrayDialog = true},
                         onActionClick = { showSettingsDialog = true },
                     )
                 },

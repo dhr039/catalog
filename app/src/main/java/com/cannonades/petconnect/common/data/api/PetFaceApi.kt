@@ -15,7 +15,8 @@ interface PetFaceApi {
         @Query(ApiParameters.PAGE) pageToLoad: Int,
         @Query(ApiParameters.LIMIT) pageSize: Int,
         @Query(ApiParameters.ORDER) order: String = "DESC",
-        @Query(ApiParameters.HAS_BREEDS) hasBreeds: Boolean = true,
+        @Query(ApiParameters.HAS_BREEDS) hasBreeds: Boolean = false,
+        @Query(ApiParameters.CATEGORY_IDS) categIds: List<Int> = listOf(),
     ): Response<List<ApiAnimal>>
 
     @Headers("x-api-key: ${ApiConstants.API_KEY}")

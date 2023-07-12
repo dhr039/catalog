@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AnimalRepository {
     fun getAnimalsFromDb(): Flow<List<Animal>>
-    suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int): PaginatedAnimals
+    suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int> = listOf()): PaginatedAnimals
     suspend fun storeAnimalsInDb(animals: List<Animal>)
 }

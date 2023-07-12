@@ -26,9 +26,9 @@ class PetFaceAnimalRepository @Inject constructor(
         return cache.getAnimals().map { animalList -> animalList.map { it.toAnimalDomain() } }
     }
 
-    override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int): PaginatedAnimals {
+    override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int>): PaginatedAnimals {
         try {
-            val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems)
+            val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems, categIds = categIds)
 
             val headers = response.headers().toMultimap()
             val totalCount = headers["pagination-count"]?.get(0)?.toIntOrNull() ?: 0
