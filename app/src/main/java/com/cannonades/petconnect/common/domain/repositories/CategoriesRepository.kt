@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.common.domain.repositories
 
-import com.cannonades.petconnect.common.data.api.model.ApiCategory
 import com.cannonades.petconnect.common.domain.model.Category
 import kotlinx.coroutines.flow.Flow
 

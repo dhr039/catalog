@@ -54,4 +54,22 @@ class CategoriesViewModel @Inject constructor(
             requestCategories()
         }
     }
+
+    fun updateCategory(category: UICategory) {
+        viewModelScope.launch {
+            //TODO: save to db, remember that saving should be finished even if we exit viewModelScope
+            Log.e("DHR", "updateCategory ${category.toString()}")
+        }
+    }
+
+    fun refreshCategories() {
+        _state.update { it.copy(loading = true) }
+        viewModelScope.launch {
+            try {
+                requestCategories()
+            } finally {
+                _state.update { it.copy(loading = false) }
+            }
+        }
+    }
 }

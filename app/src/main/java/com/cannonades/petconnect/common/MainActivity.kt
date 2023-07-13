@@ -41,12 +41,12 @@ import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
 import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
+import com.cannonades.petconnect.categories.presentation.CategoriesViewModel
 import com.cannonades.petconnect.common.presentation.ui.components.NoInternetWarning
 import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 import com.cannonades.petconnect.settings.presentation.MyArrayDialog
-import com.cannonades.petconnect.settings.presentation.MyArrayViewModel
 import com.cannonades.petconnect.settings.presentation.SettingsDialog
 import com.cannonades.petconnect.settings.presentation.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val networkViewModel: NetworkViewModel by viewModels()
-    private val myArrayViewModel: MyArrayViewModel by viewModels()
+    private val categoriesViewModel: CategoriesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppContent(
                 settingsViewModel,
-                myArrayViewModel,
+                categoriesViewModel,
                 networkViewModel.networkStatus.collectAsState()
             )
         }
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppContent(
     settingsViewModel: SettingsViewModel,
-    myArrayViewModel: MyArrayViewModel,
+    categoriesViewModel: CategoriesViewModel,
     networkStatus: State<Boolean>
 ) {
     PetConnectTheme {
@@ -120,17 +120,24 @@ fun AppContent(
             )
         }
 
-        val array by myArrayViewModel.array.collectAsState(initial = arrayOf())
+        val state by categoriesViewModel.state.collectAsState()
+        val categoriesState = state.categories
+
+
         if (showMyArrayDialog) {
             MyArrayDialog(
-                array = array,
-                onArrayChange = {
-                    coroutineScope.launch {
-                        myArrayViewModel.updateArray(it)
-                    }
-                },
+                categories = categoriesState,
                 onDismiss = { showMyArrayDialog = false },
+                onCategoryCheckedChange = { category ->
+                    categoriesViewModel.updateCategory(category)
+                }
             )
+        }
+
+        LaunchedEffect(showMyArrayDialog) {
+            if (showMyArrayDialog) {
+                categoriesViewModel.refreshCategories()
+            }
         }
 
         Box(Modifier.fillMaxSize()) {
@@ -156,7 +163,7 @@ fun AppContent(
                         navigationIconContentDescription = null,
                         actionIcon = Icons.Filled.Settings,
                         actionIconContentDescription = null,
-                        onNavigationClick = {showMyArrayDialog = true},
+                        onNavigationClick = { showMyArrayDialog = true },
                         onActionClick = { showSettingsDialog = true },
                     )
                 },

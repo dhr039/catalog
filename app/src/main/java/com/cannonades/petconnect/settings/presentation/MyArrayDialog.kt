@@ -13,8 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -22,17 +20,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.cannonades.petconnect.R
+import com.cannonades.petconnect.common.presentation.model.UICategory
 
 @Composable
 fun MyArrayDialog(
-    array: Array<Int>,
-    onArrayChange: (Array<Int>) -> Unit,
+    categories: List<UICategory>,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    onCategoryCheckedChange: (UICategory) -> Unit,
 ) {
     val configuration = LocalConfiguration.current
-    val arrayState = remember { mutableStateOf(array) }
-    val checkboxStates = remember { (1..6).map { i -> mutableStateOf(i in arrayState.value) } }
 
     AlertDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -46,17 +42,11 @@ fun MyArrayDialog(
         },
         text = {
             Column {
-                for (i in 1..6) {
+                categories.forEach { category ->
                     CheckboxItem(
-                        index = i,
-                        checkedState = checkboxStates[i - 1],
+                        category = category,
                         onCheckedChange = { checked ->
-                            checkboxStates[i - 1].value = checked
-                            arrayState.value = checkboxStates.indices
-                                .filter { checkboxStates[it].value }
-                                .map { it + 1 }
-                                .toTypedArray()
-                            onArrayChange(arrayState.value)
+                            onCategoryCheckedChange(category.copy(checked = checked))
                         }
                     )
                 }
@@ -77,8 +67,7 @@ fun MyArrayDialog(
 
 @Composable
 fun CheckboxItem(
-    index: Int,
-    checkedState: MutableState<Boolean>,
+    category: UICategory,
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
@@ -89,11 +78,11 @@ fun CheckboxItem(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "Option $index",
+            text = category.name,
             style = MaterialTheme.typography.bodySmall,
         )
         Checkbox(
-            checked = checkedState.value,
+            checked = category.checked,
             onCheckedChange = onCheckedChange
         )
     }

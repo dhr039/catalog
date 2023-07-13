@@ -9,12 +9,14 @@ data class CachedCategory(
     @PrimaryKey
     val categoryId: Int,
     val name: String,
+    val isChecked: Boolean,
 ) {
     companion object {
         fun fromDomain(domainModel: Category): CachedCategory {
             return CachedCategory(
                 categoryId = domainModel.id,
-                name = domainModel.name
+                name = domainModel.name,
+                isChecked = domainModel.isChecked
             )
         }
     }
@@ -22,7 +24,8 @@ data class CachedCategory(
     fun toCategoryDomain(): Category {
         return Category(
             id = categoryId,
-            name = name
+            name = name,
+            isChecked = isChecked
         )
     }
 }

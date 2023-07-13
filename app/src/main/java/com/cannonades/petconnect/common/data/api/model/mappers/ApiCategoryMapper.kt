@@ -8,7 +8,8 @@ class ApiCategoryMapper @Inject constructor() : ApiMapper<ApiCategory, Category>
     override fun mapToDomain(apiEntity: ApiCategory): Category {
         return Category(
             id = apiEntity.id ?: 0,
-            name = apiEntity.name.orEmpty()
+            name = apiEntity.name.orEmpty(),
+            isChecked = false
         )
     }
 }
