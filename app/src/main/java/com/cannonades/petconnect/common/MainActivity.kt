@@ -91,7 +91,7 @@ fun AppContent(
             mutableStateOf(false)
         }
 
-        var showMyArrayDialog by rememberSaveable {
+        var showCategoriesDialog by rememberSaveable {
             mutableStateOf(false)
         }
 
@@ -121,21 +121,21 @@ fun AppContent(
         }
 
         val state by categoriesViewModel.state.collectAsState()
-        val categoriesState = state.categories
+        val categories = state.categories
 
 
-        if (showMyArrayDialog) {
+        if (showCategoriesDialog) {
             MyArrayDialog(
-                categories = categoriesState,
-                onDismiss = { showMyArrayDialog = false },
+                categories = categories,
+                onDismiss = { showCategoriesDialog = false },
                 onCategoryCheckedChange = { category ->
                     categoriesViewModel.updateCategory(category)
                 }
             )
         }
 
-        LaunchedEffect(showMyArrayDialog) {
-            if (showMyArrayDialog) {
+        LaunchedEffect(showCategoriesDialog) {
+            if (showCategoriesDialog) {
                 categoriesViewModel.refreshCategories()
             }
         }
@@ -163,7 +163,7 @@ fun AppContent(
                         navigationIconContentDescription = null,
                         actionIcon = Icons.Filled.Settings,
                         actionIconContentDescription = null,
-                        onNavigationClick = { showMyArrayDialog = true },
+                        onNavigationClick = { showCategoriesDialog = true },
                         onActionClick = { showSettingsDialog = true },
                     )
                 },

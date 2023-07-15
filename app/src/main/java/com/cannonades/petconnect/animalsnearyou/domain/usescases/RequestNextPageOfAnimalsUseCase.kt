@@ -8,7 +8,7 @@ import com.cannonades.petconnect.common.utils.DispatchersProvider
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RequestNextPageOfAnimals @Inject constructor(
+class RequestNextPageOfAnimalsUseCase @Inject constructor(
     private val animalRepository: AnimalRepository,
     private val dispatchersProvider: DispatchersProvider
 ) {

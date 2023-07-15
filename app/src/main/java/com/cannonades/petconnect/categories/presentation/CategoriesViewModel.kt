@@ -3,8 +3,8 @@ package com.cannonades.petconnect.categories.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonades.petconnect.categories.domain.GetCategoriesFromCache
-import com.cannonades.petconnect.categories.domain.RequestCategories
+import com.cannonades.petconnect.categories.domain.GetCategoriesFromCacheUseCase
+import com.cannonades.petconnect.categories.domain.RequestCategoriesUseCase
 import com.cannonades.petconnect.common.presentation.model.UICategory
 import com.cannonades.petconnect.common.presentation.model.mappers.UICategoryMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
-    private val requestCategories: RequestCategories,
-    private val getCategoriesFromCache: GetCategoriesFromCache,
+    private val requestCategories: RequestCategoriesUseCase,
+    private val getCategoriesFromCache: GetCategoriesFromCacheUseCase,
     private val uiCategoryMapper: UICategoryMapper
 ) : ViewModel() {
 

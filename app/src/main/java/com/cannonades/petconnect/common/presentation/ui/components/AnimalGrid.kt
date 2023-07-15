@@ -44,7 +44,7 @@ fun AnimalGrid(modifier: Modifier, viewState: AnimalsListViewState, onEvent: (Ho
             }
         )
         if (viewState.loading) {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
                 CircularProgressIndicator()
             }
         }

@@ -2,8 +2,8 @@ package com.cannonades.petconnect.animalsnearyou.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonades.petconnect.animalsnearyou.domain.usescases.GetAnimalsFromCache
-import com.cannonades.petconnect.animalsnearyou.domain.usescases.RequestNextPageOfAnimals
+import com.cannonades.petconnect.animalsnearyou.domain.usescases.GetAnimalsFromCacheUseCase
+import com.cannonades.petconnect.animalsnearyou.domain.usescases.RequestNextPageOfAnimalsUseCase
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NetworkUnavailableException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
@@ -26,8 +26,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val requestNextPageOfAnimals: RequestNextPageOfAnimals,
-    private val getAnimals: GetAnimalsFromCache,
+    private val requestNextPageOfAnimals: RequestNextPageOfAnimalsUseCase,
+    private val getAnimals: GetAnimalsFromCacheUseCase,
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 

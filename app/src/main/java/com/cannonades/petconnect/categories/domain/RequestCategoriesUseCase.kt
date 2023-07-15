@@ -7,7 +7,7 @@ import com.cannonades.petconnect.common.utils.DispatchersProvider
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RequestCategories @Inject constructor(
+class RequestCategoriesUseCase @Inject constructor(
     private val categoriesRepository: CategoriesRepository,
     private val dispatchersProvider: DispatchersProvider
 ) {
