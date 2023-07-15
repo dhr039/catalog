@@ -15,8 +15,6 @@ class RequestCategoriesUseCase @Inject constructor(
         withContext(dispatchersProvider.io()) {
             val categories = categoriesRepository.requestCategoriesFromAPI()
 
-            Log.i("DHR", "DOMAIN layer (usecase) CATEGORIES: $categories")
-
             if (categories.isEmpty()) {
                 throw NoMoreCategoriesException
             }

@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.animalsnearyou.domain.usescases
 
-import android.util.Log
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.pagination.Pagination
 import com.cannonades.petconnect.common.domain.repositories.AnimalRepository
@@ -16,10 +15,15 @@ class RequestNextPageOfAnimalsUseCase @Inject constructor(
         pageToLoad: Int
     ): Pagination {
         return withContext(dispatchersProvider.io()) {
-            val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(pageToLoad, Pagination.DEFAULT_PAGE_SIZE)
 
-            Log.i("DHR", "DOMAIN layer (usecase) $animals")
-            Log.i("DHR", "DOMAIN layer (usecase) $pagination")
+            if (pageToLoad < 1) {
+                throw Exception("page cannot be lower than 1")
+            }
+
+            val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(
+                pageToLoad,
+                Pagination.DEFAULT_PAGE_SIZE
+            )
 
             if (animals.isEmpty()) {
                 throw NoMoreAnimalsException
