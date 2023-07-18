@@ -7,7 +7,7 @@ import com.cannonades.petconnect.common.utils.DispatchersProvider
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class SaveCategoriesUseCase @Inject constructor(
+class UpdateCategoryUseCase @Inject constructor(
     private val categoriesRepository: CategoriesRepository,
     private val dispatchersProvider: DispatchersProvider
 ) {

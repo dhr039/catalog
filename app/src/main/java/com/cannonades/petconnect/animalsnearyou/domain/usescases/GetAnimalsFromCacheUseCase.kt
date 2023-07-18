@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetAnimalsFromCacheUseCase @Inject constructor(private val animalRepository: AnimalRepository) {
-    operator fun invoke() = animalRepository.getAnimalsFromDb().map { all -> all.map { it } }
+    operator fun invoke() = animalRepository.getAnimalsFromDb()
 }

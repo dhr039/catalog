@@ -21,7 +21,7 @@ fun CategoriesRoute(
     viewModel: CategoriesViewModel = hiltViewModel(),
     openCategoryScreen: (String) -> Unit
 ) {
-    val viewState by viewModel.state.collectAsState()
+    val viewState by viewModel.categoriesUiState.collectAsState()
 
     CategoriesScreen(
         viewState = viewState,
@@ -35,7 +35,7 @@ fun CategoriesRoute(
 @Composable
 fun CategoriesScreen(
     modifier: Modifier,
-    viewState: CategoriesViewState,
+    viewState: CategoriesUiState,
     onEvent: (CategoriesEvent) -> Unit,
     openCategoryScreen: (String) -> Unit
 ) {

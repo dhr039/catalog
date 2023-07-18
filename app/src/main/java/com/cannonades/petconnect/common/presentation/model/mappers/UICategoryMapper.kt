@@ -8,7 +8,8 @@ class UICategoryMapper @Inject constructor(): UiMapper<Category, UICategory> {
     override fun mapToView(input: Category): UICategory {
         return UICategory(
             id = input.id.toString(),
-            name = input.name
+            name = input.name,
+            checked = input.isChecked
         )
     }
 }

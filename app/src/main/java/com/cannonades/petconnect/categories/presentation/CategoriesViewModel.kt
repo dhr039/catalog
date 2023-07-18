@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.categories.domain.GetCategoriesFromCacheUseCase
 import com.cannonades.petconnect.categories.domain.RequestCategoriesUseCase
-import com.cannonades.petconnect.categories.domain.SaveCategoriesUseCase
+import com.cannonades.petconnect.categories.domain.UpdateCategoryUseCase
 import com.cannonades.petconnect.common.presentation.model.UICategory
 import com.cannonades.petconnect.common.presentation.model.mappers.UICategoryMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
     private val requestCategories: RequestCategoriesUseCase,
-    private val saveCategoriesUseCase: SaveCategoriesUseCase,
+    private val updateCategoryUseCase: UpdateCategoryUseCase,
     private val getCategoriesFromCache: GetCategoriesFromCacheUseCase,
     private val uiCategoryMapper: UICategoryMapper
 ) : ViewModel() {
@@ -32,15 +32,14 @@ class CategoriesViewModel @Inject constructor(
         }
     }
 
-    private val _state = MutableStateFlow(CategoriesViewState())
-    val state: StateFlow<CategoriesViewState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(CategoriesUiState())
+    val categoriesUiState: StateFlow<CategoriesUiState> = _state.asStateFlow()
 
     private fun onNewCategoriesList(categories: List<UICategory>) {
         if (categories.isNotEmpty()) {
-            Log.e("DHR", "onNewCategoriesList ${categories.size}")
-            val updatedCategoriesSet = (state.value.categories + categories).toSet()
+            Log.e("DHR", "onNewCategoriesList ${categories.size}    |  $categories")
             _state.update { oldState ->
-                oldState.copy(categories = updatedCategoriesSet.toList())
+                oldState.copy(categories = categories.toList())
             }
         }
     }
@@ -57,11 +56,10 @@ class CategoriesViewModel @Inject constructor(
         }
     }
 
-    fun updateCategory(category: UICategory) {
+    fun onCategoryChecked(category: UICategory) {
         viewModelScope.launch {
-            //TODO: save to db, remember that saving should be finished even if we exit viewModelScope
-            Log.e("DHR", "updateCategory ${category.toString()}")
-            saveCategoriesUseCase(category)
+            val updatedCategory = category.copy(checked = !category.checked)
+            updateCategoryUseCase(updatedCategory)
         }
     }
 

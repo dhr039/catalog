@@ -40,13 +40,13 @@ import androidx.navigation.compose.rememberNavController
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
 import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
+import com.cannonades.petconnect.categories.presentation.CategoriesDialog
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.categories.presentation.CategoriesViewModel
 import com.cannonades.petconnect.common.presentation.ui.components.NoInternetWarning
 import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
-import com.cannonades.petconnect.settings.presentation.MyArrayDialog
 import com.cannonades.petconnect.settings.presentation.SettingsDialog
 import com.cannonades.petconnect.settings.presentation.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -120,20 +120,9 @@ fun AppContent(
             )
         }
 
-        val state by categoriesViewModel.state.collectAsState()
-        var categories by remember { mutableStateOf(state.categories) }
-        LaunchedEffect(state.categories) {
-            categories = state.categories
-        }
-
-
         if (showCategoriesDialog) {
-            MyArrayDialog(
-                categories = categories,
+            CategoriesDialog(
                 onDismiss = { showCategoriesDialog = false },
-                onCategoryCheckedChange = { category ->
-                    categoriesViewModel.updateCategory(category)
-                }
             )
         }
 

@@ -1,5 +1,6 @@
 package com.cannonades.petconnect.common.data
 
+import android.util.Log
 import com.cannonades.petconnect.common.data.api.PetFaceApi
 import com.cannonades.petconnect.common.data.api.model.ApiCategory
 import com.cannonades.petconnect.common.data.api.model.mappers.ApiCategoryMapper
@@ -38,6 +39,7 @@ class PetFaceCategoriesRepository @Inject constructor(
     }
 
     override suspend fun updateCategoryInDb(category: Category) {
+        Log.e("DHR", "updateCategoryInDb ::::: $category")
         cache.updateCategory(CachedCategory.fromDomain(category))
     }
 }

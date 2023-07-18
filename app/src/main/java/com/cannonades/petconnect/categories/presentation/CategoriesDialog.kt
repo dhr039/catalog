@@ -1,4 +1,4 @@
-package com.cannonades.petconnect.settings.presentation
+package com.cannonades.petconnect.categories.presentation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,23 +12,25 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.presentation.model.UICategory
 
 @Composable
-fun MyArrayDialog(
-    categories: List<UICategory>,
+fun CategoriesDialog(
     onDismiss: () -> Unit,
-    onCategoryCheckedChange: (UICategory) -> Unit,
+    viewModel: CategoriesViewModel = hiltViewModel()
 ) {
     val configuration = LocalConfiguration.current
+    val categoriesUiState by viewModel.categoriesUiState.collectAsStateWithLifecycle()
 
     AlertDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -42,11 +44,11 @@ fun MyArrayDialog(
         },
         text = {
             Column {
-                categories.forEach { category ->
+                categoriesUiState.categories.forEach { category ->
                     CheckboxItem(
                         category = category,
-                        onCheckedChange = { checked ->
-                            onCategoryCheckedChange(category.copy(checked = checked))
+                        onCheckedChange = { _ ->
+                            viewModel.onCategoryChecked(category)
                         }
                     )
                 }

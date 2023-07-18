@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.categories.domain
 
-import android.util.Log
 import com.cannonades.petconnect.common.domain.model.NoMoreCategoriesException
 import com.cannonades.petconnect.common.domain.repositories.CategoriesRepository
 import com.cannonades.petconnect.common.utils.DispatchersProvider
