@@ -24,4 +24,8 @@ class RoomCache @Inject constructor(private val animalsDao: AnimalsDao) : Cache 
         animalsDao.insertCategories(categories)
     }
 
+    override suspend fun updateCategory(category: CachedCategory) {
+        animalsDao.updateCategory(category)
+    }
+
 }

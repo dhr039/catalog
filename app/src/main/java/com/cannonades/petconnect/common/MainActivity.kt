@@ -121,7 +121,10 @@ fun AppContent(
         }
 
         val state by categoriesViewModel.state.collectAsState()
-        val categories = state.categories
+        var categories by remember { mutableStateOf(state.categories) }
+        LaunchedEffect(state.categories) {
+            categories = state.categories
+        }
 
 
         if (showCategoriesDialog) {

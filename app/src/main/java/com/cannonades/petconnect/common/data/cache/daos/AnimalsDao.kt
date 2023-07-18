@@ -51,7 +51,10 @@ abstract class AnimalsDao {
     @Query("SELECT * FROM categories")
     abstract fun getAllCategories(): Flow<List<CachedCategory>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertCategories(categories: List<CachedCategory>)
+
+    @Update
+    abstract suspend fun updateCategory(category: CachedCategory)
 
 }

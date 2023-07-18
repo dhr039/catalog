@@ -36,4 +36,8 @@ class PetFaceCategoriesRepository @Inject constructor(
     override suspend fun storeCategoriesInDb(categories: List<Category>) {
         cache.storeCategories(categories.map { CachedCategory.fromDomain(it) })
     }
+
+    override suspend fun updateCategoryInDb(category: Category) {
+        cache.updateCategory(CachedCategory.fromDomain(category))
+    }
 }

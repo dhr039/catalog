@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.categories.domain.GetCategoriesFromCacheUseCase
 import com.cannonades.petconnect.categories.domain.RequestCategoriesUseCase
+import com.cannonades.petconnect.categories.domain.SaveCategoriesUseCase
 import com.cannonades.petconnect.common.presentation.model.UICategory
 import com.cannonades.petconnect.common.presentation.model.mappers.UICategoryMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
     private val requestCategories: RequestCategoriesUseCase,
+    private val saveCategoriesUseCase: SaveCategoriesUseCase,
     private val getCategoriesFromCache: GetCategoriesFromCacheUseCase,
     private val uiCategoryMapper: UICategoryMapper
 ) : ViewModel() {
@@ -59,6 +61,7 @@ class CategoriesViewModel @Inject constructor(
         viewModelScope.launch {
             //TODO: save to db, remember that saving should be finished even if we exit viewModelScope
             Log.e("DHR", "updateCategory ${category.toString()}")
+            saveCategoriesUseCase(category)
         }
     }
 

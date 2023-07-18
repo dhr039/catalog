@@ -1,5 +1,7 @@
 package com.cannonades.petconnect.common.domain.model
 
+import com.cannonades.petconnect.common.presentation.model.UICategory
+
 data class Animal(
     val id: String,
     val photo: Photo,
@@ -60,4 +62,14 @@ data class Category(
     val id: Int,
     val name: String,
     val isChecked: Boolean
-)
+) {
+    companion object {
+        fun fromUICategory(uiCategory: UICategory): Category {
+            return Category(
+                id = uiCategory.id.toInt(),
+                name = uiCategory.name,
+                isChecked = uiCategory.checked
+            )
+        }
+    }
+}

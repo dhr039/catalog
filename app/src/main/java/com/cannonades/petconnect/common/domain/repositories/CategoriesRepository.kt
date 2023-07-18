@@ -7,4 +7,5 @@ interface CategoriesRepository {
     fun getCategoriesFromDb(): Flow<List<Category>>
     suspend fun requestCategoriesFromAPI(): List<Category>
     suspend fun storeCategoriesInDb(categories: List<Category>)
+    suspend fun updateCategoryInDb(category: Category)
 }
