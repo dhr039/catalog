@@ -140,7 +140,7 @@ fun AppContent(
                         Snackbar(
                             action = {
                                 TextButton(onClick = { showSnackbar = false }) {
-                                    Text("Dismiss")
+                                    Text(stringResource(R.string.dismiss))
                                 }
                             },
                             modifier = Modifier.padding(8.dp)
@@ -156,7 +156,7 @@ fun AppContent(
                             fontStyle = FontStyle.Italic
                         ) else MaterialTheme.typography.titleLarge,
                         navigationIcon = Icons.Filled.Search,
-                        navigationIconContentDescription = null,
+                        navigationIconContentDescription = stringResource(R.string.categories),
                         actionIcon = Icons.Filled.Settings,
                         actionIconContentDescription = stringResource(R.string.settings_dialog),
                         onNavigationClick = { showCategoriesDialog = true },
@@ -167,7 +167,7 @@ fun AppContent(
                     NavigationBar {
                         NavigationBarItem(
                             icon = { Icon(Home.icon, contentDescription = Home.route) },
-                            label = { Text("Home") },
+                            label = { Text(stringResource(id = R.string.home)) },
                             selected = currentScreen == Home,
                             onClick = { navController.navigateSingleTopTo(Home.route) }
                         )
@@ -181,9 +181,9 @@ fun AppContent(
                 },
                 content = { innerPadding ->
                     PetConnectNavHost(
+                        modifier = Modifier.padding(innerPadding),
                         navController = navController,
                         showSnackbar = ::showSnackbar,
-                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             )
@@ -193,14 +193,14 @@ fun AppContent(
 
 @Composable
 fun PetConnectNavHost(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
     showSnackbar: (String) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     NavHost(
+        modifier = modifier,
         navController = navController,
         startDestination = Home.route,
-        modifier = modifier
     ) {
         composable(route = Home.route) {
             HomeRoute(showSnackbar = showSnackbar)

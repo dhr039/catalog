@@ -33,6 +33,7 @@ fun PetConnectTopAppBar(
     titleTextStyle: TextStyle = MaterialTheme.typography.bodyLarge
 ) {
     CenterAlignedTopAppBar(
+        modifier = modifier.testTag("niaTopAppBar"),
         title = { Text(text = stringResource(id = titleRes), style = titleTextStyle) },
         navigationIcon = {
             IconButton(onClick = onNavigationClick) {
@@ -53,7 +54,6 @@ fun PetConnectTopAppBar(
             }
         },
 //        colors = colors, TODO: check in 'Now in Android' to see if this is needed here
-        modifier = modifier.testTag("niaTopAppBar"),
     )
 }
 
