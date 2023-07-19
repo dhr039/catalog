@@ -8,6 +8,8 @@ interface Cache {
 
     fun getAnimals(): Flow<List<CachedAnimalAggregate>>
 
+    suspend fun deleteAllAnimals(): Unit
+
     suspend fun storeNearbyAnimals(animals: List<CachedAnimalAggregate>)
 
     fun getCategories(): Flow<List<CachedCategory>>

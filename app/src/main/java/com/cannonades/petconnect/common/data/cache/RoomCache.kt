@@ -12,6 +12,10 @@ class RoomCache @Inject constructor(private val animalsDao: AnimalsDao) : Cache 
         return animalsDao.getAllAnimals()
     }
 
+    override suspend fun deleteAllAnimals() {
+        animalsDao.deleteAllAnimals()
+    }
+
     override suspend fun storeNearbyAnimals(animals: List<CachedAnimalAggregate>) {
         animalsDao.insertAnimals(animals)
     }

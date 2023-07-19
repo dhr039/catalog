@@ -26,6 +26,10 @@ class PetFaceAnimalRepository @Inject constructor(
         return cache.getAnimals().map { animalList -> animalList.map { it.toAnimalDomain() } }
     }
 
+    override suspend fun deleteAllAnimals() {
+        cache.deleteAllAnimals()
+    }
+
     override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int>): PaginatedAnimals {
         try {
             val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems, categIds = categIds)
