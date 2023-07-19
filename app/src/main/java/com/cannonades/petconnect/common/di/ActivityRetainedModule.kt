@@ -1,7 +1,7 @@
 package com.cannonades.petconnect.common.di
 
 import com.cannonades.petconnect.common.data.PetFaceAnimalRepository
-import com.cannonades.petconnect.common.data.PetFaceCategoriesRepository
+import com.cannonades.petconnect.categories.data.PetFaceCategoriesRepository
 import com.cannonades.petconnect.common.domain.repositories.AnimalRepository
 import com.cannonades.petconnect.common.domain.repositories.CategoriesRepository
 import com.cannonades.petconnect.common.utils.CoroutineDispatchersProvider

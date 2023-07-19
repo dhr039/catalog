@@ -7,7 +7,6 @@ import coil.memory.MemoryCache
 import com.cannonades.petconnect.common.data.api.ApiConstants
 import com.cannonades.petconnect.common.data.api.PetFaceApi
 import com.cannonades.petconnect.common.data.api.interceptors.LoggingInterceptor
-import com.cannonades.petconnect.common.data.api.interceptors.NetworkStatusInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,10 +41,8 @@ object ApiModule {
     @Provides
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        networkStatusInterceptor: NetworkStatusInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(networkStatusInterceptor)
             .addInterceptor(httpLoggingInterceptor)
             .build()
     }

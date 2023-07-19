@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.domain.model.NetworkException
-import com.cannonades.petconnect.common.domain.model.NetworkUnavailableException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.NoMoreCategoriesException
 import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
@@ -28,7 +27,6 @@ fun HomeRoute(
 
     viewState.failure?.getContentIfNotHandled()?.let { failure ->
         val stringId = when (failure) {
-            is NetworkUnavailableException -> R.string.network_unavailable_error
             is NetworkException -> R.string.network_error
             is NoMoreAnimalsException -> R.string.no_more_animals_error
             is NoMoreCategoriesException -> R.string.no_more_categories_error

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.animalsnearyou.domain.usescases.GetAnimalsFromCacheUseCase
 import com.cannonades.petconnect.animalsnearyou.domain.usescases.RequestNextPageOfAnimalsUseCase
 import com.cannonades.petconnect.common.domain.model.NetworkException
-import com.cannonades.petconnect.common.domain.model.NetworkUnavailableException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.pagination.Pagination
 import com.cannonades.petconnect.common.presentation.Event
@@ -102,8 +101,7 @@ class HomeViewModel @Inject constructor(
 
     private fun onFailure(failure: Throwable) {
         when (failure) {
-            is NetworkException,
-            is NetworkUnavailableException -> {
+            is NetworkException -> {
                 _state.update { oldState ->
                     oldState.copy(loading = false, failure = Event(failure))
                 }

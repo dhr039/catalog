@@ -1,4 +1,4 @@
-package com.cannonades.petconnect.common.data
+package com.cannonades.petconnect.categories.data
 
 import android.util.Log
 import com.cannonades.petconnect.common.data.api.PetFaceApi
@@ -31,6 +31,9 @@ class PetFaceCategoriesRepository @Inject constructor(
             return response.body()?.map { apiCategoryMapper.mapToDomain(it) } ?: emptyList()
         } catch (exception: HttpException) {
             throw NetworkException
+        } catch (e: Exception) {
+            Log.e("PetFaceCategoriesRepository", "throwing?? $e")
+            throw e
         }
     }
 
@@ -39,7 +42,6 @@ class PetFaceCategoriesRepository @Inject constructor(
     }
 
     override suspend fun updateCategoryInDb(category: Category) {
-        Log.e("DHR", "updateCategoryInDb ::::: $category")
         cache.updateCategory(CachedCategory.fromDomain(category))
     }
 }

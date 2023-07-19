@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.categories.domain.GetCategoriesFromCacheUseCase
 import com.cannonades.petconnect.categories.domain.RequestCategoriesUseCase
 import com.cannonades.petconnect.categories.domain.UpdateCategoryUseCase
+import com.cannonades.petconnect.common.presentation.Event
 import com.cannonades.petconnect.common.presentation.model.UICategory
 import com.cannonades.petconnect.common.presentation.model.mappers.UICategoryMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
-    private val requestCategories: RequestCategoriesUseCase,
+    private val requestCategoriesUseCase: RequestCategoriesUseCase,
     private val updateCategoryUseCase: UpdateCategoryUseCase,
     private val getCategoriesFromCache: GetCategoriesFromCacheUseCase,
     private val uiCategoryMapper: UICategoryMapper
@@ -46,13 +47,7 @@ class CategoriesViewModel @Inject constructor(
 
     fun onEvent(event: CategoriesEvent) {
         when (event) {
-            is CategoriesEvent.RequestMoreCategories -> loadNextCategoriesPage()
-        }
-    }
-
-    private fun loadNextCategoriesPage() {
-        viewModelScope.launch {
-            requestCategories()
+            is CategoriesEvent.RequestMoreCategories -> loadCategories()
         }
     }
 
@@ -63,12 +58,15 @@ class CategoriesViewModel @Inject constructor(
         }
     }
 
-    fun refreshCategories() {
+    fun loadCategories() {
         _state.update { it.copy(loading = true) }
         viewModelScope.launch {
             try {
-                requestCategories()
-            } finally {
+                requestCategoriesUseCase()
+            } catch (e: Exception){
+                _state.update { it.copy(failure = Event(e)) }
+            }
+            finally {
                 _state.update { it.copy(loading = false) }
             }
         }

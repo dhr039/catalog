@@ -7,6 +7,4 @@ object NoMoreAnimalsException: AppException()
 
 object NoMoreCategoriesException: AppException()
 
-object NetworkUnavailableException : AppException()
-
 object NetworkException: AppException()

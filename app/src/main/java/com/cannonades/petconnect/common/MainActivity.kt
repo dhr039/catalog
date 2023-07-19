@@ -128,7 +128,7 @@ fun AppContent(
 
         LaunchedEffect(showCategoriesDialog) {
             if (showCategoriesDialog) {
-                categoriesViewModel.refreshCategories()
+                categoriesViewModel.loadCategories()
             }
         }
 
