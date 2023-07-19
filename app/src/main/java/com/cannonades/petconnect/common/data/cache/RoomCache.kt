@@ -20,6 +20,10 @@ class RoomCache @Inject constructor(private val animalsDao: AnimalsDao) : Cache 
         return animalsDao.getAllCategories()
     }
 
+    override fun getCategoriesList(): List<CachedCategory> {
+        return animalsDao.getAllCategoriesList()
+    }
+
     override suspend fun storeCategories(categories: List<CachedCategory>) {
         animalsDao.insertCategories(categories)
     }

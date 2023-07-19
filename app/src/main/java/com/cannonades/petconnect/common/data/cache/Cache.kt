@@ -12,6 +12,8 @@ interface Cache {
 
     fun getCategories(): Flow<List<CachedCategory>>
 
+    fun getCategoriesList(): List<CachedCategory>
+
     suspend fun storeCategories(categories: List<CachedCategory>)
 
     suspend fun updateCategory(category: CachedCategory)

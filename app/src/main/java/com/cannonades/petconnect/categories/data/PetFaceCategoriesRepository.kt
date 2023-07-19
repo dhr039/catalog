@@ -25,6 +25,10 @@ class PetFaceCategoriesRepository @Inject constructor(
         return cache.getCategories().map { categList -> categList.map { it.toCategoryDomain() } }
     }
 
+    override suspend fun getCategoriesListFromDb(): List<Category> {
+        return cache.getCategoriesList().map { it.toCategoryDomain() }
+    }
+
     override suspend fun requestCategoriesFromAPI(): List<Category> {
         try {
             val response: Response<List<ApiCategory>> = api.getCategories()
