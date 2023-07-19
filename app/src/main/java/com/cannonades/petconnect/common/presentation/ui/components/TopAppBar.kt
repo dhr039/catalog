@@ -1,5 +1,6 @@
 package com.cannonades.petconnect.common.presentation.ui.components
 
+import android.annotation.SuppressLint
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -15,22 +16,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PetConnectTopAppBar(
+    modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
     navigationIcon: ImageVector,
     navigationIconContentDescription: String?,
     actionIcon: ImageVector,
     actionIconContentDescription: String?,
-    modifier: Modifier = Modifier,
     onNavigationClick: () -> Unit = {},
     onActionClick: () -> Unit = {},
+    titleTextStyle: TextStyle = MaterialTheme.typography.bodyLarge
 ) {
     CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(id = titleRes)) },
+        title = { Text(text = stringResource(id = titleRes), style = titleTextStyle) },
         navigationIcon = {
             IconButton(onClick = onNavigationClick) {
                 Icon(
@@ -54,6 +57,7 @@ fun PetConnectTopAppBar(
     )
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Preview(name = "Top App Bar")
 @Composable
 fun PetConnectTopAppBarPreview() {
@@ -62,6 +66,6 @@ fun PetConnectTopAppBarPreview() {
         navigationIcon = Icons.Filled.Search,
         navigationIconContentDescription = "Navigation icon",
         actionIcon = Icons.Filled.MoreVert,
-        actionIconContentDescription = "Action icon"
+        actionIconContentDescription = "Action icon",
     )
 }

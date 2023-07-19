@@ -21,5 +21,6 @@
     <string name="no_more_animals_error">No more animals to show.</string>
     <string name="no_more_categories_error">No more categories to show.</string>
     <string name="unknown_error">An unknown error occurred. Please try again.</string>
+    <string name="settings_dialog">settings dialog</string>
 
 </resources>

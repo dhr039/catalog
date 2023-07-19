@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -30,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -43,7 +45,6 @@ import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
 import com.cannonades.petconnect.categories.presentation.CategoriesDialog
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.categories.presentation.CategoriesViewModel
-import com.cannonades.petconnect.common.presentation.ui.components.NoInternetWarning
 import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
@@ -150,13 +151,16 @@ fun AppContent(
                 },
                 topBar = {
                     PetConnectTopAppBar(
-                        titleRes = currentScreen.titleRes,
+                        titleRes = if (!networkStatus.value) R.string.no_internet_connection else currentScreen.titleRes,
+                        titleTextStyle = if (!networkStatus.value) MaterialTheme.typography.bodySmall.copy(
+                            fontStyle = FontStyle.Italic
+                        ) else MaterialTheme.typography.titleLarge,
                         navigationIcon = Icons.Filled.Search,
                         navigationIconContentDescription = null,
                         actionIcon = Icons.Filled.Settings,
-                        actionIconContentDescription = null,
+                        actionIconContentDescription = stringResource(R.string.settings_dialog),
                         onNavigationClick = { showCategoriesDialog = true },
-                        onActionClick = { showSettingsDialog = true },
+                        onActionClick = { showSettingsDialog = true }
                     )
                 },
                 bottomBar = {
@@ -183,12 +187,7 @@ fun AppContent(
                     )
                 }
             )
-
-            if (!networkStatus.value) {
-                NoInternetWarning()
-            }
         }
-
     }
 }
 
