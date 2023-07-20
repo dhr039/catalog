@@ -8,12 +8,14 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -29,7 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -45,7 +49,6 @@ import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
 import com.cannonades.petconnect.categories.presentation.CategoriesDialog
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.categories.presentation.CategoriesViewModel
-import com.cannonades.petconnect.common.presentation.ui.components.PetConnectTopAppBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 import com.cannonades.petconnect.settings.presentation.SettingsDialog
@@ -149,22 +152,8 @@ fun AppContent(
                         }
                     }
                 },
-                topBar = {
-                    PetConnectTopAppBar(
-                        titleRes = if (!networkStatus.value) R.string.no_internet_connection else currentScreen.titleRes,
-                        titleTextStyle = if (!networkStatus.value) MaterialTheme.typography.bodySmall.copy(
-                            fontStyle = FontStyle.Italic
-                        ) else MaterialTheme.typography.titleLarge,
-                        navigationIcon = Icons.Filled.Search,
-                        navigationIconContentDescription = stringResource(R.string.categories),
-                        actionIcon = Icons.Filled.Settings,
-                        actionIconContentDescription = stringResource(R.string.settings_dialog),
-                        onNavigationClick = { showCategoriesDialog = true },
-                        onActionClick = { showSettingsDialog = true }
-                    )
-                },
                 bottomBar = {
-                    NavigationBar {
+                    BottomAppBar(actions = {
                         NavigationBarItem(
                             icon = { Icon(Home.icon, contentDescription = Home.route) },
                             label = { Text(stringResource(id = R.string.home)) },
@@ -177,7 +166,22 @@ fun AppContent(
                             selected = currentScreen == Categories,
                             onClick = { navController.navigateSingleTopTo(Categories.route) }
                         )
-                    }
+                        if (currentScreen == Home) {
+                            IconButton(
+                                onClick = { showCategoriesDialog = true },
+                                modifier = Modifier,
+                                content = { Icon(Icons.Filled.Search, contentDescription = "") },
+                            )
+                        } else {
+                            Box(Modifier.size(48.dp)) //same size as the IconButton (48.dp by default)
+                        }
+                        IconButton(
+                            onClick = { showSettingsDialog = true },
+                            content = { Icon(Icons.Filled.Settings, contentDescription = "") },
+                        )
+                    })
+
+
                 },
                 content = { innerPadding ->
                     PetConnectNavHost(
@@ -187,6 +191,15 @@ fun AppContent(
                     )
                 }
             )
+            if (!networkStatus.value) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+                    Text(
+                        text = stringResource(R.string.no_internet_connection),
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic)
+                    )
+                }
+            }
         }
     }
 }

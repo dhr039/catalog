@@ -32,7 +32,7 @@ class PetFaceAnimalRepository @Inject constructor(
 
     override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int>): PaginatedAnimals {
         try {
-            val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems, categIds = categIds)
+            val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems, categIds = categIds.joinToString(","))
 
             val headers = response.headers().toMultimap()
             val totalCount = headers["pagination-count"]?.get(0)?.toIntOrNull() ?: 0
