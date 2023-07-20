@@ -30,6 +30,9 @@ class HomeViewModel @Inject constructor(
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
+    /*used to prevent loadAnimalsIfEmpty() being called before onNewAnimalList()*/
+    val isInitialListLoaded = MutableStateFlow(false)
+
     init {
         viewModelScope.launch {
             getAnimals().collect { animals ->
@@ -63,6 +66,7 @@ class HomeViewModel @Inject constructor(
         _state.update { oldState ->
             oldState.copy(animals = updatedAnimalSet.toList())
         }
+        isInitialListLoaded.value = true
     }
 
     private fun loadNextAnimalPage() {

@@ -11,7 +11,6 @@ import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.NoMoreCategoriesException
-import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
 import com.cannonades.petconnect.common.presentation.ui.components.AnimalGrid
 
 
@@ -22,8 +21,8 @@ fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.state.collectAsState()
-
     val context = LocalContext.current
+    val isInitialListLoaded by viewModel.isInitialListLoaded.collectAsState()
 
     viewState.failure?.getContentIfNotHandled()?.let { failure ->
         val stringId = when (failure) {
@@ -36,21 +35,11 @@ fun HomeRoute(
         showSnackbar(message)
     }
 
-    HomeScreen(
-        viewState = viewState,
-        onEvent = { viewModel.onEvent(it) },
-        modifier = modifier
-    )
-}
-
-@Composable
-fun HomeScreen(
-    modifier: Modifier,
-    viewState: AnimalsListViewState,
-    onEvent: (HomeEvent) -> Unit,
-) {
-    LaunchedEffect(Unit) {
-        onEvent(HomeEvent.LoadAnimalsIfEmpty)
+    LaunchedEffect(isInitialListLoaded) {
+        if (isInitialListLoaded) {
+            viewModel.onEvent(HomeEvent.LoadAnimalsIfEmpty)
+        }
     }
-    AnimalGrid(modifier, viewState, onEvent)
+
+    AnimalGrid(modifier, viewState, { viewModel.onEvent(it) })
 }
