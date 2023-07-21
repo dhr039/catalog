@@ -1,4 +1,4 @@
-package com.cannonades.petconnect.categories.domain
+package com.cannonades.petconnect.categories.domain.usecases
 
 import com.cannonades.petconnect.common.domain.repositories.CategoriesRepository
 import javax.inject.Inject

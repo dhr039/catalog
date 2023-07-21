@@ -148,10 +148,10 @@ class PetFaceAnimalRepositoryTest {
         )
 
         // When
-        repository.storeAnimalsInDb(expectedAnimals)
+        repository.storeAnimalsInDb(expectedAnimals, false)
 
         // Then
-        val animals = repository.getAnimalsFromDb().first()
+        val animals = repository.getAnimalsWithCategoryFromDb().first()
         assertThat(animals).containsExactlyElementsIn(expectedAnimals)
     }
 

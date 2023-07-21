@@ -1,19 +1,19 @@
-package com.cannonades.petconnect.categories.domain
+package com.cannonades.petconnect.categories.domain.usecases
 
+import com.cannonades.petconnect.common.domain.model.Category
 import com.cannonades.petconnect.common.domain.repositories.CategoriesRepository
+import com.cannonades.petconnect.common.presentation.model.UICategory
 import com.cannonades.petconnect.common.utils.DispatchersProvider
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RequestCategoriesUseCase @Inject constructor(
+class UpdateCategoryUseCase @Inject constructor(
     private val categoriesRepository: CategoriesRepository,
     private val dispatchersProvider: DispatchersProvider
 ) {
-    suspend operator fun invoke() {
+    suspend operator fun invoke(category: UICategory) {
         withContext(dispatchersProvider.io()) {
-            val categories = categoriesRepository.requestCategoriesFromAPI()
-
-            categoriesRepository.storeCategoriesInDb(categories)
+            categoriesRepository.updateCategoryInDb(Category.fromUICategory(category))
         }
     }
 }

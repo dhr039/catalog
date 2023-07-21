@@ -1,4 +1,4 @@
-package com.cannonades.petconnect.animalsnearyou.domain.usescases
+package com.cannonades.petconnect.categories.domain.usecases
 
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.pagination.Pagination
@@ -7,12 +7,13 @@ import com.cannonades.petconnect.common.utils.DispatchersProvider
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RequestNextPageOfAnimalsUseCase @Inject constructor(
+class RequestNextPageOfAnimalsWithCategoryUseCase @Inject constructor(
     private val animalRepository: AnimalRepository,
     private val dispatchersProvider: DispatchersProvider
 ) {
     suspend operator fun invoke(
-        pageToLoad: Int
+        pageToLoad: Int,
+        categId: Int
     ): Pagination {
         return withContext(dispatchersProvider.io()) {
 
@@ -22,14 +23,15 @@ class RequestNextPageOfAnimalsUseCase @Inject constructor(
 
             val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(
                 pageToLoad,
-                Pagination.DEFAULT_PAGE_SIZE
+                Pagination.DEFAULT_PAGE_SIZE,
+                listOf(categId)
             )
 
             if (animals.isEmpty()) {
                 throw NoMoreAnimalsException
             }
 
-            animalRepository.storeAnimalsInDb(animals, false)
+            animalRepository.storeAnimalsInDb(animals, true)
 
             return@withContext pagination
         }

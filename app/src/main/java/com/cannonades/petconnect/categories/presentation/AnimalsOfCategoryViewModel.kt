@@ -1,9 +1,11 @@
-package com.cannonades.petconnect.animalsnearyou.presentation
+package com.cannonades.petconnect.categories.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonades.petconnect.animalsnearyou.domain.usescases.GetAnimalsNoCategoryFromCacheUseCase
-import com.cannonades.petconnect.animalsnearyou.domain.usescases.RequestNextPageOfAnimalsNoCategoryUseCase
+import com.cannonades.petconnect.categories.domain.usecases.ClearAnimalsWithCategoryUseCase
+import com.cannonades.petconnect.categories.domain.usecases.GetAnimalsWithCategoryFromCacheUseCase
+import com.cannonades.petconnect.categories.domain.usecases.RequestNextPageOfAnimalsWithCategoryUseCase
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.pagination.Pagination
@@ -24,18 +26,22 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val requestNextPageOfAnimals: RequestNextPageOfAnimalsNoCategoryUseCase,
-    private val getAnimalsNoCategory: GetAnimalsNoCategoryFromCacheUseCase,
+class AnimalsOfCategoryViewModel @Inject constructor(
+    private val requestNextPageOfAnimalsWithCategory: RequestNextPageOfAnimalsWithCategoryUseCase,
+    private val getAnimalsWithCategory: GetAnimalsWithCategoryFromCacheUseCase,
+    private val clearAnimalsWithCategoryUseCase: ClearAnimalsWithCategoryUseCase,
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
-    /*used to prevent loadAnimalsIfEmpty() being called before onNewAnimalList()*/
-    val isInitialListLoaded = MutableStateFlow(false)
+//    /*used to prevent loadAnimalsIfEmpty() being called before onNewAnimalList()*/
+//    val isInitialListLoaded = MutableStateFlow(false)
 
     init {
         viewModelScope.launch {
-            getAnimalsNoCategory().collect { animals ->
+            // delete previous findings
+            clearAnimalsWithCategoryUseCase()
+
+            getAnimalsWithCategory().collect { animals ->
                 onNewAnimalList(animals.map { animal -> uiAnimalMapper.mapToView(animal) })
             }
         }
@@ -47,17 +53,9 @@ class HomeViewModel @Inject constructor(
 
     val state: StateFlow<AnimalsListViewState> = _state.asStateFlow()
 
-    fun onEvent(event: HomeEvent) {
-        when (event) {
-            is HomeEvent.LoadAnimalsIfEmpty -> loadAnimalsIfEmpty()
-            is HomeEvent.RequestMoreAnimals -> loadNextAnimalPage()
-        }
-    }
-
-    private fun loadAnimalsIfEmpty() {
-        if (state.value.animals.isEmpty()) {
-            loadNextAnimalPage()
-        }
+    fun myOnEvent(categId: Int) {
+        Log.d("DHR", "myOnEvent $categId")
+        loadNextAnimalPage(categId)
     }
 
     private fun onNewAnimalList(animals: List<UIAnimal>) {
@@ -66,10 +64,10 @@ class HomeViewModel @Inject constructor(
         _state.update { oldState ->
             oldState.copy(animals = updatedAnimalSet.toList())
         }
-        isInitialListLoaded.value = true
+//        isInitialListLoaded.value = true
     }
 
-    private fun loadNextAnimalPage() {
+    private fun loadNextAnimalPage(categId: Int) {
         _state.update { it.copy(loading = true) }
         val errorMessage = "Failed to fetch animals"
         val exceptionHandler = viewModelScope.createExceptionHandler(errorMessage) { onFailure(it) }
@@ -86,7 +84,7 @@ class HomeViewModel @Inject constructor(
                         currentPage = state.value.animals.size / Pagination.DEFAULT_PAGE_SIZE
                     }
 
-                    val pagination = requestNextPageOfAnimals(++currentPage)
+                    val pagination = requestNextPageOfAnimalsWithCategory(++currentPage, categId)
                     currentPage = pagination.currentPage
                 }
 

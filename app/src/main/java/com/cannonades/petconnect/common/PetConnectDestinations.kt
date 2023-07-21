@@ -39,7 +39,7 @@ object AnimalsOfCategory : PetConnectDestination {
     override val icon = Icons.Filled.Star
 
     override val route = "animals_category"
-    const val categTypeArg = "account_type"
+    const val categTypeArg = "categ_id"
     val routeWithArgs = "$route/{$categTypeArg}"
     val arguments = listOf(
         navArgument(categTypeArg) { type = NavType.StringType }

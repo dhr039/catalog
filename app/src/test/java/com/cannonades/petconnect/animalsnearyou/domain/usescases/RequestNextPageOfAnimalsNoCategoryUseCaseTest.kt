@@ -24,7 +24,7 @@ class TestDispatchersProvider : DispatchersProvider {
 }
 
 @ExperimentalCoroutinesApi
-class RequestNextPageOfAnimalsUseCaseTest {
+class RequestNextPageOfAnimalsNoCategoryUseCaseTest {
     // Create a mock instance of AnimalRepository
     private val animalRepository = mock(AnimalRepository::class.java)
 
@@ -32,12 +32,12 @@ class RequestNextPageOfAnimalsUseCaseTest {
     private val dispatchersProvider = TestDispatchersProvider()
 
     // Create an instance of RequestNextPageOfAnimalsUseCase with the mocked AnimalRepository and DispatchersProvider
-    private lateinit var requestNextPageOfAnimalsUseCase: RequestNextPageOfAnimalsUseCase
+    private lateinit var requestNextPageOfAnimalsNoCategoryUseCase: RequestNextPageOfAnimalsNoCategoryUseCase
 
     @Before
     fun setup() {
-        requestNextPageOfAnimalsUseCase =
-            RequestNextPageOfAnimalsUseCase(animalRepository, dispatchersProvider)
+        requestNextPageOfAnimalsNoCategoryUseCase =
+            RequestNextPageOfAnimalsNoCategoryUseCase(animalRepository, dispatchersProvider)
     }
 
     @Test
@@ -77,7 +77,7 @@ class RequestNextPageOfAnimalsUseCaseTest {
             PaginatedAnimals(animals, pagination)
         )
 
-        requestNextPageOfAnimalsUseCase.invoke(1)
+        requestNextPageOfAnimalsNoCategoryUseCase.invoke(1)
 
         // Verify if the methods requestMoreAnimalsFromAPI and storeAnimalsInDb were called exactly once
         verify(animalRepository, times(1)).requestMoreAnimalsFromAPI(
@@ -85,12 +85,12 @@ class RequestNextPageOfAnimalsUseCaseTest {
             Pagination.DEFAULT_PAGE_SIZE,
             emptyList()
         )
-        verify(animalRepository, times(1)).storeAnimalsInDb(animals)
+        verify(animalRepository, times(1)).storeAnimalsInDb(animals, false)
     }
 
     @Test(expected = Exception::class)
     fun `request animals from API with invalid page`() = runTest {
-        requestNextPageOfAnimalsUseCase.invoke(0)
+        requestNextPageOfAnimalsNoCategoryUseCase.invoke(0)
     }
 }
 

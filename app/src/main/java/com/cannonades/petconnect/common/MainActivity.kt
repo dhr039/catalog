@@ -203,9 +203,9 @@ fun PetConnectNavHost(
             route = AnimalsOfCategory.routeWithArgs,
             arguments = AnimalsOfCategory.arguments,
         ) { navBackStackEntry ->
-            val accountType =
+            val categId =
                 navBackStackEntry.arguments?.getString(AnimalsOfCategory.categTypeArg)
-            AnimalsOfCategoryScreen(categId = accountType)
+            AnimalsOfCategoryScreen(categId = categId, showSnackbar = showSnackbar)
         }
     }
 }

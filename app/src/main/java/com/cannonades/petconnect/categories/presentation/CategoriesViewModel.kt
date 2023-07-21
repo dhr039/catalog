@@ -3,9 +3,9 @@ package com.cannonades.petconnect.categories.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonades.petconnect.categories.domain.GetCategoriesFromCacheUseCase
-import com.cannonades.petconnect.categories.domain.RequestCategoriesUseCase
-import com.cannonades.petconnect.categories.domain.UpdateCategoryUseCase
+import com.cannonades.petconnect.categories.domain.usecases.GetCategoriesFromCacheUseCase
+import com.cannonades.petconnect.categories.domain.usecases.RequestCategoriesUseCase
+import com.cannonades.petconnect.categories.domain.usecases.UpdateCategoryUseCase
 import com.cannonades.petconnect.common.presentation.Event
 import com.cannonades.petconnect.common.presentation.model.UICategory
 import com.cannonades.petconnect.common.presentation.model.mappers.UICategoryMapper

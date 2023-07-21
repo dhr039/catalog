@@ -1,4 +1,4 @@
-package com.cannonades.petconnect.animalsnearyou.domain.usescases
+package com.cannonades.petconnect.categories.domain.usecases
 
 import com.cannonades.petconnect.common.domain.repositories.AnimalRepository
 import com.cannonades.petconnect.common.utils.DispatchersProvider
