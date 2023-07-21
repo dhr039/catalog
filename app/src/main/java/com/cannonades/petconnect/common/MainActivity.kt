@@ -8,15 +8,10 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -36,11 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -52,7 +44,6 @@ import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
 import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
-import com.cannonades.petconnect.categories.presentation.CategoriesViewModel
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 import com.cannonades.petconnect.settings.presentation.SettingsDialog
@@ -60,14 +51,11 @@ import com.cannonades.petconnect.settings.presentation.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-const val ALL_CATEGORIES = "all"
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val networkViewModel: NetworkViewModel by viewModels()
-    private val categoriesViewModel: CategoriesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +63,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppContent(
                 settingsViewModel,
-                categoriesViewModel,
                 networkViewModel.networkStatus.collectAsState()
             )
         }
@@ -87,7 +74,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppContent(
     settingsViewModel: SettingsViewModel,
-    categoriesViewModel: CategoriesViewModel,
     networkStatus: State<Boolean>
 ) {
     PetConnectTheme {
@@ -126,11 +112,6 @@ fun AppContent(
             )
         }
 
-        var showDropdown by remember { mutableStateOf(false) }
-        val categories by categoriesViewModel.categoriesUiState.collectAsState()
-        var chipWidth by remember { mutableStateOf(0f) }
-        var selectedItem by remember { mutableStateOf(ALL_CATEGORIES) }
-
         Box(Modifier.fillMaxSize()) {
             Scaffold(
                 snackbarHost = {
@@ -161,46 +142,11 @@ fun AppContent(
                             selected = currentScreen == Categories,
                             onClick = { navController.navigateSingleTopTo(Categories.route) }
                         )
-                        if (currentScreen == Home) {
-                            AssistChip(
-                                modifier = Modifier.width(90.dp).onGloballyPositioned { coords ->
-                                    chipWidth = coords.size.width.toFloat()
-                                },
-                                onClick = {
-                                    showDropdown = !showDropdown
-                                    if (showDropdown) categoriesViewModel.loadCategories()
-                                },
-                                label = { Text(selectedItem, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                            )
-                            DropdownMenu(
-                                expanded = showDropdown,
-                                onDismissRequest = { showDropdown = false },
-                                offset = DpOffset(x = chipWidth.dp, y = 0.dp),
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text("all") },
-                                    onClick = {
-                                        showDropdown = false
-                                        selectedItem = ALL_CATEGORIES
-                                    }
-                                )
-                                // Iterate over categories and populate the DropdownMenu
-                                for (category in categories.categories) {
-                                    DropdownMenuItem(
-                                        text = { Text(category.name) }, // use correct attribute for your category item
-                                        onClick = {
-                                            showDropdown = false
-                                            selectedItem = category.name
-                                        }
-                                    )
-                                }
-                            }
-                        } else {
-                            Box(Modifier.width(90.dp))
-                        }
-                        IconButton(
-                            onClick = { showSettingsDialog = true },
-                            content = { Icon(Icons.Filled.Settings, contentDescription = "") },
+                        NavigationBarItem(
+                            icon = { Icon(Icons.Filled.Settings, contentDescription = "settings") },
+                            label = { Text(stringResource(id = R.string.settings)) },
+                            selected = showSettingsDialog == true,
+                            onClick = { showSettingsDialog = true }
                         )
                     })
 
