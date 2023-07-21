@@ -18,9 +18,9 @@ data class CachedAnimalAggregate(
     val breeds: List<CachedBreed>
 ) {
     companion object {
-        fun fromDomain(animal: Animal): CachedAnimalAggregate {
+        fun fromDomain(animal: Animal, isWithCategories: Boolean): CachedAnimalAggregate {
             return CachedAnimalAggregate(
-                animal = CachedAnimal.fromDomain(animal),
+                animal = CachedAnimal.fromDomain(animal, isWithCategories),
                 breeds = if (animal.breeds == null) {
                     emptyList()
                 } else {

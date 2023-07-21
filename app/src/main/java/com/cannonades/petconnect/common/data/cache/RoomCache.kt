@@ -8,12 +8,16 @@ import javax.inject.Inject
 
 class RoomCache @Inject constructor(private val animalsDao: AnimalsDao) : Cache {
 
-    override fun getAnimals(): Flow<List<CachedAnimalAggregate>> {
-        return animalsDao.getAllAnimals()
+    override fun getAnimalsNoCategory(): Flow<List<CachedAnimalAggregate>> {
+        return animalsDao.getAllAnimalsNoCategory()
     }
 
-    override suspend fun deleteAllAnimals() {
-        animalsDao.deleteAllAnimals()
+    override fun getAnimalsWithCategory(): Flow<List<CachedAnimalAggregate>> {
+        return animalsDao.getAllAnimalsWithCategory()
+    }
+
+    override suspend fun deleteAllAnimalsWithCategories() {
+        animalsDao.deleteAllAnimalsWithCategories()
     }
 
     override suspend fun storeNearbyAnimals(animals: List<CachedAnimalAggregate>) {

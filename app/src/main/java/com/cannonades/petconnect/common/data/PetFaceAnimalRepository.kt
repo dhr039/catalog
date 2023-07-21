@@ -22,12 +22,16 @@ class PetFaceAnimalRepository @Inject constructor(
     private val apiAnimalMapper: ApiAnimalMapper
 ) : AnimalRepository {
 
-    override fun getAnimalsFromDb(): Flow<List<Animal>> {
-        return cache.getAnimals().map { animalList -> animalList.map { it.toAnimalDomain() } }
+    override fun getAnimalsNoCategoryFromDb(): Flow<List<Animal>> {
+        return cache.getAnimalsNoCategory().map { animalList -> animalList.map { it.toAnimalDomain() } }
     }
 
-    override suspend fun deleteAllAnimals() {
-        cache.deleteAllAnimals()
+    override fun getAnimalsWithCategoryFromDb(): Flow<List<Animal>> {
+        return cache.getAnimalsWithCategory().map { animalList -> animalList.map { it.toAnimalDomain() } }
+    }
+
+    override suspend fun deleteAllAnimalsWithCategories() {
+        cache.deleteAllAnimalsWithCategories()
     }
 
     override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int>): PaginatedAnimals {
@@ -53,8 +57,8 @@ class PetFaceAnimalRepository @Inject constructor(
         }
     }
 
-    override suspend fun storeAnimalsInDb(animals: List<Animal>) {
-        cache.storeNearbyAnimals(animals.map { CachedAnimalAggregate.fromDomain(it) })
+    override suspend fun storeAnimalsInDb(animals: List<Animal>, isWithCategories: Boolean) {
+        cache.storeNearbyAnimals(animals.map { CachedAnimalAggregate.fromDomain(it, isWithCategories) })
     }
 
 }

@@ -11,17 +11,19 @@ data class CachedAnimal(
     val url: String,
     val width: Long,
     val height: Long,
-    val mime: String
+    val mime: String,
+    val isWithCategories: Boolean
 ) {
     companion object {
 
-        fun fromDomain(domainModel: Animal): CachedAnimal {
+        fun fromDomain(domainModel: Animal, isWithCategories: Boolean): CachedAnimal {
             return CachedAnimal(
                 animalId = domainModel.id,
                 url = domainModel.photo.url,
                 width = domainModel.photo.width,
                 height = domainModel.photo.height,
-                mime = domainModel.photo.mime
+                mime = domainModel.photo.mime,
+                isWithCategories = isWithCategories
             )
         }
 
