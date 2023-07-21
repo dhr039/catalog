@@ -80,8 +80,15 @@ fun AppContent(
         val navController = rememberNavController()
         val currentBackStack by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStack?.destination
-        val currentScreen =
-            tabRowScreens.find { it.route == currentDestination?.route } ?: Home
+
+        /**
+         * This would work as long as the base routes are unique.
+         * But note that it's a bit of a hack, and could lead to unexpected behavior
+         * if navigation becomes more complex.
+         * */
+        val currentScreen = tabRowScreens.find {
+            it.route == currentDestination?.route?.substringBefore("/")
+        } ?: Home
 
         var showSettingsDialog by rememberSaveable {
             mutableStateOf(false)
@@ -139,7 +146,7 @@ fun AppContent(
                         NavigationBarItem(
                             icon = { Icon(Categories.icon, contentDescription = Categories.route) },
                             label = { Text(stringResource(id = R.string.categories)) },
-                            selected = currentScreen == Categories,
+                            selected = currentScreen == Categories || currentScreen == AnimalsOfCategory,
                             onClick = { navController.navigateSingleTopTo(Categories.route) }
                         )
                         NavigationBarItem(

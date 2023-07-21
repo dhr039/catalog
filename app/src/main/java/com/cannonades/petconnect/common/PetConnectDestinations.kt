@@ -46,4 +46,4 @@ object AnimalsOfCategory : PetConnectDestination {
     )
 }
 
-val tabRowScreens = listOf(Home, Categories)
+val tabRowScreens = listOf(Home, Categories, AnimalsOfCategory)
