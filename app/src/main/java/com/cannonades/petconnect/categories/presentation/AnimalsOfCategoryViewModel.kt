@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.categories.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.categories.domain.usecases.ClearAnimalsWithCategoryUseCase
@@ -54,7 +53,6 @@ class AnimalsOfCategoryViewModel @Inject constructor(
     val state: StateFlow<AnimalsListViewState> = _state.asStateFlow()
 
     fun myOnEvent(categId: Int) {
-        Log.d("DHR", "myOnEvent $categId")
         loadNextAnimalPage(categId)
     }
 

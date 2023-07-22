@@ -1,5 +1,6 @@
 package com.cannonades.petconnect.common.presentation.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.cannonades.petconnect.R
@@ -26,7 +26,8 @@ import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
 fun AnimalGrid(
     modifier: Modifier = Modifier,
     viewState: AnimalsListViewState,
-    onEndOfList: () -> Unit
+    onEndOfList: () -> Unit,
+    onAnimalClick: (String) -> Unit
 ) {
     Box(
         modifier = modifier.fillMaxSize()
@@ -36,7 +37,11 @@ fun AnimalGrid(
             contentPadding = PaddingValues(8.dp),
             content = {
                 itemsIndexed(viewState.animals) { index, animal ->
-                    UIAnimalComposable(modifier = modifier, animal = animal)
+                    UIAnimalComposable(
+                        modifier = modifier,
+                        animal = animal,
+                        onAnimalClick = onAnimalClick
+                    )
                     /* detect when we've reached the last item and trigger loading more data */
                     if (index == viewState.animals.lastIndex && !viewState.loading) {
                         LaunchedEffect(index) {
@@ -55,10 +60,12 @@ fun AnimalGrid(
 }
 
 @Composable
-fun UIAnimalComposable(modifier: Modifier, animal: UIAnimal) {
+fun UIAnimalComposable(modifier: Modifier, animal: UIAnimal, onAnimalClick: (String) -> Unit) {
     Box(Modifier.padding(4.dp)) {
         AsyncImage(
-            modifier = modifier.size(200.dp),
+            modifier = modifier
+                .size(200.dp)
+                .clickable { onAnimalClick(animal.id) },
             model = animal.name,
             contentDescription = "Animal image",
             placeholder = painterResource(R.drawable.ic_jetnews_logo),
@@ -66,17 +73,29 @@ fun UIAnimalComposable(modifier: Modifier, animal: UIAnimal) {
     }
 }
 
-@Preview
-@Composable
-fun AnimalGridPreview() {
-    val animals = listOf(
-        UIAnimal("1", "Dog", "dog_photo_url"),
-        UIAnimal("2", "Cat", "cat_photo_url"),
-        UIAnimal("2", "Cat", "cat_photo_url"),
-        UIAnimal("2", "Cat", "cat_photo_url"),
-        UIAnimal("2", "Cat", "cat_photo_url"),
-        UIAnimal("3", "Rabbit", "rabbit_photo_url")
-    )
-    val homeViewState = AnimalsListViewState(animals = animals, loading = true)
-    AnimalGrid(modifier = Modifier, viewState = homeViewState, onEndOfList = {})
-}
+//@Composable
+//fun UIAnimalComposable(modifier: Modifier, animal: UIAnimal) {
+//    Box(Modifier.padding(4.dp)) {
+//        AsyncImage(
+//            modifier = modifier.size(200.dp),
+//            model = animal.name,
+//            contentDescription = "Animal image",
+//            placeholder = painterResource(R.drawable.ic_jetnews_logo),
+//        )
+//    }
+//}
+
+//@Preview
+//@Composable
+//fun AnimalGridPreview() {
+//    val animals = listOf(
+//        UIAnimal("1", "Dog", "dog_photo_url"),
+//        UIAnimal("2", "Cat", "cat_photo_url"),
+//        UIAnimal("2", "Cat", "cat_photo_url"),
+//        UIAnimal("2", "Cat", "cat_photo_url"),
+//        UIAnimal("2", "Cat", "cat_photo_url"),
+//        UIAnimal("3", "Rabbit", "rabbit_photo_url")
+//    )
+//    val homeViewState = AnimalsListViewState(animals = animals, loading = true)
+//    AnimalGrid(modifier = Modifier, viewState = homeViewState, onEndOfList = {})
+//}

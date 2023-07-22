@@ -46,4 +46,16 @@ object AnimalsOfCategory : PetConnectDestination {
     )
 }
 
+object AnimalDetail : PetConnectDestination {
+    override val icon = Icons.Filled.Star
+    override val route = "animalDetail"
+    override val titleRes = R.string.for_you
+
+    const val animalIdArg = "animal_id"
+    val routeWithArgs = "$route/{$animalIdArg}"
+    val arguments = listOf(
+        navArgument(animalIdArg) { type = NavType.StringType }
+    )
+}
+
 val tabRowScreens = listOf(Home, Categories, AnimalsOfCategory)

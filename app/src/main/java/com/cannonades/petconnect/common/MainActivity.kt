@@ -24,7 +24,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -44,6 +43,7 @@ import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
 import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
+import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 import com.cannonades.petconnect.settings.presentation.SettingsDialog
@@ -192,11 +192,11 @@ fun PetConnectNavHost(
         startDestination = Home.route,
     ) {
         composable(route = Home.route) {
-            HomeRoute(showSnackbar = showSnackbar)
+            HomeRoute(showSnackbar = showSnackbar, navController = navController)
         }
         composable(route = Categories.route) {
             CategoriesRoute(openCategoryScreen = { categ ->
-                navController.navigateToAnimalsCategoriesList(categ)
+                navController.navigate("${AnimalsOfCategory.route}/$categ")
             })
         }
         composable(
@@ -205,7 +205,14 @@ fun PetConnectNavHost(
         ) { navBackStackEntry ->
             val categId =
                 navBackStackEntry.arguments?.getString(AnimalsOfCategory.categTypeArg)
-            AnimalsOfCategoryScreen(categId = categId, showSnackbar = showSnackbar)
+            AnimalsOfCategoryScreen(categId = categId, showSnackbar = showSnackbar, navController = navController)
+        }
+        composable(
+            AnimalDetail.routeWithArgs,
+            arguments = AnimalDetail.arguments
+        ) { navBackStackEntry ->
+            val animalId = navBackStackEntry.arguments?.getString(AnimalDetail.animalIdArg) ?: ""
+            AnimalScreen(animalId = animalId)
         }
     }
 }
@@ -221,8 +228,4 @@ fun NavHostController.navigateSingleTopTo(route: String) {
             restoreState = true
         }
     }
-}
-
-private fun NavHostController.navigateToAnimalsCategoriesList(category: String) {
-    this.navigate("${AnimalsOfCategory.route}/$category")
 }
