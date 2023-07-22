@@ -1,7 +1,6 @@
 package com.cannonades.petconnect.animalsnearyou.presentation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -23,7 +22,6 @@ fun HomeRoute(
 ) {
     val viewState by viewModel.state.collectAsState()
     val context = LocalContext.current
-    val isInitialListLoaded by viewModel.isInitialListLoaded.collectAsState()
 
     viewState.failure?.getContentIfNotHandled()?.let { failure ->
         val stringId = when (failure) {
@@ -34,12 +32,6 @@ fun HomeRoute(
         }
         val message = context.getString(stringId)
         showSnackbar(message)
-    }
-
-    LaunchedEffect(isInitialListLoaded) {
-        if (isInitialListLoaded) {
-            viewModel.onEvent(HomeEvent.LoadAnimalsIfEmpty)
-        }
     }
 
     AnimalGrid(modifier, viewState, onEndOfList = {

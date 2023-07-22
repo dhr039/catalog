@@ -31,9 +31,17 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     /*used to prevent loadAnimalsIfEmpty() being called before onNewAnimalList()*/
-    val isInitialListLoaded = MutableStateFlow(false)
+    private val isInitialListLoaded = MutableStateFlow(false)
 
     init {
+        viewModelScope.launch {
+            isInitialListLoaded.collect {
+                if (it) {
+                    /*the first call after a fresh app install when db is still empty*/
+                    loadAnimalsIfEmpty()
+                }
+            }
+        }
         viewModelScope.launch {
             getAnimalsNoCategory().collect { animals ->
                 onNewAnimalList(animals.map { animal -> uiAnimalMapper.mapToView(animal) })
@@ -49,7 +57,6 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.LoadAnimalsIfEmpty -> loadAnimalsIfEmpty()
             is HomeEvent.RequestMoreAnimals -> loadNextAnimalPage()
         }
     }
