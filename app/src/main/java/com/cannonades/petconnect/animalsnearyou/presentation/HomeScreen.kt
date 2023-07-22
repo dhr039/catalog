@@ -7,9 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.cannonades.petconnect.R
-import com.cannonades.petconnect.common.AnimalDetail
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.NoMoreCategoriesException
@@ -21,7 +19,7 @@ fun HomeRoute(
     modifier: Modifier = Modifier,
     showSnackbar: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-    navController: NavHostController
+    onAnimalClick: (String) -> Unit
 ) {
     val viewState by viewModel.state.collectAsState()
     val context = LocalContext.current
@@ -46,7 +44,5 @@ fun HomeRoute(
 
     AnimalGrid(modifier, viewState, onEndOfList = {
         viewModel.onEvent(HomeEvent.RequestMoreAnimals)
-    }, onAnimalClick = { animalId ->
-        navController.navigate("${AnimalDetail.route}/${animalId}")
-    })
+    }, onAnimalClick = onAnimalClick)
 }

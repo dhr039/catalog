@@ -192,7 +192,10 @@ fun PetConnectNavHost(
         startDestination = Home.route,
     ) {
         composable(route = Home.route) {
-            HomeRoute(showSnackbar = showSnackbar, navController = navController)
+            HomeRoute(
+                showSnackbar = showSnackbar,
+                onAnimalClick = { navController.navigate("${AnimalDetail.route}/${it}") }
+            )
         }
         composable(route = Categories.route) {
             CategoriesRoute(openCategoryScreen = { categ ->
@@ -205,7 +208,11 @@ fun PetConnectNavHost(
         ) { navBackStackEntry ->
             val categId =
                 navBackStackEntry.arguments?.getString(AnimalsOfCategory.categTypeArg)
-            AnimalsOfCategoryScreen(categId = categId, showSnackbar = showSnackbar, navController = navController)
+            AnimalsOfCategoryScreen(
+                categId = categId,
+                showSnackbar = showSnackbar,
+                onAnimalClick = { navController.navigate("${AnimalDetail.route}/${it}") }
+            )
         }
         composable(
             AnimalDetail.routeWithArgs,
