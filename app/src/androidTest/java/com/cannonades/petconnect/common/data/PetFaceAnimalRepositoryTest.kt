@@ -3,7 +3,7 @@ package com.cannonades.petconnect.common.data
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
-import com.cannonades.android.petface.common.data.di.CacheModule
+import com.cannonades.petconnect.common.data.di.CacheModule
 import com.cannonades.petconnect.common.data.api.PetFaceApi
 import com.cannonades.petconnect.common.data.api.model.mappers.ApiAnimalMapper
 import com.cannonades.petconnect.common.data.api.utils.FakeServer

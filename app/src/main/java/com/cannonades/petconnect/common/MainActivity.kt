@@ -94,8 +94,8 @@ fun AppContent(
             mutableStateOf(false)
         }
 
-        var showSnackbar by remember { mutableStateOf(false) }
-        var snackbarMessage by remember { mutableStateOf("") }
+        var showSnackbar by rememberSaveable { mutableStateOf(false) }
+        var snackbarMessage by rememberSaveable { mutableStateOf("") }
 
         fun showSnackbar(message: String) {
             snackbarMessage = message
