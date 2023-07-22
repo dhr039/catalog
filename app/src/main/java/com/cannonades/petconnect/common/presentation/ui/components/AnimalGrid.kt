@@ -18,13 +18,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.cannonades.petconnect.R
-import com.cannonades.petconnect.animalsnearyou.presentation.HomeEvent
 import com.cannonades.petconnect.common.presentation.model.UIAnimal
 import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
 
 
 @Composable
-fun AnimalGrid(modifier: Modifier, viewState: AnimalsListViewState, onEvent: (HomeEvent) -> Unit) {
+fun AnimalGrid(
+    modifier: Modifier = Modifier,
+    viewState: AnimalsListViewState,
+    onEndOfList: () -> Unit
+) {
     Box(
         modifier = modifier.fillMaxSize()
     ) {
@@ -37,7 +40,7 @@ fun AnimalGrid(modifier: Modifier, viewState: AnimalsListViewState, onEvent: (Ho
                     /* detect when we've reached the last item and trigger loading more data */
                     if (index == viewState.animals.lastIndex && !viewState.loading) {
                         LaunchedEffect(index) {
-                            onEvent(HomeEvent.RequestMoreAnimals)
+                            onEndOfList()
                         }
                     }
                 }
@@ -75,5 +78,5 @@ fun AnimalGridPreview() {
         UIAnimal("3", "Rabbit", "rabbit_photo_url")
     )
     val homeViewState = AnimalsListViewState(animals = animals, loading = true)
-    AnimalGrid(modifier = Modifier, viewState = homeViewState, onEvent = {})
+    AnimalGrid(modifier = Modifier, viewState = homeViewState, onEndOfList = {})
 }

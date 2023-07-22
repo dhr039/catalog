@@ -11,7 +11,7 @@ import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.NoMoreCategoriesException
-import com.cannonades.petconnect.common.presentation.ui.components.AnimalGridTemp
+import com.cannonades.petconnect.common.presentation.ui.components.AnimalGrid
 
 @Composable
 fun AnimalsOfCategoryScreen(
@@ -41,7 +41,9 @@ fun AnimalsOfCategoryScreen(
             viewModel.myOnEvent(categId.toInt())
         }
 
-        AnimalGridTemp(modifier, viewState, categId.toInt(), viewModel::myOnEvent)
+        AnimalGrid(modifier, viewState) {
+            viewModel.myOnEvent(categId.toInt())
+        }
     }
 
 }

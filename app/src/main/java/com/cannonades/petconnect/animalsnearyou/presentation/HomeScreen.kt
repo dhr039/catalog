@@ -41,5 +41,7 @@ fun HomeRoute(
         }
     }
 
-    AnimalGrid(modifier, viewState, { viewModel.onEvent(it) })
+    AnimalGrid(modifier, viewState) {
+        viewModel.onEvent(HomeEvent.RequestMoreAnimals)
+    }
 }
