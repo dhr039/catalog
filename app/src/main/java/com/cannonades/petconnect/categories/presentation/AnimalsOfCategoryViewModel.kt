@@ -34,7 +34,7 @@ class AnimalsOfCategoryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // delete previous findings
+            // on opening the screen delete previous data
             clearAnimalsWithCategoryUseCase()
 
             getAnimalsWithCategory().collect { animals ->

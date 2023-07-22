@@ -40,4 +40,8 @@ class RoomCache @Inject constructor(private val animalsDao: AnimalsDao) : Cache 
         animalsDao.updateCategory(category)
     }
 
+    override suspend fun getAnimalById(id: String): CachedAnimalAggregate? {
+        return animalsDao.getAnimalById(id)
+    }
+
 }

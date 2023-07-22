@@ -61,4 +61,9 @@ class PetFaceAnimalRepository @Inject constructor(
         cache.storeNearbyAnimals(animals.map { CachedAnimalAggregate.fromDomain(it, isWithCategories) })
     }
 
+    override suspend fun getAnimalFromDb(id: String): Animal? {
+        val cachedAnimal = cache.getAnimalById(id)
+        return cachedAnimal?.toAnimalDomain()
+    }
+
 }

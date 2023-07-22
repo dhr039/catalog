@@ -21,4 +21,6 @@ interface Cache {
     suspend fun storeCategories(categories: List<CachedCategory>)
 
     suspend fun updateCategory(category: CachedCategory)
+
+    suspend fun getAnimalById(id: String): CachedAnimalAggregate?
 }

@@ -68,4 +68,8 @@ abstract class AnimalsDao {
     @Update
     abstract suspend fun updateCategory(category: CachedCategory)
 
+    @Transaction
+    @Query("SELECT * FROM animals WHERE animalId = :id")
+    abstract suspend fun getAnimalById(id: String): CachedAnimalAggregate?
+
 }
