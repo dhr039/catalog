@@ -210,16 +210,18 @@ fun PetConnectNavHost(
     }
 }
 
-fun NavHostController.navigateSingleTopTo(route: String) =
-    this.navigate(route) {
-        popUpTo(
-            this@navigateSingleTopTo.graph.findStartDestination().id
-        ) {
-            saveState = true
+fun NavHostController.navigateSingleTopTo(route: String) {
+    if (currentDestination?.route != route) {
+        popBackStack(graph.startDestinationId, false)
+        navigate(route) {
+            popUpTo(graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
         }
-        launchSingleTop = true
-        restoreState = true
     }
+}
 
 private fun NavHostController.navigateToAnimalsCategoriesList(category: String) {
     this.navigate("${AnimalsOfCategory.route}/$category")
