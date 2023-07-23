@@ -39,7 +39,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.cannonades.petconnect.common.domain.model.Breed
+import com.cannonades.petconnect.common.presentation.model.UIBreed
 import com.cannonades.petconnect.common.presentation.ui.components.ZoomableDraggableImage
 import kotlinx.coroutines.launch
 
@@ -57,10 +57,10 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
         }
     }
 
-    val animalData by viewModel.animal.collectAsState()
+    val viewState by viewModel.state.collectAsState()
 
-    val imageWidth = animalData?.photo?.width?.toFloat() ?: 1f
-    val imageHeight = animalData?.photo?.height?.toFloat() ?: 1f
+    val imageWidth = viewState.animal?.width?.toFloat() ?: 1f
+    val imageHeight = viewState.animal?.height?.toFloat() ?: 1f
 
     Column(
         modifier = Modifier
@@ -68,7 +68,7 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        animalData?.photo?.url?.let { url ->
+        viewState.animal?.photo?.let { url ->
             ZoomableDraggableImage(
                 imageUrl = url,
                 contentDescription = null,
@@ -93,9 +93,7 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Log.d("DHR", "animalData: ${animalData?.breeds}")
-
-        animalData?.breeds?.firstOrNull()?.let { breed ->
+        viewState.animal?.breeds?.firstOrNull()?.let { breed ->
             BreedInfoTable(breed)
         }
     }
@@ -103,7 +101,7 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
 
 
 @Composable
-fun BreedInfoTable(breed: Breed) {
+fun BreedInfoTable(breed: UIBreed) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(8.dp),

@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.cannonades.petconnect"
-        minSdk 28
+        minSdk 29 // to avoid requesting WRITE_EXTERNAL_STORAGE
         targetSdk 34
         versionCode 1
         versionName "1.0"

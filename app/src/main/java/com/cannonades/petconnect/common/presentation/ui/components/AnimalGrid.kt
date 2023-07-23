@@ -15,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.cannonades.petconnect.R
@@ -72,19 +71,4 @@ fun UIAnimalComposable(modifier: Modifier, animal: UIAnimal, onAnimalClick: (Str
             placeholder = painterResource(R.drawable.ic_jetnews_logo),
         )
     }
-}
-
-@Preview
-@Composable
-fun AnimalGridPreview() {
-    val animals = listOf(
-        UIAnimal("1", "Dog", "dog_photo_url"),
-        UIAnimal("2", "Cat", "cat_photo_url"),
-        UIAnimal("2", "Cat", "cat_photo_url"),
-        UIAnimal("2", "Cat", "cat_photo_url"),
-        UIAnimal("2", "Cat", "cat_photo_url"),
-        UIAnimal("3", "Rabbit", "rabbit_photo_url")
-    )
-    val homeViewState = AnimalsListViewState(animals = animals, loading = true)
-    AnimalGrid(modifier = Modifier, viewState = homeViewState, onEndOfList = {}, onAnimalClick = {})
 }

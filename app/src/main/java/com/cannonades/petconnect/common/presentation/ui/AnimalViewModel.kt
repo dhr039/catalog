@@ -12,14 +12,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import coil.request.ImageRequest
-import com.cannonades.petconnect.common.domain.model.Animal
 import com.cannonades.petconnect.common.domain.usecases.GetAnimalUseCase
+import com.cannonades.petconnect.common.presentation.model.mappers.UiAnimalMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -30,16 +31,22 @@ import javax.inject.Inject
 class AnimalViewModel @Inject constructor(
     private val getAnimalUseCase: GetAnimalUseCase,
     private val app: Application,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
-    private val _animal = MutableStateFlow<Animal?>(null)
-    val animal: StateFlow<Animal?> = _animal
+    private val _state = MutableStateFlow(AnimalViewState())
+    val state: StateFlow<AnimalViewState> = _state
 
     fun loadAnimal(id: String) {
         viewModelScope.launch {
             val animal = getAnimalUseCase(id)
-            _animal.emit(animal)
+            if(animal != null) {
+                val uiAnimal = uiAnimalMapper.mapToView(animal)
+                _state.update { oldState ->
+                    oldState.copy(animal = uiAnimal)
+                }
+            }
         }
     }
 
@@ -61,7 +68,7 @@ class AnimalViewModel @Inject constructor(
         }
     }
 
-    fun addImage(bitmap: Bitmap) {
+    private fun addImage(bitmap: Bitmap) {
         viewModelScope.launch {
             performAddImage(bitmap)
         }
