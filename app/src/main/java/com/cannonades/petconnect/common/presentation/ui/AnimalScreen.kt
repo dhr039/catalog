@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -49,6 +50,13 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
         viewModel.loadAnimal(animalId)
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.doneSavingImage.collect { uri ->
+            Log.e("DHR", "doneSavingImage")
+            //TODO: display something
+        }
+    }
+
     val animalData by viewModel.animal.collectAsState()
 
     val imageWidth = animalData?.photo?.width?.toFloat() ?: 1f
@@ -75,6 +83,12 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
                     )
                 }
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(onClick = { viewModel.saveImageFromUrl(url) }) {
+                Text("Save Image")
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
