@@ -12,7 +12,8 @@ class RequestNextPageOfAnimalsNoCategoryUseCase @Inject constructor(
     private val dispatchersProvider: DispatchersProvider
 ) {
     suspend operator fun invoke(
-        pageToLoad: Int
+        pageToLoad: Int,
+        hasBreeds: Boolean
     ): Pagination {
         return withContext(dispatchersProvider.io()) {
 
@@ -22,7 +23,9 @@ class RequestNextPageOfAnimalsNoCategoryUseCase @Inject constructor(
 
             val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(
                 pageToLoad,
-                Pagination.DEFAULT_PAGE_SIZE
+                Pagination.DEFAULT_PAGE_SIZE,
+                listOf(),
+                hasBreeds
             )
 
             if (animals.isEmpty()) {

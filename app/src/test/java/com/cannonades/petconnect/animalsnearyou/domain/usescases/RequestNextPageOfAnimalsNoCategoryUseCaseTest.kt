@@ -71,26 +71,26 @@ class RequestNextPageOfAnimalsNoCategoryUseCaseTest {
             animalRepository.requestMoreAnimalsFromAPI(
                 anyInt(),
                 anyInt(),
-                anyList()
+                anyList(), false
             )
         ).thenReturn(
             PaginatedAnimals(animals, pagination)
         )
 
-        requestNextPageOfAnimalsNoCategoryUseCase.invoke(1)
+        requestNextPageOfAnimalsNoCategoryUseCase.invoke(1, false)
 
         // Verify if the methods requestMoreAnimalsFromAPI and storeAnimalsInDb were called exactly once
         verify(animalRepository, times(1)).requestMoreAnimalsFromAPI(
             1,
             Pagination.DEFAULT_PAGE_SIZE,
-            emptyList()
+            emptyList(), false
         )
         verify(animalRepository, times(1)).storeAnimalsInDb(animals, false)
     }
 
     @Test(expected = Exception::class)
     fun `request animals from API with invalid page`() = runTest {
-        requestNextPageOfAnimalsNoCategoryUseCase.invoke(0)
+        requestNextPageOfAnimalsNoCategoryUseCase.invoke(0, false)
     }
 }
 

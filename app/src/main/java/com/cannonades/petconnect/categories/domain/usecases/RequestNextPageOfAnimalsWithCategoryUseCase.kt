@@ -24,7 +24,7 @@ class RequestNextPageOfAnimalsWithCategoryUseCase @Inject constructor(
             val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(
                 pageToLoad,
                 Pagination.DEFAULT_PAGE_SIZE,
-                listOf(categId)
+                listOf(categId), hasBreeds = false
             )
 
             if (animals.isEmpty()) {

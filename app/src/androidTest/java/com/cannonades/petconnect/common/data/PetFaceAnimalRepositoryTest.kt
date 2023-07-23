@@ -119,7 +119,12 @@ class PetFaceAnimalRepositoryTest {
         fakeServer.setHappyPathDispatcher()
 
         // When
-        val paginatedAnimals = repository.requestMoreAnimalsFromAPI(pageToLoad = 1, numberOfItems = 100)
+        val paginatedAnimals = repository.requestMoreAnimalsFromAPI(
+            pageToLoad = 1,
+            numberOfItems = 100,
+            listOf(),
+            false
+        )
 
         // Then
         val animal = paginatedAnimals.animals.first()

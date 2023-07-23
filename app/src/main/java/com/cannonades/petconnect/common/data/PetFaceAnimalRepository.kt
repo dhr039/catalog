@@ -34,9 +34,9 @@ class PetFaceAnimalRepository @Inject constructor(
         cache.deleteAllAnimalsWithCategories()
     }
 
-    override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int>): PaginatedAnimals {
+    override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int>, hasBreed: Boolean): PaginatedAnimals {
         try {
-            val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems, categIds = categIds.joinToString(","))
+            val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems, categIds = categIds.joinToString(","), hasBreeds = hasBreed)
 
             val headers = response.headers().toMultimap()
             val totalCount = headers["pagination-count"]?.get(0)?.toIntOrNull() ?: 0

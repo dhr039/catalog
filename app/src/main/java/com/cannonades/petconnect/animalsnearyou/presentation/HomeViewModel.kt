@@ -93,7 +93,7 @@ class HomeViewModel @Inject constructor(
                         currentPage = state.value.animals.size / Pagination.DEFAULT_PAGE_SIZE
                     }
 
-                    val pagination = requestNextPageOfAnimals(++currentPage)
+                    val pagination = requestNextPageOfAnimals(++currentPage, false)
                     currentPage = pagination.currentPage
                 }
 
