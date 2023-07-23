@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 
@@ -33,9 +34,33 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
     val imageWidth = animalData?.photo?.width?.toFloat() ?: 1f
     val imageHeight = animalData?.photo?.height?.toFloat() ?: 1f
 
+    val screenWidth = LocalConfiguration.current.screenWidthDp
+    val screenHeight = LocalConfiguration.current.screenHeightDp
+
     var scale by remember { mutableStateOf(1f) }
-    val state = rememberTransformableState { zoomChange, _, _ ->
+    var offset by remember { mutableStateOf(Offset.Zero) }
+
+    val dragMultiplier = 3f  // Increase this to make image move faster
+
+    val state = rememberTransformableState { zoomChange, offsetChange, _ ->
         scale = maxOf(1f, scale * zoomChange)
+
+        // Calculate the available offset, considering the scale
+        val maxOffsetX = maxOf(0f, ((imageWidth * scale) - screenWidth) / 2)
+        val maxOffsetY = maxOf(0f, ((imageHeight * scale) - screenHeight) / 2)
+
+        if (scale > 1f) {
+            offset += offsetChange * dragMultiplier
+
+            // Prevent image from moving off screen
+            offset = Offset(
+                x = offset.x.coerceIn(-maxOffsetX, maxOffsetX),
+                y = offset.y.coerceIn(-maxOffsetY, maxOffsetY)
+            )
+        } else {
+            // Reset offset when image is not zoomed in
+            offset = Offset.Zero
+        }
     }
 
     animalData?.photo?.url?.let { url ->
@@ -46,7 +71,9 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
                 .fillMaxSize()
                 .graphicsLayer(
                     scaleX = scale,
-                    scaleY = scale
+                    scaleY = scale,
+                    translationX = offset.x,
+                    translationY = offset.y
                 )
                 .transformable(state = state)
                 .aspectRatio(imageWidth / imageHeight),
