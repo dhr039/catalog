@@ -44,6 +44,13 @@ abstract class AnimalsDao {
     }
 
     @Transaction
+    @Query("SELECT * FROM animals WHERE isWithBreed = 1")
+    abstract fun getAllAnimalsWithBreed(): Flow<List<CachedAnimalAggregate>>
+
+    @Query("DELETE FROM animals WHERE isWithBreed = 1")
+    abstract suspend fun deleteAllAnimalsWithBreed()
+
+    @Transaction
     @Query("SELECT * FROM animals WHERE isWithCategories = 0")
     abstract fun getAllAnimalsNoCategory(): Flow<List<CachedAnimalAggregate>>
 

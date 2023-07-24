@@ -6,6 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface Cache {
 
+    suspend fun deleteAllAnimalsWithBreed()
+
+    fun getAnimalsWithBreed(): Flow<List<CachedAnimalAggregate>>
+
     fun getAnimalsNoCategory(): Flow<List<CachedAnimalAggregate>>
 
     fun getAnimalsWithCategory(): Flow<List<CachedAnimalAggregate>>

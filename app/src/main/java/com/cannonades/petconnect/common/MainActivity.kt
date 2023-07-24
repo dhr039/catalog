@@ -41,6 +41,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
+import com.cannonades.petconnect.breeds.presentation.AnimalsOfBreedScreen
+import com.cannonades.petconnect.breeds.presentation.BreedCategoriesRoute
 import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
@@ -150,6 +152,12 @@ fun AppContent(
                             onClick = { navController.navigateSingleTopTo(Categories.route) }
                         )
                         NavigationBarItem(
+                            icon = { Icon(Breeds.icon, contentDescription = Breeds.route) },
+                            label = { Text(stringResource(id = R.string.breeds)) },
+                            selected = currentScreen == Breeds || currentScreen == AnimalsOfBreed,
+                            onClick = { navController.navigateSingleTopTo(Breeds.route) }
+                        )
+                        NavigationBarItem(
                             icon = { Icon(Icons.Filled.Settings, contentDescription = "settings") },
                             label = { Text(stringResource(id = R.string.settings)) },
                             selected = showSettingsDialog == true,
@@ -193,6 +201,23 @@ fun PetConnectNavHost(
     ) {
         composable(route = Home.route) {
             HomeRoute(
+                showSnackbar = showSnackbar,
+                onAnimalClick = { navController.navigate("${AnimalDetail.route}/${it}") }
+            )
+        }
+        composable(route = Breeds.route) {
+            BreedCategoriesRoute(openCategoryScreen = {categ ->
+                navController.navigate("${AnimalsOfBreed.route}/$categ")
+            })
+        }
+        composable(
+            route = AnimalsOfBreed.routeWithArgs,
+            arguments = AnimalsOfBreed.arguments,
+        ) { navBackStackEntry ->
+            val categId =
+                navBackStackEntry.arguments?.getString(AnimalsOfBreed.categTypeArg)
+            AnimalsOfBreedScreen(
+                categId = categId,
                 showSnackbar = showSnackbar,
                 onAnimalClick = { navController.navigate("${AnimalDetail.route}/${it}") }
             )

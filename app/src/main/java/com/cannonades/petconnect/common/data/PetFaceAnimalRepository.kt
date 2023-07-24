@@ -30,13 +30,17 @@ class PetFaceAnimalRepository @Inject constructor(
         return cache.getAnimalsWithCategory().map { animalList -> animalList.map { it.toAnimalDomain() } }
     }
 
+    override fun getAnimalsWithBreedFromDb(): Flow<List<Animal>> {
+        return cache.getAnimalsWithBreed().map { animalList -> animalList.map { it.toAnimalDomain() } }
+    }
+
     override suspend fun deleteAllAnimalsWithCategories() {
         cache.deleteAllAnimalsWithCategories()
     }
 
-    override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int>, hasBreed: Boolean): PaginatedAnimals {
+    override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int>, hasBreeds: Boolean): PaginatedAnimals {
         try {
-            val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems, categIds = categIds.joinToString(","), hasBreeds = hasBreed)
+            val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems, categIds = categIds.joinToString(","), hasBreeds = hasBreeds)
 
             val headers = response.headers().toMultimap()
             val totalCount = headers["pagination-count"]?.get(0)?.toIntOrNull() ?: 0
@@ -57,8 +61,8 @@ class PetFaceAnimalRepository @Inject constructor(
         }
     }
 
-    override suspend fun storeAnimalsInDb(animals: List<Animal>, isWithCategories: Boolean) {
-        cache.storeNearbyAnimals(animals.map { CachedAnimalAggregate.fromDomain(it, isWithCategories) })
+    override suspend fun storeAnimalsInDb(animals: List<Animal>, isWithCategories: Boolean, isWithBreed: Boolean) {
+        cache.storeNearbyAnimals(animals.map { CachedAnimalAggregate.fromDomain(it, isWithCategories, isWithBreed) })
     }
 
     override suspend fun getAnimalFromDb(id: String): Animal? {

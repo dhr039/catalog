@@ -31,7 +31,7 @@ class RequestNextPageOfAnimalsWithCategoryUseCase @Inject constructor(
                 throw NoMoreAnimalsException
             }
 
-            animalRepository.storeAnimalsInDb(animals, true)
+            animalRepository.storeAnimalsInDb(animals, isWithCategories = true, isWithBreed =  false)
 
             return@withContext pagination
         }

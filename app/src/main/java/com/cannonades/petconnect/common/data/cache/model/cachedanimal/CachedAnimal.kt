@@ -12,18 +12,20 @@ data class CachedAnimal(
     val width: Long,
     val height: Long,
     val mime: String,
-    val isWithCategories: Boolean
+    val isWithCategories: Boolean,
+    val isWithBreed: Boolean
 ) {
     companion object {
 
-        fun fromDomain(domainModel: Animal, isWithCategories: Boolean): CachedAnimal {
+        fun fromDomain(domainModel: Animal, isWithCategories: Boolean, isWithBreed: Boolean): CachedAnimal {
             return CachedAnimal(
                 animalId = domainModel.id,
                 url = domainModel.photo.url,
                 width = domainModel.photo.width,
                 height = domainModel.photo.height,
                 mime = domainModel.photo.mime,
-                isWithCategories = isWithCategories
+                isWithCategories = isWithCategories,
+                isWithBreed = isWithBreed
             )
         }
 

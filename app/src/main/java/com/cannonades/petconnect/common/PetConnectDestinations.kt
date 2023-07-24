@@ -28,10 +28,22 @@ object Categories : PetConnectDestination {
     override val titleRes = R.string.categories
 }
 
-object Favorites : PetConnectDestination {
+object Breeds : PetConnectDestination {
     override val icon = Icons.Filled.Favorite
-    override val route = "favorites"
+    override val route = "breeds"
+    override val titleRes = R.string.breeds
+}
+
+object AnimalsOfBreed : PetConnectDestination {
     override val titleRes = R.string.favorites
+    override val icon = Icons.Filled.Star
+
+    override val route = "breeds_category"
+    const val categTypeArg = "categ_id"
+    val routeWithArgs = "$route/{$categTypeArg}"
+    val arguments = listOf(
+        navArgument(categTypeArg) { type = NavType.StringType }
+    )
 }
 
 object AnimalsOfCategory : PetConnectDestination {
@@ -58,4 +70,4 @@ object AnimalDetail : PetConnectDestination {
     )
 }
 
-val tabRowScreens = listOf(Home, Categories, AnimalsOfCategory)
+val tabRowScreens = listOf(Home, Categories, AnimalsOfCategory, Breeds, AnimalsOfBreed)

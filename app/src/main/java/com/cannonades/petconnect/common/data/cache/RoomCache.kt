@@ -7,6 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RoomCache @Inject constructor(private val animalsDao: AnimalsDao) : Cache {
+    override suspend fun deleteAllAnimalsWithBreed() {
+        animalsDao.getAllAnimalsWithBreed()
+    }
+
+    override fun getAnimalsWithBreed(): Flow<List<CachedAnimalAggregate>> {
+        return animalsDao.getAllAnimalsWithBreed()
+    }
 
     override fun getAnimalsNoCategory(): Flow<List<CachedAnimalAggregate>> {
         return animalsDao.getAllAnimalsNoCategory()
