@@ -2,7 +2,6 @@ package com.cannonades.petconnect.common.presentation.ui
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,13 +50,6 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
         viewModel.loadAnimal(animalId)
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.doneSavingImage.collect { uri ->
-            Log.e("DHR", "doneSavingImage")
-            //TODO: display something
-        }
-    }
-
     val viewState by viewModel.state.collectAsState()
 
     val imageWidth = viewState.animal?.width?.toFloat() ?: 1f
@@ -86,8 +79,20 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Button(onClick = { viewModel.saveImageFromUrl(url) }) {
-                Text("Save Image")
+            Button(
+                modifier = Modifier.width(150.dp),
+                onClick = { viewModel.saveImageFromUrl(url) },
+                enabled = !(viewState.fileSaved),
+            ) {
+                when {
+                    viewState.fileSaved -> {
+                        Text("Saved")
+                    }
+
+                    else -> {
+                        Text("Save Image")
+                    }
+                }
             }
         }
 

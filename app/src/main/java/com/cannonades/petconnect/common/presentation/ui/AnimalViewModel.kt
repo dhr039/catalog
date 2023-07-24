@@ -16,9 +16,7 @@ import com.cannonades.petconnect.common.domain.usecases.GetAnimalUseCase
 import com.cannonades.petconnect.common.presentation.model.mappers.UiAnimalMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -41,7 +39,7 @@ class AnimalViewModel @Inject constructor(
     fun loadAnimal(id: String) {
         viewModelScope.launch {
             val animal = getAnimalUseCase(id)
-            if(animal != null) {
+            if (animal != null) {
                 val uiAnimal = uiAnimalMapper.mapToView(animal)
                 _state.update { oldState ->
                     oldState.copy(animal = uiAnimal)
@@ -49,9 +47,6 @@ class AnimalViewModel @Inject constructor(
             }
         }
     }
-
-    private val _doneSavingImage = MutableSharedFlow<Uri>() // Emits URIs
-    val doneSavingImage: SharedFlow<Uri> = _doneSavingImage
 
     fun saveImageFromUrl(url: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -78,7 +73,7 @@ class AnimalViewModel @Inject constructor(
         withContext(Dispatchers.IO) {
 
             val name = System.currentTimeMillis().toString()
-            val relativeLocation = "${Environment.DIRECTORY_PICTURES}/AppName"
+            val relativeLocation = "${Environment.DIRECTORY_PICTURES}/WorldOfCats"
             val contentValues = ContentValues().apply {
                 put(MediaStore.Images.ImageColumns.DISPLAY_NAME, name)
                 put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
@@ -105,7 +100,9 @@ class AnimalViewModel @Inject constructor(
                     throw IOException("Failed to save bitmap.")
                 }
 
-                _doneSavingImage.emit(uri)
+                _state.update { oldState ->
+                    oldState.copy(fileSaved = true)
+                }
 
             } catch (securityException: SecurityException) {
                 Log.e("DHR", "securityException $securityException")
