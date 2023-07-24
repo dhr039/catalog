@@ -6,7 +6,6 @@ import android.util.Patterns
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -135,6 +134,11 @@ fun BreedInfoTable(breed: UIBreed) {
                     DisplayTextRow("Alt Names:", it)
                 }
             }
+            breed.wikipediaUrl?.let {
+                if (it.isNotBlank()) {
+                    DisplayTextRow("Wikipedia URL:", it)
+                }
+            }
             breed.cfaUrl?.let {
                 if (it.isNotBlank()) {
                     DisplayTextRow("CFA URL:", it)
@@ -199,18 +203,12 @@ fun BreedInfoTable(breed: UIBreed) {
             breed.vocalisation?.let {
                 DisplayTextRow("Vocalisation:", it.toString())
             }
-            breed.wikipediaUrl?.let {
-                if (it.isNotBlank()) {
-                    DisplayTextRow("Wikipedia URL:", it)
-                }
-            }
             breed.hypoallergenic?.let {
                 DisplayTextRow("Hypoallergenic:", it.toString())
             }
         }
     }
 }
-
 
 @Composable
 fun DisplayTextRow(label: String, text: String) {
@@ -240,21 +238,17 @@ fun DisplayTextRow(label: String, text: String) {
         AnnotatedString(text)
     }
 
-    Row(
-        Modifier.fillMaxWidth()
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = label,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .weight(1f) // Allocates 1/3 of the space for label
-                .padding(end = 8.dp)
+            modifier = Modifier.padding(bottom = 5.dp)
         )
         Text(
             text = annotatedText,
             modifier = Modifier
-                .weight(2f) // Allocates 2/3 of the space for text
                 .wrapContentWidth(Alignment.Start)
+                .padding(start = 10.dp)
                 .clickable {
                     annotatedText
                         .getStringAnnotations(
@@ -280,3 +274,73 @@ fun DisplayTextRow(label: String, text: String) {
         )
     }
 }
+
+
+//@Composable
+//fun DisplayTextRow(label: String, text: String) {
+//    val context = LocalContext.current
+//    val coroutineScope = rememberCoroutineScope()
+//
+//    val isUrl = Patterns.WEB_URL.matcher(text).matches()
+//    val url = if (isUrl && !text.startsWith("http://") && !text.startsWith("https://")) {
+//        "http://$text"
+//    } else {
+//        text
+//    }
+//
+//    val annotatedText = if (isUrl) {
+//        buildAnnotatedString {
+//            withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
+//                append(text)
+//            }
+//            addStringAnnotation(
+//                tag = "URL",
+//                annotation = url,
+//                start = 0,
+//                end = text.length
+//            )
+//        }
+//    } else {
+//        AnnotatedString(text)
+//    }
+//
+//    Row(
+//        Modifier.fillMaxWidth()
+//    ) {
+//        Text(
+//            text = label,
+//            fontWeight = FontWeight.Bold,
+//            modifier = Modifier
+//                .weight(1f) // Allocates 1/3 of the space for label
+//                .padding(end = 8.dp)
+//        )
+//        Text(
+//            text = annotatedText,
+//            modifier = Modifier
+//                .weight(2f) // Allocates 2/3 of the space for text
+//                .wrapContentWidth(Alignment.Start)
+//                .clickable {
+//                    annotatedText
+//                        .getStringAnnotations(
+//                            "URL",
+//                            annotatedText.text.indexOf(text),
+//                            annotatedText.text.indexOf(text) + text.length
+//                        )
+//                        .firstOrNull()
+//                        ?.let { urlAnnotation ->
+//                            coroutineScope.launch {
+//                                val intent =
+//                                    Intent(
+//                                        Intent.ACTION_VIEW,
+//                                        Uri.parse(urlAnnotation.item)
+//                                    ).apply {
+//                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                                    }
+//                                context.startActivity(intent)
+//                            }
+//                        }
+//                },
+//            textDecoration = if (isUrl) TextDecoration.Underline else null
+//        )
+//    }
+//}
