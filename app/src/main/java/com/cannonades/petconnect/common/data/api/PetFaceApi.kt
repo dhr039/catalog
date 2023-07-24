@@ -17,6 +17,7 @@ interface PetFaceApi {
         @Query(ApiParameters.ORDER) order: String = "DESC",
         @Query(ApiParameters.HAS_BREEDS) hasBreeds: Boolean = false,
         @Query(ApiParameters.CATEGORY_IDS) categIds: String = "",
+        @Query(ApiParameters.BREED_IDS) breedIds: String = "",
     ): Response<List<ApiAnimal>>
 
     @Headers("x-api-key: ${ApiConstants.API_KEY}")

@@ -94,6 +94,7 @@ class HomeViewModel @Inject constructor(
                     }
 
                     val pagination = requestNextPageOfAnimals(++currentPage, false)
+//                    val pagination = requestNextPageOfAnimals(++currentPage, true)
                     currentPage = pagination.currentPage
                 }
 

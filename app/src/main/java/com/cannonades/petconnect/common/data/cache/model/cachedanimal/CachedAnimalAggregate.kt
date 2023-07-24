@@ -24,7 +24,44 @@ data class CachedAnimalAggregate(
                 breeds = if (animal.breeds == null) {
                     emptyList()
                 } else {
-                    animal.breeds.map { CachedBreed(it.id, it.name) }
+                    animal.breeds.map {
+                        CachedBreed(
+                            breedId = it.id,
+                            name = it.name,
+                            cfaUrl = it.cfaUrl,
+                            vetstreetUrl = it.vetstreetUrl,
+                            temperament = it.temperament,
+                            origin = it.origin,
+                            countryCodes = it.countryCodes,
+                            countryCode = it.countryCode,
+                            description = it.description,
+                            lifeSpan = it.lifeSpan,
+                            indoor = it.indoor,
+                            altNames = it.altNames,
+                            adaptability = it.adaptability,
+                            affectionLevel = it.affectionLevel,
+                            childFriendly = it.childFriendly,
+                            dogFriendly = it.dogFriendly,
+                            energyLevel = it.energyLevel,
+                            grooming = it.grooming,
+                            healthIssues = it.healthIssues,
+                            intelligence = it.intelligence,
+                            sheddingLevel = it.sheddingLevel,
+                            socialNeeds = it.socialNeeds,
+                            strangerFriendly = it.strangerFriendly,
+                            vocalisation = it.vocalisation,
+                            experimental = it.experimental,
+                            hairless = it.hairless,
+                            natural = it.natural,
+                            rare = it.rare,
+                            rex = it.rex,
+                            suppressedTail = it.suppressedTail,
+                            shortLegs = it.shortLegs,
+                            wikipediaUrl = it.wikipediaUrl,
+                            hypoallergenic = it.hypoallergenic,
+                            referenceImageId = it.referenceImageId
+                        )
+                    }
                 }
             )
         }
