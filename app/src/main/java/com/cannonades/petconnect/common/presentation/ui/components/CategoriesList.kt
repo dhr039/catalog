@@ -19,11 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cannonades.petconnect.common.presentation.model.UICategory
+import com.cannonades.petconnect.common.presentation.model.UIItem
 
 @Composable
 fun CategoriesList(
     modifier: Modifier,
-    categories: List<UICategory>,
+    categories: List<UIItem>,
     openCategoryScreen: (String) -> Unit
 ) {
     LazyColumn(
@@ -41,7 +42,7 @@ fun CategoriesList(
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryCard(category: UICategory, onClick: () -> Unit) {
+fun CategoryCard(category: UIItem, onClick: () -> Unit) {
     Card(
         shape = MaterialTheme.shapes.small,
         onClick = onClick,

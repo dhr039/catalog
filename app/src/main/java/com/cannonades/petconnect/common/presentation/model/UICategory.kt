@@ -1,7 +1,7 @@
 package com.cannonades.petconnect.common.presentation.model
 
 data class UICategory(
-    val id: String,
-    val name: String,
+    override val id: String,
+    override val name: String,
     val checked: Boolean = false
-)
+) : UIItem

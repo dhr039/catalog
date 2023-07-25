@@ -1,17 +1,12 @@
 package com.cannonades.petconnect.breeds.presentation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.cannonades.petconnect.common.presentation.model.UICategory
-import com.cannonades.petconnect.common.presentation.ui.components.BreedCategoriesList
-import com.cannonades.petconnect.common.presentation.ui.components.CategoryCard
+import com.cannonades.petconnect.common.presentation.ui.components.CategoriesList
 
 
 @Composable
@@ -51,7 +46,7 @@ fun BreedCategoriesScreen(
         onEvent(BreedsEvent.RequestMoreBreeds)
     }
 
-    BreedCategoriesList( //TODO: find how to re-use the other CategoriesComponent
+    CategoriesList(
         modifier = modifier,
         categories = viewState.breeds,
         openCategoryScreen = openCategoryScreen
