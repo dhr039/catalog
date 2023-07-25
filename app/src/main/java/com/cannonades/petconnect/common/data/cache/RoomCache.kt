@@ -1,14 +1,16 @@
 package com.cannonades.petconnect.common.data.cache
 
+import android.util.Log
 import com.cannonades.petconnect.common.data.cache.daos.AnimalsDao
 import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedAnimalAggregate
+import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedBreedCategory
 import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedCategory
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RoomCache @Inject constructor(private val animalsDao: AnimalsDao) : Cache {
-    override suspend fun deleteAllAnimalsWithBreed() {
-        animalsDao.getAllAnimalsWithBreed()
+    override suspend fun deleteAllAnimalsWithBreedCategories() {
+        animalsDao.deleteAllAnimalsWithBreedCategories()
     }
 
     override fun getAnimalsWithBreed(): Flow<List<CachedAnimalAggregate>> {
@@ -29,6 +31,14 @@ class RoomCache @Inject constructor(private val animalsDao: AnimalsDao) : Cache 
 
     override suspend fun storeNearbyAnimals(animals: List<CachedAnimalAggregate>) {
         animalsDao.insertAnimals(animals)
+    }
+
+    override fun getBreedCategories(): Flow<List<CachedBreedCategory>> {
+        return animalsDao.getAllBreedCategories()
+    }
+
+    override suspend fun storeBreedCategories(categories: List<CachedBreedCategory>) {
+        animalsDao.insertBreedCategories(categories)
     }
 
     override fun getCategories(): Flow<List<CachedCategory>> {

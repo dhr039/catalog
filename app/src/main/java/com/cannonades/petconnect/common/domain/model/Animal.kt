@@ -15,6 +15,11 @@ data class Photo(
     val mime: String
 )
 
+data class BreedCategory(
+    val id: String,
+    val name: String
+)
+
 data class Breed(
     val weight: Weight? = null,
     val id: String,

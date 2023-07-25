@@ -1,16 +1,11 @@
 package com.cannonades.petconnect.breeds.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonades.petconnect.categories.domain.usecases.GetCategoriesFromCacheUseCase
-import com.cannonades.petconnect.categories.domain.usecases.RequestCategoriesUseCase
-import com.cannonades.petconnect.categories.domain.usecases.UpdateCategoryUseCase
-import com.cannonades.petconnect.categories.presentation.CategoriesEvent
-import com.cannonades.petconnect.categories.presentation.CategoriesUiState
+import com.cannonades.petconnect.breeds.domain.GetBreedCategoriesFromCacheUseCase
+import com.cannonades.petconnect.breeds.domain.RequestBreedCategoriesUseCase
 import com.cannonades.petconnect.common.presentation.Event
-import com.cannonades.petconnect.common.presentation.model.UICategory
-import com.cannonades.petconnect.common.presentation.model.mappers.UICategoryMapper
+import com.cannonades.petconnect.common.presentation.model.mappers.UIBreedCategoryMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,56 +16,47 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BreedCategoriesViewModel @Inject constructor(
-    private val requestCategoriesUseCase: RequestCategoriesUseCase,
-    private val updateCategoryUseCase: UpdateCategoryUseCase,
-    private val getCategoriesFromCache: GetCategoriesFromCacheUseCase,
-    private val uiCategoryMapper: UICategoryMapper
+    private val requestBreedCategoriesUseCase: RequestBreedCategoriesUseCase,
+    private val getBreedsFromCache: GetBreedCategoriesFromCacheUseCase,
+    private val uiBreedCategoryMapper: UIBreedCategoryMapper
 ) : ViewModel() {
 
-//    init {
-//        viewModelScope.launch {
-//            getCategoriesFromCache().collect { categories ->
-//                onNewCategoriesList(categories.map { category -> uiCategoryMapper.mapToView(category) })
-//            }
-//        }
-//    }
-//
-//    private val _state = MutableStateFlow(CategoriesUiState())
-//    val categoriesUiState: StateFlow<CategoriesUiState> = _state.asStateFlow()
-//
-//    private fun onNewCategoriesList(categories: List<UICategory>) {
-//        if (categories.isNotEmpty()) {
-//            Log.e("DHR", "onNewCategoriesList ${categories.size}    |  $categories")
-//            _state.update { oldState ->
-//                oldState.copy(categories = categories.toList())
-//            }
-//        }
-//    }
-//
-//    fun onEvent(event: CategoriesEvent) {
-//        when (event) {
-//            is CategoriesEvent.RequestMoreCategories -> loadCategories()
-//        }
-//    }
-//
-//    fun onCategoryChecked(category: UICategory) {
-//        viewModelScope.launch {
-//            val updatedCategory = category.copy(checked = !category.checked)
-//            updateCategoryUseCase(updatedCategory)
-//        }
-//    }
-//
-//    fun loadCategories() {
-//        _state.update { it.copy(loading = true) }
-//        viewModelScope.launch {
-//            try {
-//                requestCategoriesUseCase()
-//            } catch (e: Exception){
-//                _state.update { it.copy(failure = Event(e)) }
-//            }
-//            finally {
-//                _state.update { it.copy(loading = false) }
-//            }
-//        }
-//    }
+    init {
+        viewModelScope.launch {
+            getBreedsFromCache().collect { categories ->
+                onNewCategoriesList(categories.map { category -> uiBreedCategoryMapper.mapToView(category) })
+            }
+        }
+    }
+
+    private val _state = MutableStateFlow(BreedsCategoriesUiState())
+    val breedsCategoriesUiStateStateFlow: StateFlow<BreedsCategoriesUiState> = _state.asStateFlow()
+
+    private fun onNewCategoriesList(breeds: List<UIBreedCategory>) {
+        if (breeds.isNotEmpty()) {
+            _state.update { oldState ->
+                oldState.copy(breeds = breeds.toList())
+            }
+        }
+    }
+
+    fun onEvent(event: BreedsEvent) {
+        when (event) {
+            is BreedsEvent.RequestMoreBreeds -> loadBreedCategories()
+        }
+    }
+
+    private fun loadBreedCategories() {
+        _state.update { it.copy(loading = true) }
+        viewModelScope.launch {
+            try {
+                requestBreedCategoriesUseCase()
+            } catch (e: Exception){
+                _state.update { it.copy(failure = Event(e)) }
+            }
+            finally {
+                _state.update { it.copy(loading = false) }
+            }
+        }
+    }
 }

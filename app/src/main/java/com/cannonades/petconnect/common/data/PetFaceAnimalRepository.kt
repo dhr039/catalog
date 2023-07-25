@@ -34,6 +34,10 @@ class PetFaceAnimalRepository @Inject constructor(
         return cache.getAnimalsWithBreed().map { animalList -> animalList.map { it.toAnimalDomain() } }
     }
 
+    override suspend fun deleteAllAnimalsWithBreedCategories() {
+        cache.deleteAllAnimalsWithBreedCategories()
+    }
+
     override suspend fun deleteAllAnimalsWithCategories() {
         cache.deleteAllAnimalsWithCategories()
     }

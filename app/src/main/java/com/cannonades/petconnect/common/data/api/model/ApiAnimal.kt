@@ -16,6 +16,12 @@ data class ApiAnimal(
 )
 
 @JsonClass(generateAdapter = true)
+data class ApiBreedCategory(
+    @field:Json(name = "id") val id: String?,
+    @field:Json(name = "name") val name: String?,
+)
+
+@JsonClass(generateAdapter = true)
 data class ApiBreed(
     @field:Json(name = "weight") val weight: ApiWeight?,
     @field:Json(name = "id") val id: String?,

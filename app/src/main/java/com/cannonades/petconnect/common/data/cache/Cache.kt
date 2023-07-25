@@ -1,12 +1,13 @@
 package com.cannonades.petconnect.common.data.cache
 
 import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedAnimalAggregate
+import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedBreedCategory
 import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedCategory
 import kotlinx.coroutines.flow.Flow
 
 interface Cache {
 
-    suspend fun deleteAllAnimalsWithBreed()
+    suspend fun deleteAllAnimalsWithBreedCategories()
 
     fun getAnimalsWithBreed(): Flow<List<CachedAnimalAggregate>>
 
@@ -17,6 +18,10 @@ interface Cache {
     suspend fun deleteAllAnimalsWithCategories()
 
     suspend fun storeNearbyAnimals(animals: List<CachedAnimalAggregate>)
+
+    fun getBreedCategories(): Flow<List<CachedBreedCategory>>
+
+    suspend fun storeBreedCategories(categories: List<CachedBreedCategory>)
 
     fun getCategories(): Flow<List<CachedCategory>>
 

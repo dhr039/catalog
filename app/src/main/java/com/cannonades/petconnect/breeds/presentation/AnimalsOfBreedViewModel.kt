@@ -2,9 +2,9 @@ package com.cannonades.petconnect.breeds.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonades.petconnect.categories.domain.usecases.ClearAnimalsWithCategoryUseCase
-import com.cannonades.petconnect.categories.domain.usecases.GetAnimalsWithCategoryFromCacheUseCase
-import com.cannonades.petconnect.categories.domain.usecases.RequestNextPageOfAnimalsWithCategoryUseCase
+import com.cannonades.petconnect.breeds.domain.ClearAnimalsWithBreedCategoryUseCase
+import com.cannonades.petconnect.breeds.domain.GetCatsWithBreedFromCacheUseCase
+import com.cannonades.petconnect.breeds.domain.RequestNextPageOfCatsWithBreedUseCase
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.pagination.Pagination
@@ -26,18 +26,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimalsOfBreedViewModel @Inject constructor(
-    private val requestNextPageOfAnimalsWithCategory: RequestNextPageOfAnimalsWithCategoryUseCase,
-    private val getAnimalsWithCategory: GetAnimalsWithCategoryFromCacheUseCase,
-    private val clearAnimalsWithCategoryUseCase: ClearAnimalsWithCategoryUseCase,
+    private val requestNextPageOfCatsWithBreedUseCase: RequestNextPageOfCatsWithBreedUseCase,
+    private val getCatsWithBreedFromCacheUseCase: GetCatsWithBreedFromCacheUseCase,
+    private val clearAnimalsWithBreedCategoryUseCase: ClearAnimalsWithBreedCategoryUseCase,
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
     init {
         viewModelScope.launch {
             // on opening the screen delete previous data
-            clearAnimalsWithCategoryUseCase()
+            clearAnimalsWithBreedCategoryUseCase()
 
-            getAnimalsWithCategory().collect { animals ->
+            getCatsWithBreedFromCacheUseCase().collect { animals ->
                 onNewAnimalList(animals.map { animal -> uiAnimalMapper.mapToView(animal) })
             }
         }
@@ -78,7 +78,7 @@ class AnimalsOfBreedViewModel @Inject constructor(
                         currentPage = state.value.animals.size / Pagination.DEFAULT_PAGE_SIZE
                     }
 
-                    val pagination = requestNextPageOfAnimalsWithCategory(++currentPage, categId)
+                    val pagination = requestNextPageOfCatsWithBreedUseCase(++currentPage)
                     currentPage = pagination.currentPage
                 }
 

@@ -38,7 +38,6 @@ class CategoriesViewModel @Inject constructor(
 
     private fun onNewCategoriesList(categories: List<UICategory>) {
         if (categories.isNotEmpty()) {
-            Log.e("DHR", "onNewCategoriesList ${categories.size}    |  $categories")
             _state.update { oldState ->
                 oldState.copy(categories = categories.toList())
             }

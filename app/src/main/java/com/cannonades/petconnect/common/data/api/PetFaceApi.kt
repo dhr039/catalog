@@ -1,6 +1,7 @@
 package com.cannonades.petconnect.common.data.api
 
 import com.cannonades.petconnect.common.data.api.model.ApiAnimal
+import com.cannonades.petconnect.common.data.api.model.ApiBreedCategory
 import com.cannonades.petconnect.common.data.api.model.ApiCategory
 import retrofit2.Response
 import retrofit2.http.GET
@@ -24,5 +25,10 @@ interface PetFaceApi {
     @GET(ApiConstants.CATEGORIES_ENDPOINT)
     suspend fun getCategories(
     ): Response<List<ApiCategory>>
+
+    @Headers("x-api-key: ${ApiConstants.API_KEY}")
+    @GET(ApiConstants.BREEDS_ENDPOINT)
+    suspend fun getBreedCategories(
+    ): Response<List<ApiBreedCategory>>
 
 }

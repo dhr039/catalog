@@ -105,10 +105,10 @@ class AnimalViewModel @Inject constructor(
                 }
 
             } catch (securityException: SecurityException) {
-                Log.e("DHR", "securityException $securityException")
+                Log.e("AnimalViewModel", "securityException $securityException")
                 throw securityException
             } catch (ioException: IOException) {
-                Log.e("DHR", "IOException $ioException")
+                Log.e("AnimalViewModel", "IOException $ioException")
                 if (uri != null) {
                     app.contentResolver.delete(uri, null, null)
                 }
