@@ -11,6 +11,7 @@ interface AnimalRepository {
     fun getAnimalsWithBreedListFromDb(): List<Animal>
     suspend fun deleteAllAnimalsWithBreedCategories()
     suspend fun deleteAllAnimalsWithCategories()
+
     suspend fun requestMoreAnimalsFromAPI(
         pageToLoad: Int,
         pageSize: Int,
@@ -18,6 +19,13 @@ interface AnimalRepository {
         breedIds: List<String> = listOf(),
         hasBreeds: Boolean
     ): PaginatedAnimals
+
+    suspend fun requestMoreAnimalsByBreedFromAPI(
+        pageToLoad: Int,
+        pageSize: Int,
+        breedIds: List<String> = listOf(),
+    ): PaginatedAnimals
+
     suspend fun storeAnimalsInDb(animals: List<Animal>, isWithCategories: Boolean, isWithBreed: Boolean)
     suspend fun getAnimalFromDb(id: String): Animal?
 }

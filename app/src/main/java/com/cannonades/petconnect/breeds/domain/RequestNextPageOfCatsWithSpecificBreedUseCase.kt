@@ -26,12 +26,10 @@ class RequestNextPageOfCatsWithSpecificBreedUseCase @Inject constructor(
              *  for some reason server doesn't return cats of required breed
              *  if hasBreeds = true. Have to set it to false:
              * */
-            val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(
+            val (animals, pagination) = animalRepository.requestMoreAnimalsByBreedFromAPI(
                 pageToLoad = pageToLoad,
                 pageSize = Pagination.DEFAULT_PAGE_SIZE,
-                categIds = listOf(),
                 breedIds = listOf(breedId),
-                hasBreeds = false
             )
 
             if (animals.isEmpty()) {

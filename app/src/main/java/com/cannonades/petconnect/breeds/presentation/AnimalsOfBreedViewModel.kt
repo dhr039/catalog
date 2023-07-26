@@ -1,5 +1,6 @@
 package com.cannonades.petconnect.breeds.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.breeds.domain.GetCatsWithBreedFromCacheUseCase
@@ -53,10 +54,16 @@ class AnimalsOfBreedViewModel @Inject constructor(
     }
 
     private fun onNewAnimalList(animals: List<UIAnimal>) {
-        val updatedAnimalSet = (state.value.animals + animals).toSet()
+        try {
+            val updatedAnimalSet = (state.value.animals + animals).toSet()
 
-        _state.update { oldState ->
-            oldState.copy(animals = updatedAnimalSet.toList())
+            _state.update { oldState ->
+                oldState.copy(animals = updatedAnimalSet.toList())
+            }
+        } catch (e: Exception) {
+            /*Sometimes, onNewAnimalList can be called before state: StateFlow<AnimalsListViewState> has been initialized.
+            * It throws a NullPointerException. Decided to use a try/catch rather than adding logic to prevent it. */
+            Log.e("AnimalsOfBreedViewModel", "${e.stackTrace}")
         }
     }
 

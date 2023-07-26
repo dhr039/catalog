@@ -81,6 +81,37 @@ class PetFaceAnimalRepository @Inject constructor(
         }
     }
 
+    override suspend fun requestMoreAnimalsByBreedFromAPI(
+        pageToLoad: Int,
+        pageSize: Int,
+        breedIds: List<String>,
+    ): PaginatedAnimals {
+        try {
+            val response: Response<List<ApiAnimal>> = api.getAnimalsByBreed(
+                pageToLoad = pageToLoad,
+                pageSize = pageSize,
+                breedIds = breedIds.joinToString(","),
+            )
+
+            val headers = response.headers().toMultimap()
+            val totalCount = headers["pagination-count"]?.get(0)?.toIntOrNull() ?: 0
+            val countPerPage = headers["pagination-limit"]?.get(0)?.toIntOrNull() ?: 1
+            val currentPage = headers["pagination-page"]?.get(0)?.toIntOrNull() ?: 0
+            val totalPages = totalCount / countPerPage
+
+            val animals = response.body() ?: emptyList()
+            return PaginatedAnimals(
+                animals.map { apiAnimalMapper.mapToDomain(it) },
+                Pagination(
+                    currentPage = currentPage,
+                    totalPages = totalPages
+                )
+            )
+        } catch (exception: HttpException) {
+            throw NetworkException
+        }
+    }
+
     override suspend fun storeAnimalsInDb(animals: List<Animal>, isWithCategories: Boolean, isWithBreed: Boolean) {
         cache.storeNearbyAnimals(animals.map { CachedAnimalAggregate.fromDomain(it, isWithCategories, isWithBreed) })
     }

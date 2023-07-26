@@ -22,6 +22,17 @@ interface PetFaceApi {
     ): Response<List<ApiAnimal>>
 
     @Headers("x-api-key: ${ApiConstants.API_KEY}")
+    @GET(ApiConstants.ANIMALS_ENDPOINT)
+    suspend fun getAnimalsByBreed(
+        @Query(ApiParameters.PAGE) pageToLoad: Int,
+        @Query(ApiParameters.LIMIT) pageSize: Int,
+//        @Query(ApiParameters.ORDER) order: String = "DESC",
+//        @Query(ApiParameters.HAS_BREEDS) hasBreeds: Boolean = false,
+//        @Query(ApiParameters.CATEGORY_IDS) categIds: String = "",
+        @Query(ApiParameters.BREED_IDS) breedIds: String = "",
+    ): Response<List<ApiAnimal>>
+
+    @Headers("x-api-key: ${ApiConstants.API_KEY}")
     @GET(ApiConstants.CATEGORIES_ENDPOINT)
     suspend fun getCategories(
     ): Response<List<ApiCategory>>
