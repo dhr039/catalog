@@ -17,6 +17,28 @@ import androidx.compose.ui.platform.LocalConfiguration
 /**
  * Multitouch: Panning, zooming, rotating:
  * https://developer.android.com/jetpack/compose/touch-input/pointer-input/multi-touch
+ *
+ * Sample use:
+ *
+ *             val imageWidth = viewState.animal?.width?.toFloat() ?: 1f
+ *             val imageHeight = viewState.animal?.height?.toFloat() ?: 1f
+ *
+ *             ZoomableDraggableImage(
+ *                 imageUrl = url,
+ *                 contentDescription = null,
+ *                 imageWidth = imageWidth,
+ *                 imageHeight = imageHeight,
+ *                 imageComponent = { imageUrl, contentDescription, modifier ->
+ *                     AsyncImage(
+ *                         model = imageUrl,
+ *                         contentDescription = contentDescription,
+ *                         modifier = modifier,
+ *                         contentScale = ContentScale.Crop
+ *                     )
+ *                 }
+ *             )
+ *
+ *
  * */
 @Composable
 fun ZoomableDraggableImage(

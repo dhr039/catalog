@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.cannonades.petconnect.common.presentation.model.UIBreed
-import com.cannonades.petconnect.common.presentation.ui.components.ZoomableDraggableImage
 import kotlinx.coroutines.launch
 
 
@@ -50,9 +49,6 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
 
     val viewState by viewModel.state.collectAsState()
 
-    val imageWidth = viewState.animal?.width?.toFloat() ?: 1f
-    val imageHeight = viewState.animal?.height?.toFloat() ?: 1f
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,6 +56,16 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
             .verticalScroll(rememberScrollState())
     ) {
         viewState.animal?.photo?.let { url ->
+
+            AsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = url,
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             Button(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
                 onClick = { viewModel.saveImageFromUrl(url) },
@@ -75,27 +81,6 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            ZoomableDraggableImage(
-                imageUrl = url,
-                contentDescription = null,
-                imageWidth = imageWidth,
-                imageHeight = imageHeight,
-                imageComponent = { imageUrl, contentDescription, modifier ->
-                    AsyncImage(
-                        model = imageUrl,
-                        contentDescription = contentDescription,
-                        modifier = modifier,
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            )
-
-
-
-
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -277,73 +262,3 @@ fun DisplayTextRow(label: String, text: String) {
         )
     }
 }
-
-
-//@Composable
-//fun DisplayTextRow(label: String, text: String) {
-//    val context = LocalContext.current
-//    val coroutineScope = rememberCoroutineScope()
-//
-//    val isUrl = Patterns.WEB_URL.matcher(text).matches()
-//    val url = if (isUrl && !text.startsWith("http://") && !text.startsWith("https://")) {
-//        "http://$text"
-//    } else {
-//        text
-//    }
-//
-//    val annotatedText = if (isUrl) {
-//        buildAnnotatedString {
-//            withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
-//                append(text)
-//            }
-//            addStringAnnotation(
-//                tag = "URL",
-//                annotation = url,
-//                start = 0,
-//                end = text.length
-//            )
-//        }
-//    } else {
-//        AnnotatedString(text)
-//    }
-//
-//    Row(
-//        Modifier.fillMaxWidth()
-//    ) {
-//        Text(
-//            text = label,
-//            fontWeight = FontWeight.Bold,
-//            modifier = Modifier
-//                .weight(1f) // Allocates 1/3 of the space for label
-//                .padding(end = 8.dp)
-//        )
-//        Text(
-//            text = annotatedText,
-//            modifier = Modifier
-//                .weight(2f) // Allocates 2/3 of the space for text
-//                .wrapContentWidth(Alignment.Start)
-//                .clickable {
-//                    annotatedText
-//                        .getStringAnnotations(
-//                            "URL",
-//                            annotatedText.text.indexOf(text),
-//                            annotatedText.text.indexOf(text) + text.length
-//                        )
-//                        .firstOrNull()
-//                        ?.let { urlAnnotation ->
-//                            coroutineScope.launch {
-//                                val intent =
-//                                    Intent(
-//                                        Intent.ACTION_VIEW,
-//                                        Uri.parse(urlAnnotation.item)
-//                                    ).apply {
-//                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                                    }
-//                                context.startActivity(intent)
-//                            }
-//                        }
-//                },
-//            textDecoration = if (isUrl) TextDecoration.Underline else null
-//        )
-//    }
-//}
