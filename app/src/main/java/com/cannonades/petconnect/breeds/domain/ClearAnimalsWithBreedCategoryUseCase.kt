@@ -1,5 +1,6 @@
 package com.cannonades.petconnect.breeds.domain
 
+import android.util.Log
 import com.cannonades.petconnect.common.domain.repositories.AnimalRepository
 import com.cannonades.petconnect.common.utils.DispatchersProvider
 import kotlinx.coroutines.withContext
@@ -11,6 +12,7 @@ class ClearAnimalsWithBreedCategoryUseCase @Inject constructor(
 ) {
     suspend operator fun invoke() {
         withContext(dispatchersProvider.io()) {
+            Log.d("ClearAnimalsWithBreedCategoryUseCase", "calling animalRepository.deleteAllAnimalsWithBreedCategories()")
             animalRepository.deleteAllAnimalsWithBreedCategories()
         }
     }

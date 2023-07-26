@@ -1,5 +1,6 @@
 package com.cannonades.petconnect.common.data
 
+import android.util.Log
 import com.cannonades.petconnect.common.data.api.PetFaceApi
 import com.cannonades.petconnect.common.data.api.model.ApiAnimal
 import com.cannonades.petconnect.common.data.api.model.mappers.ApiAnimalMapper
@@ -46,6 +47,9 @@ class PetFaceAnimalRepository @Inject constructor(
         cache.deleteAllAnimalsWithCategories()
     }
 
+    private var latestAnimalIds: List<String> = emptyList()
+    private var latestAnimalIdsRegular: List<String> = emptyList()
+
     override suspend fun requestMoreAnimalsFromAPI(
         pageToLoad: Int,
         pageSize: Int,
@@ -69,6 +73,20 @@ class PetFaceAnimalRepository @Inject constructor(
             val totalPages = totalCount / countPerPage
 
             val animals = response.body() ?: emptyList()
+
+            // Check if the animal IDs are the same as the last request
+            val currentAnimalIds = animals.map { it.id }.filterNotNull()
+            if (currentAnimalIds == latestAnimalIdsRegular) {
+                return PaginatedAnimals(
+                    emptyList(),
+                    Pagination(
+                        currentPage = currentPage,
+                        totalPages = totalPages
+                    )
+                )
+            }
+            latestAnimalIdsRegular = currentAnimalIds
+
             return PaginatedAnimals(
                 animals.map { apiAnimalMapper.mapToDomain(it) },
                 Pagination(
@@ -100,6 +118,20 @@ class PetFaceAnimalRepository @Inject constructor(
             val totalPages = totalCount / countPerPage
 
             val animals = response.body() ?: emptyList()
+
+            // Check if the animal IDs are the same as the last request
+            val currentAnimalIds = animals.map { it.id }.filterNotNull()
+            if (currentAnimalIds == latestAnimalIds) {
+                return PaginatedAnimals(
+                    emptyList(),
+                    Pagination(
+                        currentPage = currentPage,
+                        totalPages = totalPages
+                    )
+                )
+            }
+            latestAnimalIds = currentAnimalIds
+
             return PaginatedAnimals(
                 animals.map { apiAnimalMapper.mapToDomain(it) },
                 Pagination(

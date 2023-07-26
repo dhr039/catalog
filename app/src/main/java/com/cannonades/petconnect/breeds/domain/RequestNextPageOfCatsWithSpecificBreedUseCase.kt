@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.breeds.domain
 
-import android.util.Log
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.pagination.Pagination
 import com.cannonades.petconnect.common.domain.repositories.AnimalRepository
@@ -22,10 +21,6 @@ class RequestNextPageOfCatsWithSpecificBreedUseCase @Inject constructor(
                 throw Exception("page cannot be lower than 1")
             }
 
-            /**
-             *  for some reason server doesn't return cats of required breed
-             *  if hasBreeds = true. Have to set it to false:
-             * */
             val (animals, pagination) = animalRepository.requestMoreAnimalsByBreedFromAPI(
                 pageToLoad = pageToLoad,
                 pageSize = Pagination.DEFAULT_PAGE_SIZE,
@@ -36,11 +31,6 @@ class RequestNextPageOfCatsWithSpecificBreedUseCase @Inject constructor(
                 throw NoMoreAnimalsException
             }
 
-            Log.e("DHR", "SIZE before: ${animalRepository.getAnimalsWithBreedListFromDb().size}")
-            animalRepository.deleteAllAnimalsWithBreedCategories()
-            Log.e("DHR", "SIZE after: ${animalRepository.getAnimalsWithBreedListFromDb().size}")
-
-            //FIXME: check why the db is cleared but the previous cats are still displayed
             animalRepository.storeAnimalsInDb(animals, isWithCategories = false, isWithBreed =  true)
 
             return@withContext pagination

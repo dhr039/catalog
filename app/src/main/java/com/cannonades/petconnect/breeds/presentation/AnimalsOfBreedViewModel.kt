@@ -3,6 +3,7 @@ package com.cannonades.petconnect.breeds.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cannonades.petconnect.breeds.domain.ClearAnimalsWithBreedCategoryUseCase
 import com.cannonades.petconnect.breeds.domain.GetCatsWithBreedFromCacheUseCase
 import com.cannonades.petconnect.breeds.domain.RequestNextPageOfCatsWithSpecificBreedUseCase
 import com.cannonades.petconnect.common.domain.model.NetworkException
@@ -28,14 +29,14 @@ import javax.inject.Inject
 class AnimalsOfBreedViewModel @Inject constructor(
     private val requestNextPageOfCatsWithSpecificBreedUseCase: RequestNextPageOfCatsWithSpecificBreedUseCase,
     private val getCatsWithBreedFromCacheUseCase: GetCatsWithBreedFromCacheUseCase,
-//    private val clearAnimalsWithBreedCategoryUseCase: ClearAnimalsWithBreedCategoryUseCase,
+    private val clearAnimalsWithBreedCategoryUseCase: ClearAnimalsWithBreedCategoryUseCase,
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
     init {
         viewModelScope.launch {
             // on opening the screen delete previous data
-//            clearAnimalsWithBreedCategoryUseCase()
+            clearAnimalsWithBreedCategoryUseCase()
 
             getCatsWithBreedFromCacheUseCase().collect { animals ->
                 onNewAnimalList(animals.map { animal -> uiAnimalMapper.mapToView(animal) })
@@ -110,6 +111,7 @@ class AnimalsOfBreedViewModel @Inject constructor(
             }
 
             is NoMoreAnimalsException -> {
+                Log.e("DHR", "NoMoreAnimalsException hasMoreAnimalsBeenHandled:$hasMoreAnimalsBeenHandled")
                 if (!hasMoreAnimalsBeenHandled) {
                     _state.update {
                         it.copy(loading = false, failure = Event(failure))
