@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.common.data.cache
 
-import android.util.Log
 import com.cannonades.petconnect.common.data.cache.daos.AnimalsDao
 import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedAnimalAggregate
 import com.cannonades.petconnect.common.data.cache.model.cachedanimal.CachedBreedCategory
@@ -15,6 +14,10 @@ class RoomCache @Inject constructor(private val animalsDao: AnimalsDao) : Cache 
 
     override fun getAnimalsWithBreed(): Flow<List<CachedAnimalAggregate>> {
         return animalsDao.getAllAnimalsWithBreed()
+    }
+
+    override fun getAnimalsWithBreedList(): List<CachedAnimalAggregate> {
+        return animalsDao.getAllAnimalsWithBreedList()
     }
 
     override fun getAnimalsNoCategory(): Flow<List<CachedAnimalAggregate>> {

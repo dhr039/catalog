@@ -2,9 +2,8 @@ package com.cannonades.petconnect.breeds.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonades.petconnect.breeds.domain.ClearAnimalsWithBreedCategoryUseCase
 import com.cannonades.petconnect.breeds.domain.GetCatsWithBreedFromCacheUseCase
-import com.cannonades.petconnect.breeds.domain.RequestNextPageOfCatsWithBreedUseCase
+import com.cannonades.petconnect.breeds.domain.RequestNextPageOfCatsWithSpecificBreedUseCase
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.pagination.Pagination
@@ -26,16 +25,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimalsOfBreedViewModel @Inject constructor(
-    private val requestNextPageOfCatsWithBreedUseCase: RequestNextPageOfCatsWithBreedUseCase,
+    private val requestNextPageOfCatsWithSpecificBreedUseCase: RequestNextPageOfCatsWithSpecificBreedUseCase,
     private val getCatsWithBreedFromCacheUseCase: GetCatsWithBreedFromCacheUseCase,
-    private val clearAnimalsWithBreedCategoryUseCase: ClearAnimalsWithBreedCategoryUseCase,
+//    private val clearAnimalsWithBreedCategoryUseCase: ClearAnimalsWithBreedCategoryUseCase,
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
     init {
         viewModelScope.launch {
             // on opening the screen delete previous data
-            clearAnimalsWithBreedCategoryUseCase()
+//            clearAnimalsWithBreedCategoryUseCase()
 
             getCatsWithBreedFromCacheUseCase().collect { animals ->
                 onNewAnimalList(animals.map { animal -> uiAnimalMapper.mapToView(animal) })
@@ -49,8 +48,8 @@ class AnimalsOfBreedViewModel @Inject constructor(
 
     val state: StateFlow<AnimalsListViewState> = _state.asStateFlow()
 
-    fun myOnEvent(categId: Int) {
-        loadNextAnimalPage(categId)
+    fun onRequestMoreWithSpecificBreedEvent(breedId: String) {
+        loadNextAnimalPage(breedId)
     }
 
     private fun onNewAnimalList(animals: List<UIAnimal>) {
@@ -61,7 +60,7 @@ class AnimalsOfBreedViewModel @Inject constructor(
         }
     }
 
-    private fun loadNextAnimalPage(categId: Int) {
+    private fun loadNextAnimalPage(breedId: String) {
         _state.update { it.copy(loading = true) }
         val errorMessage = "Failed to fetch animals"
         val exceptionHandler = viewModelScope.createExceptionHandler(errorMessage) { onFailure(it) }
@@ -78,7 +77,7 @@ class AnimalsOfBreedViewModel @Inject constructor(
                         currentPage = state.value.animals.size / Pagination.DEFAULT_PAGE_SIZE
                     }
 
-                    val pagination = requestNextPageOfCatsWithBreedUseCase(++currentPage)
+                    val pagination = requestNextPageOfCatsWithSpecificBreedUseCase(++currentPage, breedId = breedId)
                     currentPage = pagination.currentPage
                 }
 

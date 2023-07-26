@@ -1,6 +1,8 @@
 package com.cannonades.petconnect.breeds.presentation
 
-import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,6 +10,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.domain.model.NetworkException
@@ -37,18 +41,24 @@ fun AnimalsOfBreedScreen(
         showSnackbar(message)
     }
 
-    Text(text = categId ?: "nothing")
+    Column {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            text = categId ?: "nothing",
+            textAlign = TextAlign.Center
+        )
 
-    Log.d("Dhr", "AnimalsOfBreedScreen categId::: $categId")
+        if (!categId.isNullOrEmpty()) {
+            LaunchedEffect(Unit) {
+                viewModel.onRequestMoreWithSpecificBreedEvent(categId)
+            }
 
-//    if (!categId.isNullOrEmpty()) {
-//        LaunchedEffect(Unit) {
-//            viewModel.myOnEvent(categId.toInt())
-//        }
-//
-//        AnimalGrid(modifier, viewState, onEndOfList = {
-//            viewModel.myOnEvent(categId.toInt())
-//        }, onAnimalClick = onAnimalClick)
-//    }
+            AnimalGrid(modifier, viewState, onEndOfList = {
+                viewModel.onRequestMoreWithSpecificBreedEvent(categId)
+            }, onAnimalClick = onAnimalClick)
+        }
+    }
 
 }

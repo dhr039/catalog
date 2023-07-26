@@ -7,7 +7,7 @@ import com.cannonades.petconnect.common.utils.DispatchersProvider
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RequestNextPageOfCatsWithBreedUseCase @Inject constructor(
+class RequestNextPageOfAllCatsWithBreedUseCase @Inject constructor(
     private val animalRepository: AnimalRepository,
     private val dispatchersProvider: DispatchersProvider
 ) {
@@ -21,10 +21,11 @@ class RequestNextPageOfCatsWithBreedUseCase @Inject constructor(
             }
 
             val (animals, pagination) = animalRepository.requestMoreAnimalsFromAPI(
-                pageToLoad,
-                Pagination.DEFAULT_PAGE_SIZE,
-                listOf(),
-                true
+                pageToLoad = pageToLoad,
+                pageSize = Pagination.DEFAULT_PAGE_SIZE,
+                categIds = listOf(),
+                breedIds = listOf(),
+                hasBreeds = true
             )
 
             if (animals.isEmpty()) {

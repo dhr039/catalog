@@ -11,6 +11,8 @@ interface Cache {
 
     fun getAnimalsWithBreed(): Flow<List<CachedAnimalAggregate>>
 
+    fun getAnimalsWithBreedList(): List<CachedAnimalAggregate>
+
     fun getAnimalsNoCategory(): Flow<List<CachedAnimalAggregate>>
 
     fun getAnimalsWithCategory(): Flow<List<CachedAnimalAggregate>>

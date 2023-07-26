@@ -121,7 +121,8 @@ class PetFaceAnimalRepositoryTest {
         // When
         val paginatedAnimals = repository.requestMoreAnimalsFromAPI(
             pageToLoad = 1,
-            numberOfItems = 100,
+            pageSize = 100,
+            listOf(),
             listOf(),
             false
         )

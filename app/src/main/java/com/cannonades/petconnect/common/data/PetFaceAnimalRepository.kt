@@ -34,6 +34,10 @@ class PetFaceAnimalRepository @Inject constructor(
         return cache.getAnimalsWithBreed().map { animalList -> animalList.map { it.toAnimalDomain() } }
     }
 
+    override fun getAnimalsWithBreedListFromDb(): List<Animal> {
+        return cache.getAnimalsWithBreedList().map { it.toAnimalDomain() }
+    }
+
     override suspend fun deleteAllAnimalsWithBreedCategories() {
         cache.deleteAllAnimalsWithBreedCategories()
     }
@@ -42,9 +46,21 @@ class PetFaceAnimalRepository @Inject constructor(
         cache.deleteAllAnimalsWithCategories()
     }
 
-    override suspend fun requestMoreAnimalsFromAPI(pageToLoad: Int, numberOfItems: Int, categIds: List<Int>, hasBreeds: Boolean): PaginatedAnimals {
+    override suspend fun requestMoreAnimalsFromAPI(
+        pageToLoad: Int,
+        pageSize: Int,
+        categIds: List<Int>,
+        breedIds: List<String>,
+        hasBreeds: Boolean
+    ): PaginatedAnimals {
         try {
-            val response: Response<List<ApiAnimal>> = api.getAnimals(pageToLoad, numberOfItems, categIds = categIds.joinToString(","), hasBreeds = hasBreeds)
+            val response: Response<List<ApiAnimal>> = api.getAnimals(
+                pageToLoad = pageToLoad,
+                pageSize = pageSize,
+                categIds = categIds.joinToString(","),
+                breedIds = breedIds.joinToString(","),
+                hasBreeds = hasBreeds
+            )
 
             val headers = response.headers().toMultimap()
             val totalCount = headers["pagination-count"]?.get(0)?.toIntOrNull() ?: 0
