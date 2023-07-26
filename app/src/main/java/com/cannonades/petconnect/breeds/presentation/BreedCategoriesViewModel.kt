@@ -24,7 +24,11 @@ class BreedCategoriesViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getBreedsFromCache().collect { categories ->
-                onNewCategoriesList(categories.map { category -> uiBreedCategoryMapper.mapToView(category) })
+                onNewCategoriesList(categories.map { category ->
+                    uiBreedCategoryMapper.mapToView(
+                        category
+                    )
+                })
             }
         }
     }
@@ -34,8 +38,9 @@ class BreedCategoriesViewModel @Inject constructor(
 
     private fun onNewCategoriesList(breeds: List<UIBreedCategory>) {
         if (breeds.isNotEmpty()) {
+            val manuallyCreatedItem = UIBreedCategory(id = RANDOM_BREEDS_ID, name = "All Breeds Random")
             _state.update { oldState ->
-                oldState.copy(breeds = breeds.toList())
+                oldState.copy(breeds = listOf(manuallyCreatedItem) + breeds.toList())
             }
         }
     }
@@ -51,10 +56,9 @@ class BreedCategoriesViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 requestBreedCategoriesUseCase()
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 _state.update { it.copy(failure = Event(e)) }
-            }
-            finally {
+            } finally {
                 _state.update { it.copy(loading = false) }
             }
         }

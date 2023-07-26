@@ -1,5 +1,6 @@
 package com.cannonades.petconnect.breeds.domain
 
+import com.cannonades.petconnect.breeds.presentation.RANDOM_BREEDS_ID
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
 import com.cannonades.petconnect.common.domain.model.pagination.Pagination
 import com.cannonades.petconnect.common.domain.repositories.AnimalRepository
@@ -21,11 +22,19 @@ class RequestNextPageOfCatsWithSpecificBreedUseCase @Inject constructor(
                 throw Exception("page cannot be lower than 1")
             }
 
-            val (animals, pagination) = animalRepository.requestMoreAnimalsByBreedFromAPI(
-                pageToLoad = pageToLoad,
-                pageSize = Pagination.DEFAULT_PAGE_SIZE,
-                breedIds = listOf(breedId),
-            )
+            val (animals, pagination) = if (breedId == RANDOM_BREEDS_ID) {
+                animalRepository.requestMoreAnimalsFromAPI(
+                    pageToLoad = pageToLoad,
+                    pageSize = Pagination.DEFAULT_PAGE_SIZE,
+                    hasBreeds = true,
+                )
+            } else {
+                animalRepository.requestMoreAnimalsByBreedFromAPI(
+                    pageToLoad = pageToLoad,
+                    pageSize = Pagination.DEFAULT_PAGE_SIZE,
+                    breedIds = listOf(breedId),
+                )
+            }
 
             if (animals.isEmpty()) {
                 throw NoMoreAnimalsException
