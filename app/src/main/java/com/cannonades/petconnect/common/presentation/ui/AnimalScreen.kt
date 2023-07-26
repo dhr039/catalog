@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,10 +56,28 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(10.dp)
             .verticalScroll(rememberScrollState())
     ) {
         viewState.animal?.photo?.let { url ->
+            Button(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
+                onClick = { viewModel.saveImageFromUrl(url) },
+                enabled = !(viewState.fileSaved),
+            ) {
+                when {
+                    viewState.fileSaved -> {
+                        Text("Saved")
+                    }
+
+                    else -> {
+                        Text("Save Image")
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             ZoomableDraggableImage(
                 imageUrl = url,
                 contentDescription = null,
@@ -76,23 +93,9 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
                 }
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
 
-            Button(
-                modifier = Modifier.width(150.dp),
-                onClick = { viewModel.saveImageFromUrl(url) },
-                enabled = !(viewState.fileSaved),
-            ) {
-                when {
-                    viewState.fileSaved -> {
-                        Text("Saved")
-                    }
 
-                    else -> {
-                        Text("Save Image")
-                    }
-                }
-            }
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))
