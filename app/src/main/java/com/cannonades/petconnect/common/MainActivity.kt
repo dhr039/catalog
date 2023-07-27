@@ -40,16 +40,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cannonades.petconnect.R
-import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
-import com.cannonades.petconnect.breeds.presentation.AnimalsOfBreedRoute
-import com.cannonades.petconnect.breeds.presentation.BreedCategoriesRoute
-import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryRoute
-import com.cannonades.petconnect.categories.presentation.CategoriesRoute
+import com.cannonades.petconnect.feature.home.presentation.HomeRoute
+import com.cannonades.petconnect.feature.breeds.presentation.AnimalsOfBreedRoute
+import com.cannonades.petconnect.feature.breeds.presentation.BreedCategoriesRoute
+import com.cannonades.petconnect.feature.categories.presentation.AnimalsOfCategoryRoute
+import com.cannonades.petconnect.feature.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
-import com.cannonades.petconnect.settings.presentation.SettingsDialog
-import com.cannonades.petconnect.settings.presentation.SettingsViewModel
+import com.cannonades.petconnect.feature.settings.presentation.SettingsDialog
+import com.cannonades.petconnect.feature.settings.presentation.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.common.data
 
-import android.util.Log
 import com.cannonades.petconnect.common.data.api.PetFaceApi
 import com.cannonades.petconnect.common.data.api.model.ApiAnimal
 import com.cannonades.petconnect.common.data.api.model.mappers.ApiAnimalMapper

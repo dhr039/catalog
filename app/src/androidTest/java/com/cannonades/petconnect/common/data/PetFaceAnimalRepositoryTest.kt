@@ -154,7 +154,7 @@ class PetFaceAnimalRepositoryTest {
         )
 
         // When
-        repository.storeAnimalsInDb(expectedAnimals, false, false)
+        repository.storeAnimalsInDb(expectedAnimals, isWithCategories = true, isWithBreed = false)
 
         // Then
         val animals = repository.getAnimalsWithCategoryFromDb().first()
