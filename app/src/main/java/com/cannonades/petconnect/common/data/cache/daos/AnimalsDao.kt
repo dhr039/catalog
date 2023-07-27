@@ -70,12 +70,18 @@ abstract class AnimalsDao {
     @Query("SELECT * FROM breed_categories")
     abstract fun getAllBreedCategories(): Flow<List<CachedBreedCategory>>
 
+    @Query("SELECT * FROM breed_categories WHERE categoryId = :categoryId LIMIT 1")
+    abstract suspend fun getBreedCategById(categoryId: String): CachedBreedCategory
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertBreedCategories(categories: List<CachedBreedCategory>)
 
     @Transaction
     @Query("SELECT * FROM categories")
     abstract fun getAllCategories(): Flow<List<CachedCategory>>
+
+    @Query("SELECT * FROM categories WHERE categoryId = :categoryId LIMIT 1")
+    abstract suspend fun getCategById(categoryId: String): CachedCategory
 
     @Transaction
     @Query("SELECT * FROM categories")

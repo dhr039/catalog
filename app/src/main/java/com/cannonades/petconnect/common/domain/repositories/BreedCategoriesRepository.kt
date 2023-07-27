@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface BreedCategoriesRepository {
     fun getBreedCategoriesFromDb(): Flow<List<BreedCategory>>
+    suspend fun getBreedCategoryByIdFromDb(categId: String): BreedCategory
     suspend fun requestBreedCategoriesFromAPI(): List<BreedCategory>
     suspend fun storeBreedCategoriesInDb(categories: List<BreedCategory>)
 }

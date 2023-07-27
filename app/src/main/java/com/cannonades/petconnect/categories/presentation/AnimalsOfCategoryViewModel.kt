@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.categories.domain.usecases.ClearAnimalsWithCategoryUseCase
 import com.cannonades.petconnect.categories.domain.usecases.GetAnimalsWithCategoryFromCacheUseCase
+import com.cannonades.petconnect.categories.domain.usecases.GetCategoryByIdFromCacheUseCase
 import com.cannonades.petconnect.categories.domain.usecases.RequestNextPageOfAnimalsWithCategoryUseCase
 import com.cannonades.petconnect.common.domain.model.NetworkException
 import com.cannonades.petconnect.common.domain.model.NoMoreAnimalsException
@@ -29,6 +30,7 @@ class AnimalsOfCategoryViewModel @Inject constructor(
     private val requestNextPageOfAnimalsWithCategory: RequestNextPageOfAnimalsWithCategoryUseCase,
     private val getAnimalsWithCategory: GetAnimalsWithCategoryFromCacheUseCase,
     private val clearAnimalsWithCategoryUseCase: ClearAnimalsWithCategoryUseCase,
+    private val getCategoryByIdFromCacheUseCase: GetCategoryByIdFromCacheUseCase,
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
@@ -81,6 +83,9 @@ class AnimalsOfCategoryViewModel @Inject constructor(
                     val pagination = requestNextPageOfAnimalsWithCategory(++currentPage, categId)
                     currentPage = pagination.currentPage
                 }
+
+                val categ = getCategoryByIdFromCacheUseCase(categId)
+                _state.update { it.copy(categName = categ.name) }
 
             } finally {
                 /**

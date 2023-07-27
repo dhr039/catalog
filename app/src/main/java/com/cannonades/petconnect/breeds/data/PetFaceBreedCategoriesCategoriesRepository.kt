@@ -25,6 +25,10 @@ class PetFaceBreedCategoriesCategoriesRepository @Inject constructor(
         return cache.getBreedCategories().map { categList -> categList.map { it.toBreedCategoryDomain() } }
     }
 
+    override suspend fun getBreedCategoryByIdFromDb(categId: String): BreedCategory {
+        return cache.getBreedCategoryById(categId).toBreedCategoryDomain()
+    }
+
     override suspend fun requestBreedCategoriesFromAPI(): List<BreedCategory> {
         try {
             val response: Response<List<ApiBreedCategory>> = api.getBreedCategories()

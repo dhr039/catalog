@@ -5,7 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.cannonades.petconnect.common.presentation.ui.components.AnimalsOfCategoryScreen
+import com.cannonades.petconnect.common.presentation.ui.components.AnimalsOfCategoryGenericScreen
 
 @Composable
 fun AnimalsOfBreedRoute(
@@ -17,12 +17,12 @@ fun AnimalsOfBreedRoute(
 ) {
     val viewState by viewModel.state.collectAsState()
 
-    AnimalsOfCategoryScreen(
+    AnimalsOfCategoryGenericScreen(
+        modifier = modifier,
         viewState = viewState,
         showSnackbar = showSnackbar,
         categId = categId,
         onRequestMoreWithSpecificCategory = { viewModel.onRequestMoreWithSpecificBreedEvent(it) },
-        modifier = modifier,
         onAnimalClick = onAnimalClick
     )
 }

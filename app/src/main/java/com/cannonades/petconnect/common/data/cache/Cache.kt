@@ -23,9 +23,13 @@ interface Cache {
 
     fun getBreedCategories(): Flow<List<CachedBreedCategory>>
 
+    suspend fun getBreedCategoryById(categId: String): CachedBreedCategory
+
     suspend fun storeBreedCategories(categories: List<CachedBreedCategory>)
 
     fun getCategories(): Flow<List<CachedCategory>>
+
+    suspend fun getCategoryById(categId: String): CachedCategory
 
     fun getCategoriesList(): List<CachedCategory>
 

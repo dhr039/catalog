@@ -3,11 +3,13 @@ package com.cannonades.petconnect.common.presentation.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cannonades.petconnect.R
@@ -17,12 +19,12 @@ import com.cannonades.petconnect.common.domain.model.NoMoreCategoriesException
 import com.cannonades.petconnect.common.presentation.ui.AnimalsListViewState
 
 @Composable
-fun AnimalsOfCategoryScreen(
+fun AnimalsOfCategoryGenericScreen(
+    modifier: Modifier,
     viewState: AnimalsListViewState,
     showSnackbar: (String) -> Unit,
     categId: String?,
     onRequestMoreWithSpecificCategory: (String) -> Unit,
-    modifier: Modifier,
     onAnimalClick: (String) -> Unit
 ) {
     val context = LocalContext.current
@@ -42,9 +44,10 @@ fun AnimalsOfCategoryScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            text = categId ?: "nothing",
-            textAlign = TextAlign.Center
+                .padding(8.dp),
+            text = viewState.categName,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic)
         )
 
         if (!categId.isNullOrEmpty()) {

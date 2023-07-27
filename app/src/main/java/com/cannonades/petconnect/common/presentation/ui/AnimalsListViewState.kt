@@ -8,6 +8,7 @@ import com.cannonades.petconnect.common.presentation.model.UIAnimal
  * since there is an endless scroll. That's why I chose to use a data class rather than sealed classes.
  */
 data class AnimalsListViewState(
+    val categName: String = "",
     val loading: Boolean = false,
     val animals: List<UIAnimal> = emptyList(),
     val failure: Event<Throwable>? = null,

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.breeds.domain.ClearAnimalsWithBreedCategoryUseCase
+import com.cannonades.petconnect.breeds.domain.GetBreedByIdFromCacheUseCase
 import com.cannonades.petconnect.breeds.domain.GetCatsWithBreedFromCacheUseCase
 import com.cannonades.petconnect.breeds.domain.RequestNextPageOfCatsWithSpecificBreedUseCase
 import com.cannonades.petconnect.common.domain.model.NetworkException
@@ -30,6 +31,7 @@ class AnimalsOfBreedViewModel @Inject constructor(
     private val requestNextPageOfCatsWithSpecificBreedUseCase: RequestNextPageOfCatsWithSpecificBreedUseCase,
     private val getCatsWithBreedFromCacheUseCase: GetCatsWithBreedFromCacheUseCase,
     private val clearAnimalsWithBreedCategoryUseCase: ClearAnimalsWithBreedCategoryUseCase,
+    private val getBreedByIdFromCacheUseCase: GetBreedByIdFromCacheUseCase,
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
@@ -88,6 +90,9 @@ class AnimalsOfBreedViewModel @Inject constructor(
                     val pagination = requestNextPageOfCatsWithSpecificBreedUseCase(++currentPage, breedId = breedId)
                     currentPage = pagination.currentPage
                 }
+
+                val breedCategory = getBreedByIdFromCacheUseCase(breedId)
+                _state.update { it.copy(categName = breedCategory.name) }
 
             } finally {
                 /**
