@@ -15,7 +15,7 @@ interface AnimalRepository {
     suspend fun requestMoreAnimalsFromAPI(
         pageToLoad: Int,
         pageSize: Int,
-        categIds: List<Int> = listOf(),
+        categIds: List<String> = listOf(),
         breedIds: List<String> = listOf(),
         hasBreeds: Boolean
     ): PaginatedAnimals

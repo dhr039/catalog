@@ -13,7 +13,7 @@ class RequestNextPageOfAnimalsWithCategoryUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         pageToLoad: Int,
-        categId: Int
+        categId: String
     ): Pagination {
         return withContext(dispatchersProvider.io()) {
 

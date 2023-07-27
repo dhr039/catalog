@@ -53,7 +53,7 @@ class PetFaceAnimalRepository @Inject constructor(
     override suspend fun requestMoreAnimalsFromAPI(
         pageToLoad: Int,
         pageSize: Int,
-        categIds: List<Int>,
+        categIds: List<String>,
         breedIds: List<String>,
         hasBreeds: Boolean
     ): PaginatedAnimals {

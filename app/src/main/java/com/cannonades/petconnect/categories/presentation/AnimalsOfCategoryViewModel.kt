@@ -49,7 +49,7 @@ class AnimalsOfCategoryViewModel @Inject constructor(
 
     val state: StateFlow<AnimalsListViewState> = _state.asStateFlow()
 
-    fun myOnEvent(categId: Int) {
+    fun onRequestMoreWithSpecificCategoryEvent(categId: String) {
         loadNextAnimalPage(categId)
     }
 
@@ -61,7 +61,7 @@ class AnimalsOfCategoryViewModel @Inject constructor(
         }
     }
 
-    private fun loadNextAnimalPage(categId: Int) {
+    private fun loadNextAnimalPage(categId: String) {
         _state.update { it.copy(loading = true) }
         val errorMessage = "Failed to fetch animals"
         val exceptionHandler = viewModelScope.createExceptionHandler(errorMessage) { onFailure(it) }

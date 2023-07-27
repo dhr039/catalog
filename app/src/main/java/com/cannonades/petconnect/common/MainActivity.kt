@@ -41,9 +41,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.animalsnearyou.presentation.HomeRoute
-import com.cannonades.petconnect.breeds.presentation.AnimalsOfBreedScreen
+import com.cannonades.petconnect.breeds.presentation.AnimalsOfBreedRoute
 import com.cannonades.petconnect.breeds.presentation.BreedCategoriesRoute
-import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryScreen
+import com.cannonades.petconnect.categories.presentation.AnimalsOfCategoryRoute
 import com.cannonades.petconnect.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
@@ -216,7 +216,7 @@ fun PetConnectNavHost(
         ) { navBackStackEntry ->
             val categId =
                 navBackStackEntry.arguments?.getString(AnimalsOfBreed.categTypeArg)
-            AnimalsOfBreedScreen(
+            AnimalsOfBreedRoute(
                 categId = categId,
                 showSnackbar = showSnackbar,
                 onAnimalClick = { navController.navigate("${AnimalDetail.route}/${it}") }
@@ -233,7 +233,7 @@ fun PetConnectNavHost(
         ) { navBackStackEntry ->
             val categId =
                 navBackStackEntry.arguments?.getString(AnimalsOfCategory.categTypeArg)
-            AnimalsOfCategoryScreen(
+            AnimalsOfCategoryRoute(
                 categId = categId,
                 showSnackbar = showSnackbar,
                 onAnimalClick = { navController.navigate("${AnimalDetail.route}/${it}") }
