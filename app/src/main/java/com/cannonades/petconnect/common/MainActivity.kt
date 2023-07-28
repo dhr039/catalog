@@ -48,6 +48,7 @@ import com.cannonades.petconnect.feature.categories.presentation.CategoriesRoute
 import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
+import com.cannonades.petconnect.feature.settings.presentation.DarkThemeConfig
 import com.cannonades.petconnect.feature.settings.presentation.SettingsDialog
 import com.cannonades.petconnect.feature.settings.presentation.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -111,6 +112,8 @@ fun AppContent(
         }
         val coroutineScope = rememberCoroutineScope()
 
+        val darkThemeConfig by settingsViewModel.darkThemeConfig.collectAsState(DarkThemeConfig.FOLLOW_SYSTEM)
+
         if (showSettingsDialog) {
             SettingsDialog(
                 onDismiss = { showSettingsDialog = false },
@@ -118,7 +121,13 @@ fun AppContent(
                     coroutineScope.launch {
                         settingsViewModel.updateDarkThemeSetting(!isDarkTheme)
                     }
-                }
+                },
+                onChangeDarkThemeConfig = { newConfig ->
+                    coroutineScope.launch {
+                        settingsViewModel.updateDarkThemeConfig(newConfig)
+                    }
+                },
+                darkThemeConfig = darkThemeConfig
             )
         }
 

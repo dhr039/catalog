@@ -10,6 +10,11 @@
 
     <string name="dismiss_dialog">Dismiss</string>
     <string name="change_theme">Change theme</string>
+    <string name="dark_mode_preference">Dark mode preference</string>
+    <string name="dark_mode_config_system_default">System default</string>
+    <string name="dark_mode_config_light">Light</string>
+    <string name="dark_mode_config_dark">Dark</string>
+
     <string name="home_icon">Home icon</string>
     <string name="subscriptions_icon">Subscriptions icon</string>
     <string name="for_you">For you</string>
