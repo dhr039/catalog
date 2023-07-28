@@ -64,7 +64,7 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
@@ -82,8 +82,6 @@ fun AnimalScreen(animalId: String, viewModel: AnimalViewModel = hiltViewModel())
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         viewState.animal?.breeds?.firstOrNull()?.let { breed ->
             BreedInfoTable(breed)
