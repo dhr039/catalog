@@ -1,6 +1,5 @@
 package com.cannonades.petconnect.feature.settings.presentation
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,11 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -33,7 +29,6 @@ import com.cannonades.petconnect.R
 @Composable
 fun SettingsDialog(
     onDismiss: () -> Unit,
-    onThemeChange: () -> Unit,
     modifier: Modifier = Modifier,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     darkThemeConfig: DarkThemeConfig
@@ -58,10 +53,6 @@ fun SettingsDialog(
                 Row {
                     Text(text = stringResource(id = R.string.dark_light_theme))
                     Spacer(modifier = modifier.width(10.dp))
-                    ThemeToggleButton(
-                        onThemeChange = onThemeChange,
-                        modifier = modifier
-                    )
                 }
                 Spacer(modifier = modifier.height(20.dp))
 
@@ -98,21 +89,6 @@ fun SettingsDialog(
         },
     )
 }
-
-@Composable
-fun ThemeToggleButton(
-    onThemeChange: () -> Unit,
-    modifier: Modifier
-) {
-    Image(
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_moon),
-        contentDescription = stringResource(id = R.string.change_theme),
-        modifier = modifier
-            .clickable(onClick = { onThemeChange() }),
-        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-    )
-}
-
 
 @Composable
 fun SettingsDialogThemeChooserRow(

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -106,22 +107,23 @@ fun AppContent(
             showSnackbar = true
         }
 
+        //TODO: replace with another fun in ViewModel that reads from DataStore:
         val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState(false)
-        LaunchedEffect(isDarkTheme) {
-            JetRedditThemeSettings.isInDarkTheme.value = isDarkTheme
-        }
-        val coroutineScope = rememberCoroutineScope()
 
         val darkThemeConfig by settingsViewModel.darkThemeConfig.collectAsState(DarkThemeConfig.FOLLOW_SYSTEM)
+        val systemDarkTheme = isSystemInDarkTheme()
+        LaunchedEffect(systemDarkTheme, darkThemeConfig) {
+            JetRedditThemeSettings.currentThemeMode.value = when (darkThemeConfig) {
+                DarkThemeConfig.FOLLOW_SYSTEM -> if (systemDarkTheme) DarkThemeConfig.DARK else DarkThemeConfig.LIGHT
+                DarkThemeConfig.DARK -> DarkThemeConfig.DARK
+                DarkThemeConfig.LIGHT -> DarkThemeConfig.LIGHT
+            }
+        }
 
+        val coroutineScope = rememberCoroutineScope()
         if (showSettingsDialog) {
             SettingsDialog(
                 onDismiss = { showSettingsDialog = false },
-                onThemeChange = {
-                    coroutineScope.launch {
-                        settingsViewModel.updateDarkThemeSetting(!isDarkTheme)
-                    }
-                },
                 onChangeDarkThemeConfig = { newConfig ->
                     coroutineScope.launch {
                         settingsViewModel.updateDarkThemeConfig(newConfig)

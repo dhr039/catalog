@@ -3,7 +3,6 @@ package com.cannonades.petconnect.feature.settings.presentation
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.lifecycle.ViewModel
 import com.cannonades.petconnect.feature.settings.DARK_THEME_KEY
@@ -27,11 +26,11 @@ class SettingsViewModel @Inject constructor(
         }
         .distinctUntilChanged()
 
-    suspend fun updateDarkThemeSetting(isDarkTheme: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[DARK_THEME_KEY] = isDarkTheme
-        }
-    }
+//    suspend fun updateDarkThemeSetting(isDarkTheme: Boolean) {
+//        dataStore.edit { preferences ->
+//            preferences[DARK_THEME_KEY] = isDarkTheme
+//        }
+//    }
 
     private val _darkThemeConfig = MutableStateFlow<DarkThemeConfig>(DarkThemeConfig.FOLLOW_SYSTEM)
     val darkThemeConfig: StateFlow<DarkThemeConfig> = _darkThemeConfig

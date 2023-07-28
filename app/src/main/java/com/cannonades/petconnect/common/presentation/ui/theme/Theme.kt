@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.cannonades.petconnect.feature.settings.presentation.DarkThemeConfig
 
 /**
  * color schemes generated with Material Theme Builder (https://m3.material.io/theme-builder)
@@ -89,20 +90,24 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun PetConnectTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val themeMode = JetRedditThemeSettings.currentThemeMode.value
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (JetRedditThemeSettings.isInDarkTheme.value) dynamicDarkColorScheme(context) else dynamicLightColorScheme(
-                context
-            )
+            when (themeMode) {
+                DarkThemeConfig.FOLLOW_SYSTEM -> if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+                DarkThemeConfig.DARK -> dynamicDarkColorScheme(context)
+                DarkThemeConfig.LIGHT -> dynamicLightColorScheme(context)
+            }
         }
-
-        JetRedditThemeSettings.isInDarkTheme.value -> DarkColors
-        else -> LightColors
+        else -> when (themeMode) {
+            DarkThemeConfig.FOLLOW_SYSTEM -> if (darkTheme) DarkColors else LightColors
+            DarkThemeConfig.DARK -> DarkColors
+            DarkThemeConfig.LIGHT -> LightColors
+        }
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -110,7 +115,7 @@ fun PetConnectTheme(
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
-                JetRedditThemeSettings.isInDarkTheme.value
+                themeMode == DarkThemeConfig.LIGHT
         }
     }
 
@@ -122,5 +127,5 @@ fun PetConnectTheme(
 }
 
 object JetRedditThemeSettings {
-    var isInDarkTheme: MutableState<Boolean> = mutableStateOf(false)
+    var currentThemeMode: MutableState<DarkThemeConfig> = mutableStateOf(DarkThemeConfig.FOLLOW_SYSTEM)
 }
