@@ -107,9 +107,6 @@ fun AppContent(
             showSnackbar = true
         }
 
-        //TODO: replace with another fun in ViewModel that reads from DataStore:
-        val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState(false)
-
         val darkThemeConfig by settingsViewModel.darkThemeConfig.collectAsState(DarkThemeConfig.FOLLOW_SYSTEM)
         val systemDarkTheme = isSystemInDarkTheme()
         LaunchedEffect(systemDarkTheme, darkThemeConfig) {
