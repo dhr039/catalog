@@ -129,7 +129,7 @@ fun AppContent(
                         Snackbar(
                             action = {
                                 TextButton(onClick = { showSnackbar = false }) {
-                                    Text(stringResource(R.string.dismiss))
+                                    Text(stringResource(R.string.dismiss_dialog))
                                 }
                             },
                             modifier = Modifier.padding(8.dp)
