@@ -51,6 +51,7 @@ import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 import com.cannonades.petconnect.feature.settings.presentation.SettingsDialog
 import com.cannonades.petconnect.feature.settings.presentation.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -134,6 +135,11 @@ fun AppContent(
                             modifier = Modifier.padding(8.dp)
                         ) {
                             Text(snackbarMessage)
+                        }
+
+                        LaunchedEffect(showSnackbar) {
+                            delay(3000L)
+                            showSnackbar = false
                         }
                     }
                 },
