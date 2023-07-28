@@ -68,7 +68,7 @@ fun UIAnimalComposable(modifier: Modifier, animal: UIAnimal, onAnimalClick: (Str
                 .clickable { onAnimalClick(animal.id) },
             model = animal.name,
             contentDescription = "Animal image",
-            placeholder = painterResource(R.drawable.ic_jetnews_logo),
+            placeholder = painterResource(R.drawable.ic_cat),
         )
     }
 }
