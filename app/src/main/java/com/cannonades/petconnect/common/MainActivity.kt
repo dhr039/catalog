@@ -2,6 +2,7 @@ package com.cannonades.petconnect.common
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -40,15 +41,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesUpdatedListener
 import com.cannonades.petconnect.R
-import com.cannonades.petconnect.feature.home.presentation.HomeRoute
+import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
+import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
+import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 import com.cannonades.petconnect.feature.breeds.presentation.AnimalsOfBreedRoute
 import com.cannonades.petconnect.feature.breeds.presentation.BreedCategoriesRoute
 import com.cannonades.petconnect.feature.categories.presentation.AnimalsOfCategoryRoute
 import com.cannonades.petconnect.feature.categories.presentation.CategoriesRoute
-import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
-import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
-import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
+import com.cannonades.petconnect.feature.home.presentation.HomeRoute
 import com.cannonades.petconnect.feature.settings.presentation.DarkThemeConfig
 import com.cannonades.petconnect.feature.settings.presentation.SettingsDialog
 import com.cannonades.petconnect.feature.settings.presentation.SettingsViewModel
@@ -62,24 +69,94 @@ class MainActivity : ComponentActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val networkViewModel: NetworkViewModel by viewModels()
 
+    private lateinit var billingClient: BillingClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val billingClient = BillingClient.newBuilder(this)
+            .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases()
+            .build()
+
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                    Log.v("MainActivity", "billing response code OK")
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                Log.v("MainActivity", "onBillingServiceDisconnected")
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        })
 
         setContent {
             AppContent(
                 settingsViewModel,
-                networkViewModel.networkStatus.collectAsState()
+                networkViewModel.networkStatus.collectAsState(),
+                billingClient = billingClient
             )
         }
-
     }
+
+    // Make sure to end the service connection to prevent memory leaks
+    override fun onDestroy() {
+        super.onDestroy()
+        if (billingClient.isReady) {
+            billingClient.endConnection()
+        }
+    }
+
+    val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+            for (purchase in purchases) {
+                handlePurchase(purchase)
+            }
+        } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+            // Handle an error caused by a user cancelling the purchase flow.
+            Log.e("MainActivity", "error user cancelled")
+        } else {
+            // Handle any other error codes.
+            Log.e("MainActivity", "some other error")
+        }
+    }
+
+    private fun handlePurchase(purchase: Purchase) {
+        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+            // Grant entitlement to the user.
+            if (!purchase.isAcknowledged) {
+                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(purchase.purchaseToken)
+                    .build()
+                billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
+                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                        // Handle the success of the acknowledgePurchase here.
+                        Log.v("MainActivity", "purchase succes")
+                    } else {
+                        // Handle any error occurred while acknowledging the purchase.
+                        Log.e("MainActivity", "purchase error")
+                    }
+                }
+            }
+        } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+            Log.v("MainActivity", "purchase pending")
+            // Here you can confirm to the user that the purchase is pending and
+            // to complete the transaction outside of your app.
+        }
+    }
+
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AppContent(
     settingsViewModel: SettingsViewModel,
-    networkStatus: State<Boolean>
+    networkStatus: State<Boolean>,
+    billingClient: BillingClient
 ) {
     PetConnectTheme {
         val navController = rememberNavController()
@@ -126,7 +203,8 @@ fun AppContent(
                         settingsViewModel.updateDarkThemeConfig(newConfig)
                     }
                 },
-                darkThemeConfig = darkThemeConfig
+                darkThemeConfig = darkThemeConfig,
+                billingClient = billingClient
             )
         }
 
