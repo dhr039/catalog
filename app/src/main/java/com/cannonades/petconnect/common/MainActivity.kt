@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -42,11 +43,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.AlternativeChoiceDetails
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
@@ -74,21 +78,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val billingClient = BillingClient.newBuilder(this)
+        billingClient = BillingClient.newBuilder(this@MainActivity)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
             .build()
 
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                Log.e("MainActivity", "onBillingSetupFinished")
+                if (billingResult.responseCode ==  BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
-                    Log.v("MainActivity", "billing response code OK")
+                    Log.e("MainActivity", "BillingResponseCode.OK")
                 }
             }
-
             override fun onBillingServiceDisconnected() {
-                Log.v("MainActivity", "onBillingServiceDisconnected")
+                Log.e("MainActivity", "onBillingServiceDisconnected")
                 // Try to restart the connection on the next request to
                 // Google Play by calling the startConnection() method.
             }
@@ -112,6 +116,7 @@ class MainActivity : ComponentActivity() {
     }
 
     val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
+        Log.e("DHR", "PurchasesUpdatedListener")
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
                 handlePurchase(purchase)
@@ -127,25 +132,20 @@ class MainActivity : ComponentActivity() {
 
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            // Grant entitlement to the user.
-            if (!purchase.isAcknowledged) {
-                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+            // Grant entitlement to the user, then consume the purchase.
+//            grantCoffeeToUser()
+            lifecycleScope.launch {
+                settingsViewModel.notifyPurchaseCompleted()
+            }
+            val consumeParams =
+                ConsumeParams.newBuilder()
                     .setPurchaseToken(purchase.purchaseToken)
                     .build()
-                billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        // Handle the success of the acknowledgePurchase here.
-                        Log.v("MainActivity", "purchase succes")
-                    } else {
-                        // Handle any error occurred while acknowledging the purchase.
-                        Log.e("MainActivity", "purchase error")
-                    }
+            billingClient.consumeAsync(consumeParams) { billingResult, purchaseToken ->
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // Handle the success of the consume operation.
                 }
             }
-        } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-            Log.v("MainActivity", "purchase pending")
-            // Here you can confirm to the user that the purchase is pending and
-            // to complete the transaction outside of your app.
         }
     }
 
@@ -194,6 +194,12 @@ fun AppContent(
             }
         }
 
+        LaunchedEffect(settingsViewModel) {
+            settingsViewModel.purchaseEvent.collect { eventMessage ->
+                showSnackbar(eventMessage)
+            }
+        }
+
         val coroutineScope = rememberCoroutineScope()
         if (showSettingsDialog) {
             SettingsDialog(
@@ -224,7 +230,7 @@ fun AppContent(
                         }
 
                         LaunchedEffect(showSnackbar) {
-                            delay(3000L)
+                            delay(4000L)
                             showSnackbar = false
                         }
                     }

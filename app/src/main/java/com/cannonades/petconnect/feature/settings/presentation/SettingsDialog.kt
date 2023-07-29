@@ -30,9 +30,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.SkuDetailsParams
-import com.android.billingclient.api.querySkuDetails
 import com.cannonades.petconnect.R
 
 private const val SKU_COFFEE_DONATION_5 = "coffee_donation_5"
@@ -84,7 +85,7 @@ fun SettingsDialog(
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
                     onClick = {
-                        launchBillingFlow(context, billingClient, SKU_COFFEE_DONATION_5)
+                        startBilling(context, billingClient, SKU_COFFEE_DONATION_5)
                     }
                 ) {
                     Text(text = "Buy developer a coffee ($5)")
@@ -105,14 +106,37 @@ fun SettingsDialog(
     )
 }
 
-fun launchBillingFlow(context: Context, billingClient: BillingClient, sku: String) {
-    Log.v("launchBillingFlow", "RUNNING 222222222222222222222222222")
+fun startBilling(context: Context, billingClient: BillingClient, sku: String) {
+    if (!billingClient.isReady) {
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                    queryAndLaunchBillingFlow(context, billingClient, sku)
+                } else {
+                    Log.e("launchBillingFlow", "BillingClient setup finished with response code: ${billingResult.responseCode}")
+                }
+            }
+            override fun onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        })
+    } else {
+        queryAndLaunchBillingFlow(context, billingClient, sku)
+    }
+}
+
+fun queryAndLaunchBillingFlow(context: Context, billingClient: BillingClient, sku: String) {
+    Log.e("DHR", "queryAndLaunchBillingFlow")
     val skuList = ArrayList<String>()
     skuList.add(sku)
     val params = SkuDetailsParams.newBuilder()
     params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
     billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
+        Log.e("DHR", "querySkuDetailsAsync $skuDetailsList")
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
+            Log.e("DHR", "billingResult.responseCode == BillingClient.BillingResponseCode.OK")
             for (skuDetails in skuDetailsList) {
                 if (skuDetails.sku == sku) {
                     val flowParams = BillingFlowParams.newBuilder()

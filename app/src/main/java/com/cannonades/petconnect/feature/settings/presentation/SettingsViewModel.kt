@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.cannonades.petconnect.feature.settings.DARK_THEME_KEY
 import com.cannonades.petconnect.feature.settings.FOLLOW_SYSTEM_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -18,6 +20,13 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
+
+    private val _purchaseEvent = MutableSharedFlow<String>()
+    val purchaseEvent: SharedFlow<String> = _purchaseEvent
+
+    suspend fun notifyPurchaseCompleted() {
+        _purchaseEvent.emit("Thank you!")
+    }
 
     private val _darkThemeConfig = MutableStateFlow(DarkThemeConfig.FOLLOW_SYSTEM)
     val darkThemeConfig: StateFlow<DarkThemeConfig> = _darkThemeConfig
