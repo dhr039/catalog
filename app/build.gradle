@@ -14,7 +14,7 @@ android {
         applicationId "com.drollgames.catsii"
         minSdk 29 // to avoid requesting WRITE_EXTERNAL_STORAGE
         targetSdk 34
-        versionCode 10
+        versionCode 61
         versionName "3.0"
 
         testInstrumentationRunner "com.cannonades.petconnect.common.CustomTestRunner"
