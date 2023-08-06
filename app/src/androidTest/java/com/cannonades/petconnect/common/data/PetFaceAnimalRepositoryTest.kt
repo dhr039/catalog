@@ -3,7 +3,6 @@ package com.cannonades.petconnect.common.data
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
-import com.cannonades.petconnect.common.data.di.CacheModule
 import com.cannonades.petconnect.common.data.api.PetFaceApi
 import com.cannonades.petconnect.common.data.api.model.mappers.ApiAnimalMapper
 import com.cannonades.petconnect.common.data.api.utils.FakeServer
@@ -11,6 +10,7 @@ import com.cannonades.petconnect.common.data.cache.Cache
 import com.cannonades.petconnect.common.data.cache.PetSaveDatabase
 import com.cannonades.petconnect.common.data.cache.RoomCache
 import com.cannonades.petconnect.common.data.cache.daos.AnimalsDao
+import com.cannonades.petconnect.common.data.di.CacheModule
 import com.cannonades.petconnect.common.domain.model.Animal
 import com.cannonades.petconnect.common.domain.model.Breed
 import com.cannonades.petconnect.common.domain.model.Photo
@@ -159,6 +159,40 @@ class PetFaceAnimalRepositoryTest {
         // Then
         val animals = repository.getAnimalsWithCategoryFromDb().first()
         assertThat(animals).containsExactlyElementsIn(expectedAnimals)
+    }
+
+    @Test
+    fun returnsNullForAnimalNotInCache() = runBlocking {
+        // When
+        val animalFromDb = repository.getAnimalFromDb("nonExistentID")
+
+        // Then
+        assertThat(animalFromDb).isNull()
+    }
+
+
+    @Test
+    fun deleteAllAnimalsWithBreeds_onlyBreedsDeleted(): Unit = runBlocking {
+        // Given
+        val animalWithBreed = Animal(
+            id = "withBreed",
+            photo = Photo(url = "https://withbreed.com", 100, 50, "image/png"),
+            listOf(Breed(id = "breedID", name = "breedName"))
+        )
+        val animalWithoutBreed = Animal(
+            id = "withoutBreed",
+            photo = Photo(url = "https://withoutbreed.com", 100, 50, "image/png"),
+            listOf()
+        )
+        repository.storeAnimalsInDb(listOf(animalWithBreed), true, true)
+        repository.storeAnimalsInDb(listOf(animalWithoutBreed), true, false)
+
+        // When
+        repository.deleteAllAnimalsWithBreedCategories()
+
+        // Then
+        val remainingAnimals = repository.getAnimalsWithBreedListFromDb()
+        assertThat(remainingAnimals).isEmpty()
     }
 
 }

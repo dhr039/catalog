@@ -7,7 +7,7 @@ buildscript {
     ext.room_version = '2.5.2'
     ext.nav_version = '2.6.0'
     ext.okHttp_version = '4.10.0'
-//    ext.mockwebserver_version = '4.10.0' //must be the same as okHttp_version for the tests to work
+    ext.mockwebserver_version = '4.10.0' //must be the same as okHttp_version for the tests to work
     ext.androidx_core_testing_version = '2.2.0'
     ext.google_truth_version = '1.1.5'
     ext.kotlin_version = '1.9.0'

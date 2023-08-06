@@ -25,6 +25,14 @@ class FakeServer {
         mockWebServer.start(8080)
     }
 
+    fun setErrorDispatcher() {
+        mockWebServer.dispatcher = object : Dispatcher() {
+            override fun dispatch(request: RecordedRequest): MockResponse {
+                return MockResponse().setResponseCode(500).setBody("Internal Server Error")
+            }
+        }
+    }
+
     fun setHappyPathDispatcher() {
         mockWebServer.dispatcher = object : Dispatcher() {
             override fun dispatch(request: RecordedRequest): MockResponse {

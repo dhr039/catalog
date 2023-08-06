@@ -90,8 +90,8 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttp_version"
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
     ksp "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
-//    testImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
-//    androidTestImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
+    testImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
 
     // persistence
     implementation "androidx.room:room-runtime:$room_version"
