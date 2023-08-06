@@ -50,6 +50,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private val _state = MutableStateFlow(AnimalsListViewState())
+    /*could also make currentPage an AtomicInteger instead of using mutex:*/
     private var currentPage = 0
     private val pageMutex = Mutex()
 

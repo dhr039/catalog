@@ -106,6 +106,7 @@ fun SettingsDialog(
     )
 }
 
+/*TODO: remove the billing logic out of here*/
 fun startBilling(context: Context, billingClient: BillingClient, sku: String) {
     if (!billingClient.isReady) {
         billingClient.startConnection(object : BillingClientStateListener {
