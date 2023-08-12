@@ -9,6 +9,7 @@
     <string name="dark_light_theme">Dark/Light:</string>
 
     <string name="dismiss_dialog">Dismiss</string>
+    <string name="ok_dialog">OK</string>
     <string name="change_theme">Change theme</string>
     <string name="dark_mode_preference">Dark mode preference</string>
     <string name="dark_mode_config_system_default">System default</string>

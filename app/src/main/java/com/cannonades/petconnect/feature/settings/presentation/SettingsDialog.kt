@@ -3,7 +3,7 @@ package com.cannonades.petconnect.feature.settings.presentation
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -63,6 +63,16 @@ fun SettingsDialog(
         text = {
             Column {
                 Divider()
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(
+                    onClick = {
+                        startBilling(context, billingClient, SKU_COFFEE_DONATION_5)
+                    }
+                ) {
+                    Text(text = "Buy developer a coffee ($5)")
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Divider()
                 SettingsDialogSectionTitle(text = stringResource(R.string.dark_mode_preference))
                 Column(Modifier.selectableGroup()) {
                     SettingsDialogThemeChooserRow(
@@ -82,26 +92,21 @@ fun SettingsDialog(
                     )
                 }
                 Divider()
-                Spacer(modifier = Modifier.height(10.dp))
-                Button(
-                    onClick = {
-                        startBilling(context, billingClient, SKU_COFFEE_DONATION_5)
-                    }
-                ) {
-                    Text(text = "Buy developer a coffee ($5)")
-                }
             }
 
         },
         confirmButton = {
-            Text(
-                text = stringResource(id = R.string.dismiss_dialog),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .clickable { onDismiss() },
-            )
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(onClick = { onDismiss() }) {
+                    Text(
+                        text = stringResource(id = R.string.ok_dialog),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
         },
     )
 }
@@ -129,22 +134,22 @@ fun startBilling(context: Context, billingClient: BillingClient, sku: String) {
 }
 
 fun queryAndLaunchBillingFlow(context: Context, billingClient: BillingClient, sku: String) {
-    Log.e("DHR", "queryAndLaunchBillingFlow")
+//    Log.v("DHR", "queryAndLaunchBillingFlow")
     val skuList = ArrayList<String>()
     skuList.add(sku)
     val params = SkuDetailsParams.newBuilder()
     params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
     billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
-        Log.e("DHR", "querySkuDetailsAsync $skuDetailsList")
+//        Log.v("DHR", "querySkuDetailsAsync $skuDetailsList")
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
-            Log.e("DHR", "billingResult.responseCode == BillingClient.BillingResponseCode.OK")
+//            Log.v("DHR", "billingResult.responseCode == BillingClient.BillingResponseCode.OK")
             for (skuDetails in skuDetailsList) {
                 if (skuDetails.sku == sku) {
                     val flowParams = BillingFlowParams.newBuilder()
                         .setSkuDetails(skuDetails)
                         .build()
                     val responseCode = billingClient.launchBillingFlow(context as Activity, flowParams)
-                    Log.v("launchBillingFlow","Launching billing flow for sku: $sku. Response code: ${responseCode.responseCode}")
+//                    Log.v("launchBillingFlow","Launching billing flow for sku: $sku. Response code: ${responseCode.responseCode}")
                 }
             }
         } else {
