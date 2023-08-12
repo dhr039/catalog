@@ -10,6 +10,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -42,15 +44,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.AlternativeChoiceDetails
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.QueryProductDetailsParams
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
@@ -86,11 +85,12 @@ class MainActivity : ComponentActivity() {
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 Log.e("MainActivity", "onBillingSetupFinished")
-                if (billingResult.responseCode ==  BillingClient.BillingResponseCode.OK) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
                     Log.e("MainActivity", "BillingResponseCode.OK")
                 }
             }
+
             override fun onBillingServiceDisconnected() {
                 Log.e("MainActivity", "onBillingServiceDisconnected")
                 // Try to restart the connection on the next request to
@@ -238,19 +238,37 @@ fun AppContent(
                 bottomBar = {
                     BottomAppBar(actions = {
                         NavigationBarItem(
-                            icon = { Icon(Home.icon, contentDescription = Home.route) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.cat_house),
+                                    contentDescription = Home.route,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
                             label = { Text(stringResource(id = R.string.home)) },
                             selected = currentScreen == Home,
                             onClick = { navController.navigateSingleTopTo(Home.route) }
                         )
                         NavigationBarItem(
-                            icon = { Icon(Categories.icon, contentDescription = Categories.route) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.tail_up_cat),
+                                    contentDescription = Categories.route,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
                             label = { Text(stringResource(id = R.string.categories)) },
                             selected = currentScreen == Categories || currentScreen == AnimalsOfCategory,
                             onClick = { navController.navigateSingleTopTo(Categories.route) }
                         )
                         NavigationBarItem(
-                            icon = { Icon(Breeds.icon, contentDescription = Breeds.route) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.cat_head),
+                                    contentDescription = Breeds.route,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
                             label = { Text(stringResource(id = R.string.breeds)) },
                             selected = currentScreen == Breeds || currentScreen == AnimalsOfBreed,
                             onClick = { navController.navigateSingleTopTo(Breeds.route) }
@@ -304,7 +322,7 @@ fun PetConnectNavHost(
             )
         }
         composable(route = Breeds.route) {
-            BreedCategoriesRoute(openCategoryScreen = {categ ->
+            BreedCategoriesRoute(openCategoryScreen = { categ ->
                 navController.navigate("${AnimalsOfBreed.route}/$categ")
             })
         }
