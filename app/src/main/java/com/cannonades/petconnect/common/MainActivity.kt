@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -116,7 +117,7 @@ class MainActivity : ComponentActivity() {
     }
 
     val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
-        Log.e("DHR", "PurchasesUpdatedListener")
+        Log.v("MainActivity", "PurchasesUpdatedListener")
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
                 handlePurchase(purchase)
@@ -176,12 +177,12 @@ fun AppContent(
             mutableStateOf(false)
         }
 
-        var showSnackbar by rememberSaveable { mutableStateOf(false) }
+        var isSnackbarVisible by rememberSaveable { mutableStateOf(false) }
         var snackbarMessage by rememberSaveable { mutableStateOf("") }
 
         fun showSnackbar(message: String) {
             snackbarMessage = message
-            showSnackbar = true
+            isSnackbarVisible = true
         }
 
         val darkThemeConfig by settingsViewModel.darkThemeConfig.collectAsState(DarkThemeConfig.FOLLOW_SYSTEM)
@@ -217,10 +218,10 @@ fun AppContent(
         Box(Modifier.fillMaxSize()) {
             Scaffold(
                 snackbarHost = {
-                    if (showSnackbar) {
+                    if (isSnackbarVisible) {
                         Snackbar(
                             action = {
-                                TextButton(onClick = { showSnackbar = false }) {
+                                TextButton(onClick = { isSnackbarVisible = false }) {
                                     Text(stringResource(R.string.dismiss_dialog))
                                 }
                             },
@@ -229,59 +230,23 @@ fun AppContent(
                             Text(snackbarMessage)
                         }
 
-                        LaunchedEffect(showSnackbar) {
+                        LaunchedEffect(isSnackbarVisible) {
                             delay(4000L)
-                            showSnackbar = false
+                            isSnackbarVisible = false
                         }
                     }
                 },
                 bottomBar = {
-                    BottomAppBar(actions = {
-                        NavigationBarItem(
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.cat_house),
-                                    contentDescription = Home.route,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            },
-                            label = { Text(stringResource(id = R.string.home)) },
-                            selected = currentScreen == Home,
-                            onClick = { navController.navigateSingleTopTo(Home.route) }
-                        )
-                        NavigationBarItem(
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.tail_up_cat),
-                                    contentDescription = Categories.route,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            },
-                            label = { Text(stringResource(id = R.string.categories)) },
-                            selected = currentScreen == Categories || currentScreen == AnimalsOfCategory,
-                            onClick = { navController.navigateSingleTopTo(Categories.route) }
-                        )
-                        NavigationBarItem(
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.cat_head),
-                                    contentDescription = Breeds.route,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            },
-                            label = { Text(stringResource(id = R.string.breeds)) },
-                            selected = currentScreen == Breeds || currentScreen == AnimalsOfBreed,
-                            onClick = { navController.navigateSingleTopTo(Breeds.route) }
-                        )
-                        NavigationBarItem(
-                            icon = { Icon(Icons.Filled.Settings, contentDescription = "settings") },
-                            label = { Text(stringResource(id = R.string.settings)) },
-                            selected = showSettingsDialog == true,
-                            onClick = { showSettingsDialog = true }
-                        )
-                    })
-
-
+                    PetConnectBottomNavigation(
+                        currentScreen = currentScreen,
+                        onNavigate = { route ->
+                            navController.navigateSingleTopTo(route)
+                        },
+                        showSettingsDialog = showSettingsDialog,
+                        onToggleSettingsDialog = { show ->
+                            showSettingsDialog = show
+                        }
+                    )
                 },
                 content = { innerPadding ->
                     PetConnectNavHost(
@@ -301,6 +266,72 @@ fun AppContent(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun PetConnectBottomNavigation(
+    currentScreen: PetConnectDestination,
+    onNavigate: (route: String) -> Unit,
+    showSettingsDialog: Boolean,
+    onToggleSettingsDialog: (Boolean) -> Unit
+) {
+    BottomAppBar(actions = {
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.cat_house),
+                    contentDescription = Home.route,
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = { Text(stringResource(id = R.string.home)) },
+            selected = currentScreen == Home,
+            onClick = { onNavigate(Home.route) }
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.tail_up_cat),
+                    contentDescription = Categories.route,
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = { Text(stringResource(id = R.string.categories)) },
+            selected = currentScreen == Categories || currentScreen == AnimalsOfCategory,
+            onClick = { onNavigate(Categories.route) }
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.cat_head),
+                    contentDescription = Breeds.route,
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = { Text(stringResource(id = R.string.breeds)) },
+            selected = currentScreen == Breeds || currentScreen == AnimalsOfBreed,
+            onClick = { onNavigate(Breeds.route) }
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Filled.Settings, contentDescription = "settings") },
+            label = { Text(stringResource(id = R.string.settings)) },
+            selected = showSettingsDialog,
+            onClick = { onToggleSettingsDialog(true) }
+        )
+    })
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PetConnectBottomNavigationPreview() {
+    PetConnectTheme {
+        PetConnectBottomNavigation(
+            currentScreen = Home,
+            onNavigate = {},
+            onToggleSettingsDialog = {},
+            showSettingsDialog = false
+        )
     }
 }
 
