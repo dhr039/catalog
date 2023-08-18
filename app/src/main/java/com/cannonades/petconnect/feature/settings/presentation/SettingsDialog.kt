@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -61,7 +63,7 @@ fun SettingsDialog(
             )
         },
         text = {
-            Column {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
                 Divider()
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
