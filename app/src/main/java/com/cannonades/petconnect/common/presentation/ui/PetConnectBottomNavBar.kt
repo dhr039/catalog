@@ -24,6 +24,7 @@ import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 
 @Composable
 fun PetConnectBottomNavBar(
+    modifier: Modifier = Modifier,
     currentScreen: PetConnectDestination,
     onNavigate: (route: String) -> Unit,
     showSettingsDialog: Boolean,
@@ -35,7 +36,7 @@ fun PetConnectBottomNavBar(
                 Icon(
                     painter = painterResource(id = R.drawable.cat_house),
                     contentDescription = Home.route,
-                    modifier = Modifier.size(24.dp)
+                    modifier = modifier.size(24.dp)
                 )
             },
             label = { Text(stringResource(id = R.string.home)) },
@@ -47,7 +48,7 @@ fun PetConnectBottomNavBar(
                 Icon(
                     painter = painterResource(id = R.drawable.tail_up_cat),
                     contentDescription = Categories.route,
-                    modifier = Modifier.size(24.dp)
+                    modifier = modifier.size(24.dp)
                 )
             },
             label = { Text(stringResource(id = R.string.categories)) },
@@ -59,7 +60,7 @@ fun PetConnectBottomNavBar(
                 Icon(
                     painter = painterResource(id = R.drawable.cat_head),
                     contentDescription = Breeds.route,
-                    modifier = Modifier.size(24.dp)
+                    modifier = modifier.size(24.dp)
                 )
             },
             label = { Text(stringResource(id = R.string.breeds)) },

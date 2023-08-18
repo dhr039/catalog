@@ -9,19 +9,28 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -47,6 +56,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
 import com.cannonades.petconnect.common.presentation.ui.PetConnectBottomNavBar
+import com.cannonades.petconnect.common.presentation.ui.PetConnectNavRail
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 import com.cannonades.petconnect.feature.breeds.presentation.AnimalsOfBreedRoute
@@ -69,6 +79,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var billingClient: BillingClient
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,10 +105,12 @@ class MainActivity : ComponentActivity() {
         })
 
         setContent {
+            val windowSizeClass = calculateWindowSizeClass(this)
             AppContent(
                 settingsViewModel,
                 networkViewModel.networkStatus.collectAsState(),
-                billingClient = billingClient
+                billingClient = billingClient,
+                windowSize = windowSizeClass
             )
         }
     }
@@ -151,7 +164,8 @@ class MainActivity : ComponentActivity() {
 fun AppContent(
     settingsViewModel: SettingsViewModel,
     networkStatus: State<Boolean>,
-    billingClient: BillingClient
+    billingClient: BillingClient,
+    windowSize: WindowSizeClass
 ) {
     PetConnectTheme {
         val navController = rememberNavController()
@@ -210,32 +224,60 @@ fun AppContent(
         }
 
         Box(Modifier.fillMaxSize()) {
-            val petConnectBottomNavBar: @Composable () -> Unit = {
-                PetConnectBottomNavBar(
-                    currentScreen = currentScreen,
-                    onNavigate = { route ->
-                        navController.navigateSingleTopTo(route)
-                    },
-                    showSettingsDialog = showSettingsDialog,
-                    onToggleSettingsDialog = { show ->
-                        showSettingsDialog = show
-                    }
-                )
-            }
-
-            Portrait(
-                isSnackbarVisible = isSnackbarVisible,
-                onSnackCloseClick = { isSnackbarVisible = false },
-                snackbarMessage = snackbarMessage,
-                bottomBar = petConnectBottomNavBar,
-                petConnectNavHost = { innerPadding ->
-                    PetConnectNavHost(
-                        modifier = Modifier.padding(innerPadding),
-                        navController = navController,
-                        showSnackbar = ::showSnackbar
+            when (windowSize.widthSizeClass) {
+                WindowWidthSizeClass.Compact -> {
+                    AppContentPortrait(
+                        isSnackbarVisible = isSnackbarVisible,
+                        onSnackCloseClick = { isSnackbarVisible = false },
+                        snackbarMessage = snackbarMessage,
+                        bottomBar = {
+                            PetConnectBottomNavBar(
+                                currentScreen = currentScreen,
+                                onNavigate = { route ->
+                                    navController.navigateSingleTopTo(route)
+                                },
+                                showSettingsDialog = showSettingsDialog,
+                                onToggleSettingsDialog = { show ->
+                                    showSettingsDialog = show
+                                }
+                            )
+                        },
+                        petConnectNavHost = { innerPadding ->
+                            PetConnectNavHost(
+                                modifier = Modifier.padding(innerPadding),
+                                navController = navController,
+                                showSnackbar = ::showSnackbar
+                            )
+                        }
                     )
                 }
-            )
+
+                WindowWidthSizeClass.Expanded, WindowWidthSizeClass.Medium -> {
+                    AppContentLandscape(
+                        isSnackbarVisible = isSnackbarVisible,
+                        onSnackCloseClick = { isSnackbarVisible = false },
+                        snackbarMessage = snackbarMessage,
+                        navRail = {
+                            PetConnectNavRail(
+                                currentScreen = currentScreen,
+                                onNavigate = { route ->
+                                    navController.navigateSingleTopTo(route)
+                                },
+                                showSettingsDialog = showSettingsDialog,
+                                onToggleSettingsDialog = { show ->
+                                    showSettingsDialog = show
+                                }
+                            )
+                        },
+                        petConnectNavHost = {
+                            PetConnectNavHost(
+                                navController = navController,
+                                showSnackbar = ::showSnackbar
+                            )
+                        }
+                    )
+                }
+            }
 
             if (!networkStatus.value) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
@@ -251,7 +293,7 @@ fun AppContent(
 }
 
 @Composable
-fun Portrait(
+fun AppContentPortrait(
     isSnackbarVisible: Boolean,
     onSnackCloseClick: () -> Unit,
     snackbarMessage: String,
@@ -281,6 +323,44 @@ fun Portrait(
         bottomBar = { bottomBar() },
         content = { innerPadding -> petConnectNavHost(innerPadding) }
     )
+}
+
+@Composable
+fun AppContentLandscape(
+    isSnackbarVisible: Boolean,
+    snackbarMessage: String,
+    onSnackCloseClick: () -> Unit,
+    navRail: @Composable () -> Unit,
+    petConnectNavHost: @Composable () -> Unit,
+) {
+    Surface(color = MaterialTheme.colorScheme.background) {
+        Box {
+            Row {
+                navRail()
+                petConnectNavHost()
+            }
+            if (isSnackbarVisible) {
+                val snackbarHostState = remember { SnackbarHostState() }
+                Snackbar(
+                    action = {
+                        TextButton(onClick = {
+                            onSnackCloseClick()
+                        }) {
+                            Text(stringResource(R.string.dismiss_dialog))
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(8.dp)
+                ) { Text(snackbarMessage) }
+
+                LaunchedEffect(snackbarMessage) {
+                    snackbarHostState.showSnackbar(snackbarMessage)
+                    onSnackCloseClick()
+                }
+            }
+        }
+    }
 }
 
 @Composable

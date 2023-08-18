@@ -52,7 +52,7 @@ fun AnimalGrid(
             }
         )
         if (viewState.loading) {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            Box(modifier = modifier.fillMaxSize().padding(bottom = 16.dp), contentAlignment = Alignment.BottomCenter) {
                 CircularProgressIndicator()
             }
         }
