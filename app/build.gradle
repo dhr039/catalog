@@ -12,10 +12,13 @@ android {
 
     defaultConfig {
         applicationId "com.drollgames.catsii"
-        minSdk 29 // to avoid requesting WRITE_EXTERNAL_STORAGE
+
+        // 29 - to avoid requesting WRITE_EXTERNAL_STORAGE, modern Android version use Scoped Storage:
+        minSdk 29
+
         targetSdk 34
-        versionCode 62
-        versionName "3.1"
+        versionCode 63
+        versionName "3.2"
 
         testInstrumentationRunner "com.cannonades.petconnect.common.CustomTestRunner"
         vectorDrawables {
