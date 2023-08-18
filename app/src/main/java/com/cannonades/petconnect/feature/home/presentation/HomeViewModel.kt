@@ -30,7 +30,7 @@ class HomeViewModel @Inject constructor(
     private val uiAnimalMapper: UiAnimalMapper,
 ) : ViewModel() {
 
-    /*used to prevent loadAnimalsIfEmpty() being called before onNewAnimalList()*/
+    /*this is to prevent loadAnimalsIfEmpty() being called before onNewAnimalList() :*/
     private val isInitialListLoaded = MutableStateFlow(false)
 
     init {

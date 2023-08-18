@@ -8,15 +8,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -33,10 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -53,6 +46,7 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.cannonades.petconnect.R
 import com.cannonades.petconnect.common.presentation.ui.AnimalScreen
+import com.cannonades.petconnect.common.presentation.ui.PetConnectBottomNavBar
 import com.cannonades.petconnect.common.presentation.ui.theme.JetRedditThemeSettings
 import com.cannonades.petconnect.common.presentation.ui.theme.PetConnectTheme
 import com.cannonades.petconnect.feature.breeds.presentation.AnimalsOfBreedRoute
@@ -216,46 +210,33 @@ fun AppContent(
         }
 
         Box(Modifier.fillMaxSize()) {
-            Scaffold(
-                snackbarHost = {
-                    if (isSnackbarVisible) {
-                        Snackbar(
-                            action = {
-                                TextButton(onClick = { isSnackbarVisible = false }) {
-                                    Text(stringResource(R.string.dismiss_dialog))
-                                }
-                            },
-                            modifier = Modifier.padding(8.dp)
-                        ) {
-                            Text(snackbarMessage)
-                        }
-
-                        LaunchedEffect(isSnackbarVisible) {
-                            delay(4000L)
-                            isSnackbarVisible = false
-                        }
+            val petConnectBottomNavBar: @Composable () -> Unit = {
+                PetConnectBottomNavBar(
+                    currentScreen = currentScreen,
+                    onNavigate = { route ->
+                        navController.navigateSingleTopTo(route)
+                    },
+                    showSettingsDialog = showSettingsDialog,
+                    onToggleSettingsDialog = { show ->
+                        showSettingsDialog = show
                     }
-                },
-                bottomBar = {
-                    PetConnectBottomNavigation(
-                        currentScreen = currentScreen,
-                        onNavigate = { route ->
-                            navController.navigateSingleTopTo(route)
-                        },
-                        showSettingsDialog = showSettingsDialog,
-                        onToggleSettingsDialog = { show ->
-                            showSettingsDialog = show
-                        }
-                    )
-                },
-                content = { innerPadding ->
+                )
+            }
+
+            Portrait(
+                isSnackbarVisible = isSnackbarVisible,
+                onSnackCloseClick = { isSnackbarVisible = false },
+                snackbarMessage = snackbarMessage,
+                bottomBar = petConnectBottomNavBar,
+                petConnectNavHost = { innerPadding ->
                     PetConnectNavHost(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
-                        showSnackbar = ::showSnackbar,
+                        showSnackbar = ::showSnackbar
                     )
                 }
             )
+
             if (!networkStatus.value) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                     Text(
@@ -270,69 +251,36 @@ fun AppContent(
 }
 
 @Composable
-fun PetConnectBottomNavigation(
-    currentScreen: PetConnectDestination,
-    onNavigate: (route: String) -> Unit,
-    showSettingsDialog: Boolean,
-    onToggleSettingsDialog: (Boolean) -> Unit
+fun Portrait(
+    isSnackbarVisible: Boolean,
+    onSnackCloseClick: () -> Unit,
+    snackbarMessage: String,
+    bottomBar: @Composable () -> Unit,
+    petConnectNavHost: @Composable (PaddingValues) -> Unit,
 ) {
-    BottomAppBar(actions = {
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.cat_house),
-                    contentDescription = Home.route,
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            label = { Text(stringResource(id = R.string.home)) },
-            selected = currentScreen == Home,
-            onClick = { onNavigate(Home.route) }
-        )
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.tail_up_cat),
-                    contentDescription = Categories.route,
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            label = { Text(stringResource(id = R.string.categories)) },
-            selected = currentScreen == Categories || currentScreen == AnimalsOfCategory,
-            onClick = { onNavigate(Categories.route) }
-        )
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.cat_head),
-                    contentDescription = Breeds.route,
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            label = { Text(stringResource(id = R.string.breeds)) },
-            selected = currentScreen == Breeds || currentScreen == AnimalsOfBreed,
-            onClick = { onNavigate(Breeds.route) }
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Filled.Settings, contentDescription = "settings") },
-            label = { Text(stringResource(id = R.string.settings)) },
-            selected = showSettingsDialog,
-            onClick = { onToggleSettingsDialog(true) }
-        )
-    })
-}
+    Scaffold(
+        snackbarHost = {
+            if (isSnackbarVisible) {
+                Snackbar(
+                    action = {
+                        TextButton(onClick = onSnackCloseClick) {
+                            Text(stringResource(R.string.dismiss_dialog))
+                        }
+                    },
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Text(snackbarMessage)
+                }
 
-@Preview(showBackground = true)
-@Composable
-fun PetConnectBottomNavigationPreview() {
-    PetConnectTheme {
-        PetConnectBottomNavigation(
-            currentScreen = Home,
-            onNavigate = {},
-            onToggleSettingsDialog = {},
-            showSettingsDialog = false
-        )
-    }
+                LaunchedEffect(isSnackbarVisible) {
+                    delay(4000L)
+                    onSnackCloseClick()
+                }
+            }
+        },
+        bottomBar = { bottomBar() },
+        content = { innerPadding -> petConnectNavHost(innerPadding) }
+    )
 }
 
 @Composable
