@@ -11,7 +11,7 @@ Then add it to the *local.properties* file like so:
 For the FakeServer to be able to access a local json file you need to add new assets folder in debug
 (so it is not included in the prod build) and indicate in build.gradle the new resource directory.
 
-To add a new assets folder (right)click on:
+To add a new assets folder (right)click on app/src , choose Add Directory, from the menu that pops up select app/src/debug/assets:
 > app -> debug [main] -> New->directory->assets
 
 Add a file named animals.json to src/debug/assets/networkrepositories and:

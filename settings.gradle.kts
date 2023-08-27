@@ -12,5 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
 rootProject.name = "Pet Connect"
-include ':app'
+include(":app")
+ 
