@@ -2,12 +2,12 @@ package com.cannonades.petconnect.feature.categories.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonades.petconnect.feature.categories.domain.usecases.GetCategoriesFromCacheUseCase
-import com.cannonades.petconnect.feature.categories.domain.usecases.RequestCategoriesUseCase
-import com.cannonades.petconnect.feature.categories.domain.usecases.UpdateCategoryUseCase
 import com.cannonades.petconnect.common.presentation.Event
 import com.cannonades.petconnect.common.presentation.model.UICategory
 import com.cannonades.petconnect.common.presentation.model.mappers.UiCategoryMapper
+import com.cannonades.petconnect.feature.categories.domain.usecases.GetCategoriesFromCacheUseCase
+import com.cannonades.petconnect.feature.categories.domain.usecases.RequestCategoriesUseCase
+import com.cannonades.petconnect.feature.categories.domain.usecases.UpdateCategoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
