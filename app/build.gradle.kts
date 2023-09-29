@@ -85,7 +85,7 @@ android {
 dependencies {
     val composeBom = "2023.08.00"
     val hiltVersion = "2.47"
-    val navVersion = "2.7.1"
+    val navVersion = "2.7.3"
     val retrofitVersion = "2.9.0"
     val okhttpVersion = "4.11.0"
     val moshiVersion = "1.15.0"
@@ -105,8 +105,8 @@ dependencies {
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
     // Compose
     implementation(platform("androidx.compose:compose-bom:$composeBom"))
