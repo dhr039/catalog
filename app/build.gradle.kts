@@ -50,7 +50,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.2"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -83,14 +83,14 @@ android {
 }
 
 dependencies {
-    val composeBom = "2023.08.00"
+    val composeBom = "2023.10.01"
     val hiltVersion = "2.47"
-    val navVersion = "2.7.3"
+    val navVersion = "2.7.4"
     val retrofitVersion = "2.9.0"
-    val okhttpVersion = "4.11.0"
+    val okhttpVersion = "4.12.0"
     val moshiVersion = "1.15.0"
-    val mockwebserverVersion = "4.11.0"
-    val roomVersion = "2.5.2"
+//    val mockwebserverVersion = "4.11.0"
+    val roomVersion = "2.6.0"
     val googleTruthVersion = "1.1.5"
 
     implementation("com.android.billingclient:billing-ktx:6.0.1")
@@ -114,10 +114,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:1.8.0")
     implementation("androidx.navigation:navigation-compose:$navVersion")
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBom"))
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:1.8.0")
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
@@ -136,8 +136,8 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
     implementation("com.squareup.moshi:moshi-kotlin:$moshiVersion")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion")
-    testImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserverVersion")
-    androidTestImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserverVersion")
+    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
 
     // persistence
     implementation("androidx.room:room-runtime:$roomVersion")
