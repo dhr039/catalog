@@ -2,6 +2,9 @@
 
 Cat-a-log is an Android app that works with https://thecatapi.com/ 
 
+It has won the second place in the https://thatapicompany.com/ competition:
+![Screenshot 1](raw_graphics/api_contest.jpeg)
+
 <a href="https://play.google.com/store/apps/details?id=com.drollgames.catsii"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="70"></a>
 
 ### API key
