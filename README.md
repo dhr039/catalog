@@ -7,6 +7,12 @@ It has won the second place in the https://thatapicompany.com/ competition:
 
 <a href="https://play.google.com/store/apps/details?id=com.drollgames.catsii"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="70"></a>
 
+* Entirely written in [Kotlin](https://kotlinlang.org/).
+* UI completely written in [Jetpack Compose](https://developer.android.com/jetpack/compose).
+* Uses [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html) throughout.
+* Uses many of the [Architecture Components](https://developer.android.com/topic/libraries/architecture/), including: Room, Lifecycle, Navigation.
+* Uses [Hilt](https://dagger.dev/hilt/) for dependency injection
+
 ### API key
 Get an API key from https://thecatapi.com/ 
 
