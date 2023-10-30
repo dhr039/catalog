@@ -10,7 +10,7 @@ It has won the second place in the https://thatapicompany.com/ competition:
 * Entirely written in [Kotlin](https://kotlinlang.org/).
 * UI completely written in [Jetpack Compose](https://developer.android.com/jetpack/compose).
 * Uses [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html) throughout.
-* Uses many of the [Architecture Components](https://developer.android.com/topic/libraries/architecture/), including: Room, Lifecycle, Navigation.
+* Uses many of the [Architecture Components](https://developer.android.com/topic/libraries/architecture/), including: Room, Navigation.
 * Uses [Hilt](https://dagger.dev/hilt/) for dependency injection
 
 ### API key
