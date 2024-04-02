@@ -119,7 +119,8 @@ class AnimalsOfBreedViewModel @Inject constructor(
                 Log.e("DHR", "NoMoreAnimalsException hasMoreAnimalsBeenHandled:$hasMoreAnimalsBeenHandled")
                 if (!hasMoreAnimalsBeenHandled) {
                     _state.update {
-                        it.copy(loading = false, failure = Event(failure))
+//                        it.copy(loading = false, failure = Event(failure))
+                        it.copy(loading = false)
                     }
                     hasMoreAnimalsBeenHandled = true
                 }

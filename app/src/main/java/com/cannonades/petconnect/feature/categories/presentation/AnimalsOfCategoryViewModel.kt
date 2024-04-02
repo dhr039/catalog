@@ -111,7 +111,8 @@ class AnimalsOfCategoryViewModel @Inject constructor(
             is NoMoreAnimalsException -> {
                 if (!hasMoreAnimalsBeenHandled) {
                     _state.update {
-                        it.copy(loading = false, failure = Event(failure))
+//                        it.copy(loading = false, failure = Event(failure))
+                        it.copy(loading = false)
                     }
                     hasMoreAnimalsBeenHandled = true
                 }
