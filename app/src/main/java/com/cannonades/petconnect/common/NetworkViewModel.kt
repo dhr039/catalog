@@ -26,7 +26,7 @@ class NetworkViewModel @Inject constructor(
 
         override fun onLost(network: Network) {
             super.onLost(network)
-            _networkStatus.value = false
+            _networkStatus.value = checkNetworkAvailability()
         }
     }
 
